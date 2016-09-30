@@ -164,7 +164,7 @@
               <SubComponents>
                 <MenuItem class="javax.swing.JMenuItem" name="jMenuItem25">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Exibir disponibilidades de um professor"/>
+                    <Property name="text" type="java.lang.String" value="Exibir indisponibilidades de um professor"/>
                   </Properties>
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="jMenuItem26">

@@ -191,7 +191,7 @@ public class Principal extends javax.swing.JFrame {
 
         jMenu2.setText("Listar restrições");
 
-        jMenuItem25.setText("Exibir disponibilidades de um professor");
+        jMenuItem25.setText("Exibir indisponibilidades de um professor");
         jMenu2.add(jMenuItem25);
 
         jMenuItem26.setText("Exibir restrições de uma turma");
