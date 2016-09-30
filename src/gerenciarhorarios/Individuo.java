@@ -1,0 +1,298 @@
+/*
+ * Definição e criação de cada indivíduo da população.
+ */
+package gerenciarhorarios;
+
+import database.DataAccessObject;
+import static java.lang.Math.abs;
+import java.util.ArrayList;
+import java.util.Random;
+import javax.swing.JOptionPane;
+
+/**
+ *
+ * @author Rodrigo
+ */
+public class Individuo {
+
+    private int[] genes;
+    private int idTurma;
+    private int aptidao = 0; //Considera-se que o indivíduo é inicialmente perfeito.
+    private ArrayList<Integer> alelos = new ArrayList<>();
+    private int qtdAlelosVazios = 0;
+
+    //Cria um indivíduo a partir de outro indivíduo.
+    public Individuo(Individuo individuoBase) {
+        this.genes = new int[individuoBase.genes.length];
+        for (int i = 0; i < individuoBase.genes.length; i++) {
+            this.genes[i] = individuoBase.genes[i];
+        }
+        this.idTurma = individuoBase.idTurma;
+        //aptidao = individuoBase.getAptidao();
+        //alelos = new ArrayList<>(individuoBase.alelos);
+        this.qtdAlelosVazios = individuoBase.qtdAlelosVazios;
+
+        geraAptidao();
+    }
+
+    //Cria um indivíduo aleatório.
+    public Individuo(ArrayList<Disciplina> disciplinas, int idTurma) {
+        Random r = new Random();
+
+        this.idTurma = idTurma;
+        //System.out.println("Alelos: ");
+        //Definição dos alelos.
+        for (int i = 0; i < disciplinas.size(); i++) {
+            //Cada disciplina será repetida nos alelos de acordo com a quantidade de aulas semanais.
+            for (int j = 0; j < disciplinas.get(i).getQtdAulasSemanais(); j++) {
+                alelos.add(disciplinas.get(i).getID());
+            }
+        }
+
+        //Preencher o resto dos alelos com valores vazios (0).
+        //Verificar qual é o turno da turma.
+        Turma turmaTemp = DataAccessObject.getTurmaByID(idTurma);
+        int qtdMaxAulasSemana; //Quantidade máxima de aulas que a turma pode ter na semana, de acordo com o turno.
+        if (turmaTemp.getTurno().equals("Matutino") || turmaTemp.getTurno().equals("Vespertino")) {
+            qtdMaxAulasSemana = 36;
+        } else { //Turno noturno.
+            qtdMaxAulasSemana = 24;
+        }
+
+        //Se for necessário uma quantidade de aulas além das disponíveis em um único turno.
+        if (alelos.size() > qtdMaxAulasSemana) {
+            JOptionPane.showMessageDialog(null, "Impossível gerar um horário com essa"
+                    + "quantidade de aulas semanais.", "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+
+        //Se não tiver atingido o máximo de aulas na semana, completar com valores vazios (0).
+        if (alelos.size() != qtdMaxAulasSemana) {
+            while (alelos.size() < qtdMaxAulasSemana) {
+                alelos.add(0);
+                qtdAlelosVazios++;
+            }
+        }
+
+        //Geração dos genes
+        genes = new int[qtdMaxAulasSemana];
+//        System.out.println("Genes população inicial: ");
+        for (int i = 0; i < genes.length; i++) {
+            int aleatorio = r.nextInt(alelos.size());
+            genes[i] = alelos.get(aleatorio);
+//            System.out.print(genes[i]);
+            alelos.remove(aleatorio);
+        }
+//        System.out.println("");
+        geraAptidao();
+
+//        System.out.println(" | Minha aptidão: " + aptidao); 
+    }
+
+    //Cria um indivíduo com os genes fornecidos.
+    public Individuo(int genes[], int idTurma, int qtdAlelosVazios, Populacao novaPopulacao) {
+        Random r = new Random();
+
+        this.idTurma = idTurma;
+        this.qtdAlelosVazios = qtdAlelosVazios;
+
+        this.genes = genes;
+
+        //Faz ou não a mutação de um gene.
+        if (r.nextDouble() <= Algoritmo.getTaxaMutacao()) {
+            //Faz uma mutação de ordem, ou seja, dois genes aleatórios são trocados de posição entre si.
+            int posicaoAleatoria1 = r.nextInt(this.genes.length);
+            int posicaoAleatoria2 = r.nextInt(this.genes.length);
+            int geneTemp = this.genes[posicaoAleatoria1];
+            this.genes[posicaoAleatoria1] = this.genes[posicaoAleatoria2];
+            this.genes[posicaoAleatoria2] = geneTemp;
+        }
+        if (r.nextDouble() <= Algoritmo.getTaxaMutacao()) {
+            ArrayList<Aula> aulasTemp = DataAccessObject.getAulasByIDTurma(this.idTurma);
+            int posicaoAleatoria = r.nextInt(this.genes.length);
+            if (r.nextDouble() <= 0.5) {
+                this.genes[posicaoAleatoria] = aulasTemp.get(r.nextInt(aulasTemp.size())).getIDDisciplina();
+            } else {
+                this.genes[posicaoAleatoria] = 0;
+            }
+        }
+        geraAptidao();
+    }
+
+    public int getQtdAlelosVazios() {
+        return qtdAlelosVazios;
+    }
+
+    public void setIDTurma(int idTurma) {
+        this.idTurma = idTurma;
+    }
+
+    public int getIDTurma() {
+        return idTurma;
+    }
+
+    public void geraAptidao() {
+        aptidao = 0;
+        //Verificar restrições dos professores das disciplinas.
+        int turmaAcrescimo; //Valor para comparação das restrições do professor de acordo com o turno. 
+        //Matutino = 0, Vespertino = 36 e Noturno = 72.
+        Turma turmaTemp = DataAccessObject.getTurmaByID(idTurma);
+        switch (turmaTemp.getTurno()) {
+            case "Matutino":
+                turmaAcrescimo = 0;
+                break;
+            case "Vespertino":
+                turmaAcrescimo = 36;
+                break;
+            default:
+                //Noturno.
+                turmaAcrescimo = 72;
+                break;
+        }
+
+        //Validar aulas geminadas.
+        if (turmaTemp.getAulasGeminadas()) {
+            //Ter apenas aulas geminadas.
+            for (int i = 0; i < genes.length; i += 2) {
+                if (genes[i] != genes[i + 1]) {
+                    //Penalizar se não for geminado.
+                    aptidao += 3;
+                }
+            }
+        } else if (turmaTemp.getSemAulasGeminadas()) {
+            //Não ter aulas geminadas.
+            for (int i = 0; i < genes.length - 1; i++) {
+                if (genes[i] != 0) {
+                    if (genes[i] == genes[i + 1]) {
+                        //Penalizar se for geminado.
+                        aptidao += 3;
+                    }
+                }
+            }
+        }
+
+        //Validar dias da semana.
+        if (turmaTemp.getTurno().equals("Matutino") || turmaTemp.getTurno().equals("Vespertino")) {
+            for (int i = 0; i < 6; i++) {
+                //Dias da semana.
+                for (int j = i * 6; j < ((i * 6) + 6); j++) {
+                    //Genes correspondentes ao dia.
+                    if (turmaTemp.getDiasSemana()[i] == '0' && genes[j] != 0) {
+                        //Dia não disponível e aula não vaga, penalizar.
+                        aptidao += 3;
+                    }
+                }
+            }
+        } else {
+            //Noturno.
+            for (int i = 0; i < 6; i++) {
+                //Dias da semana.
+                for (int j = i * 4; j < ((i * 4) + 4); j++) {
+                    //Genes correspondentes ao dia.
+                    if (turmaTemp.getDiasSemana()[i] == '0' && genes[j] != 0) {
+                        //Dia não disponível e aula não vaga, penalizar.
+                        aptidao += 3;
+                    }
+                }
+            }
+        }
+
+        //Validar janelamento entre disciplinas.
+        if (!turmaTemp.getJanelamentoDisciplinas()) {
+            //Evitar janelamento entre aulas. Janelamento desabilitado.
+            if (turmaTemp.getTurno().equals("Matutino") || turmaTemp.getTurno().equals("Vespertino")) {
+                for (int i = 0; i < 6; i++) {
+                    //Dias da semana.
+                    for (int j = i * 6; j < ((i * 6) + 4); j++) {
+                        //Genes correspondentes ao dia.
+                        if (genes[j] != 0 && genes[j + 1] == 0) {
+                            //Aula não vaga seguida de aula vaga.
+
+                            for (int k = j+2; k < ((i * 6) + 6); k++) {
+                                //Busca do dia por uma aula não vaga após a aula vaga.
+                                if(genes[k] != 0){
+                                    aptidao += 3;
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+            } else {
+                //Noturno.
+                for (int i = 0; i < 6; i++) {
+                    //Dias da semana.
+                    for (int j = i * 4; j < ((i * 4) + 2); j++) {
+                        //Genes correspondentes ao dia.
+                        if (genes[j] != 0 && genes[j + 1] == 0) {
+                            //Aula não vaga seguida de aula vaga.
+
+                            for (int k = j+2; k < ((i * 4) + 4); k++) {
+                                //Busca do dia por uma aula não vaga após a aula vaga.
+                                if(genes[k] != 0){
+                                    aptidao += 3;
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        int qtdGenesVazios = 0;
+        ArrayList<Integer> idsVerificados = new ArrayList<>();
+        for (int i = 0; i < genes.length; i++) {
+            if (genes[i] != 0) {
+                //ID do professor da disciplina na posição i do gene.
+                Disciplina disciplinaTemp = DataAccessObject.getDisciplinaByID(genes[i]);
+                int idProfessorTemp = disciplinaTemp.getIdProfessor();
+                //Se o professor possuir restrição nesse horário.
+
+                if (DataAccessObject.getProfessorByID(idProfessorTemp).getRestricoes()[i + turmaAcrescimo] == '1') {
+                    aptidao += 5; //Penaliza com 5 pontos.
+                    //System.out.println("Penalidade restrição professor!");
+                }
+
+                //Verificar se já foi feita a contagem dessa disciplina.
+                if (!idsVerificados.contains(disciplinaTemp.getID())) {
+                    //Não verificou ainda.
+                    int ocorrencias = 0; //Quantas vezes a disciplina aparece no horário.
+                    //Contar as ocorrências.
+                    for (int j = 0; j < genes.length; j++) {
+                        if (disciplinaTemp.getID() == genes[j]) {
+                            ocorrencias++;
+                        }
+                    }
+
+                    //Verificar se a quantidade de ocorrências é a quantidade certa de vezes
+                    //em que a disciplina deve estar presente em um horário. Com base
+                    //na quantidade de aulas semanais daquela disciplina.
+                    if (ocorrencias != disciplinaTemp.getQtdAulasSemanais()) {
+                        aptidao += abs(10 * (ocorrencias - disciplinaTemp.getQtdAulasSemanais())); //Penaliza com 10+ pontos.
+                    }
+                    idsVerificados.add(disciplinaTemp.getID());
+                }
+            } else {
+                //Quantidade de genes vazios.
+                qtdGenesVazios++;
+            }
+        }
+
+        if (qtdAlelosVazios != qtdGenesVazios) {
+            //System.out.println("Alelos vazios, penalização += " + abs(20*(qtdGenesVazios - qtdAlelosVazios)));
+            //Possui mais genes vazios do que deveria.
+            //Penaliza com 20+ pontos.
+            aptidao += abs(15 * (qtdGenesVazios - qtdAlelosVazios));
+        }
+    }
+
+    public int getAptidao() {
+        return aptidao;
+    }
+
+    public int[] getGenes() {
+        return genes;
+    }
+}
