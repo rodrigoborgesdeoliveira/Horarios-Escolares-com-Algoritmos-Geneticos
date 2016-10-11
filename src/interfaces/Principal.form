@@ -181,10 +181,13 @@
             <Property name="text" type="java.lang.String" value="Gerenciar aulas conjuntas"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem16">
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemAdicionarAulaConjunta">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Adicionar aula conjunta"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItemAdicionarAulaConjuntaActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem17">
               <Properties>

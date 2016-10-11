@@ -306,12 +306,52 @@ public class DataAccessObject {
                 aula = new Aula();
                 aula.setIDDisciplina(rs.getInt(1));
                 aula.setIDTurma(rs.getInt(2));
+                if(rs.getString(3) == null){
+                    aula.setIDTurmaConjunta(0); //Não possui turma conjunta.
+                } else{
+                    aula.setIDTurmaConjunta(rs.getInt(3));
+                }
                 aulas.add(aula);
             }
 
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Não foi possível conectar ao banco de dados.\n"
                     + ex.getMessage(), "Erro no método getAulasByIDTurma", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            //ConnectionFactory.closeConnection(con, stmt, rs);
+        }
+
+        return aulas;
+    }
+    
+    //Retorna as aulas que possuem um dado id de disciplina.
+    public static ArrayList<Aula> getAulasByIDDisciplina(int id) {
+        Aula aula = null;
+        ArrayList<Aula> aulas = new ArrayList<>();
+        //Connection con = ConnectionFactory.getConnection();
+        stmt = null;
+        rs = null;
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM aula WHERE disciplina_id LIKE ?;");
+            stmt.setInt(1, id);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                aula = new Aula();
+                aula.setIDDisciplina(rs.getInt(1));
+                aula.setIDTurma(rs.getInt(2));
+                if(rs.getString(3) == null){
+                    aula.setIDTurmaConjunta(0); //Não possui turma conjunta.
+                } else{
+                    aula.setIDTurmaConjunta(rs.getInt(3));
+                }
+                aulas.add(aula);
+            }
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Não foi possível conectar ao banco de dados.\n"
+                    + ex.getMessage(), "Erro no método getAulasByIDDisciplina", JOptionPane.ERROR_MESSAGE);
         } finally {
             //ConnectionFactory.closeConnection(con, stmt, rs);
         }
