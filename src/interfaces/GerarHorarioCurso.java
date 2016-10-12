@@ -425,7 +425,8 @@ public class GerarHorarioCurso extends javax.swing.JInternalFrame {
                         }
                     }
 
-                    if (geracao == numMaxGeracoes) {
+                    if (geracao >= numMaxGeracoes) {
+                        turma.setHorarioTurma(populacao.getMelhorIndividuo().getGenes());
                         JOptionPane.showMessageDialog(null, "Nenhuma solução encontrada para"
                                 + " a turma '" + "Curso: " + turma.getCurso() + " | Nível de ensino: "
                                 + turma.getNivelEnsino() + " | Turma: " + turma.getNome()
@@ -583,7 +584,8 @@ public class GerarHorarioCurso extends javax.swing.JInternalFrame {
                     }
                 }
 
-                if (geracao == numMaxGeracoes) {
+                if (geracao >= numMaxGeracoes) {
+                    turma.setHorarioTurma(populacao.getMelhorIndividuo().getGenes());
                     JOptionPane.showMessageDialog(null, "Nenhuma solução encontrada para"
                             + " a turma '" + "Curso: " + turma.getCurso() + " | Nível de ensino: "
                             + turma.getNivelEnsino() + " | Turma: " + turma.getNome()

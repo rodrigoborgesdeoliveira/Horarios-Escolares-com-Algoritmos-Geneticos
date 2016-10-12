@@ -217,11 +217,11 @@ public class GerarHorarioTurma extends javax.swing.JInternalFrame {
             populacao = new Populacao(Algoritmo.gerarNovaGeracao(populacao, elitismo));
             //Analisar se a nova população possui um indivíduo que é a solução (aptidão = 0).
             //populacao.getMelhorIndividuo().geraAptidao();
-
+                       
             System.out.println("Genes: ");
             for (int i = 0; i < populacao.getMelhorIndividuo().getGenes().length; i++) {
                 System.out.print(populacao.getMelhorIndividuo().getGenes()[i]);
-            }
+            }            
 
             System.out.println(" | Geração = " + geracao + "| Aptidão = " + populacao.getMelhorIndividuo().getAptidao());
             if (populacao.getMelhorIndividuo().getAptidao() == 0) {
@@ -241,7 +241,8 @@ public class GerarHorarioTurma extends javax.swing.JInternalFrame {
             }
         }
 
-        if (geracao == numMaxGeracoes) {
+        if (geracao >= numMaxGeracoes) {
+            turma.setHorarioTurma(populacao.getMelhorIndividuo().getGenes());
             JOptionPane.showMessageDialog(null, "Nenhuma solução encontrada."
                     + "\nExibindo solução mais adequada.");
         }

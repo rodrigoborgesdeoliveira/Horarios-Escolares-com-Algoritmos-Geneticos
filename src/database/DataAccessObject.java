@@ -782,6 +782,58 @@ public class DataAccessObject {
 
         return posicoes;
     }
+    
+    //Retorna a turma conjunta de uma dada aula.
+    public static int getIDTurmaConjunta(int idDisciplina, int idTurma){
+        stmt = null;
+        rs = null;
+        
+        int idTurmaConjunta = 0;
+        
+        try {
+            stmt = con.prepareStatement("SELECT turma_conjunta_id FROM aula WHERE (disciplina_id, "
+                    + "turma_id) = (?,?);");
+            stmt.setInt(1, idDisciplina);
+            stmt.setInt(2, idTurma);
+            
+            rs = stmt.executeQuery();
+            
+            while(rs.next()){
+                if(rs.getString(1) != null){
+                    idTurmaConjunta = rs.getInt(1);
+                }
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Não foi possível conectar ao banco de dados.\n"
+                    + ex.getMessage(), "Erro no método getIDTurmaConjunta", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        return idTurmaConjunta;
+    }
+    
+    //Retorna ids de turmas que possuem uma dada turma como conjunta para uma determinada disciplina.
+    public static ArrayList<Integer> getIDsTurmasByIDTurmaConjuntaIDDisciplina(int idTurmaConjunta, int idDisciplina){
+        stmt = null;
+        rs = null;
+        ArrayList<Integer> idsTurmas = new ArrayList<>();
+        
+        try {
+            stmt = con.prepareStatement("SELECT turma_id FROM aula WHERE "
+                    + "(turma_conjunta_id, disciplina_id) = (?,?);");
+            stmt.setInt(1, idTurmaConjunta);
+            stmt.setInt(2, idDisciplina);
+            
+            rs = stmt.executeQuery();
+            while(rs.next()){
+                idsTurmas.add(rs.getInt(1));
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Não foi possível conectar ao banco de dados.\n"
+                    + ex.getMessage(), "Erro no método getIDsTurmasByIDTurmaConjunta", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        return idsTurmas;
+    }
 
     public static void abrirConexao() {
         con = ConnectionFactory.getConnection();

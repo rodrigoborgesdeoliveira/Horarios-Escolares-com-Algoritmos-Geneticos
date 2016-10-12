@@ -82,7 +82,7 @@ public class Individuo {
 //            System.out.print(genes[i]);
             alelos.remove(aleatorio);
         }
-//        System.out.println("");
+        
         geraAptidao();
 
 //        System.out.println(" | Minha aptidão: " + aptidao); 
@@ -207,9 +207,9 @@ public class Individuo {
                         if (genes[j] != 0 && genes[j + 1] == 0) {
                             //Aula não vaga seguida de aula vaga.
 
-                            for (int k = j+2; k < ((i * 6) + 6); k++) {
+                            for (int k = j + 2; k < ((i * 6) + 6); k++) {
                                 //Busca do dia por uma aula não vaga após a aula vaga.
-                                if(genes[k] != 0){
+                                if (genes[k] != 0) {
                                     aptidao += 3;
                                     break;
                                 }
@@ -227,9 +227,9 @@ public class Individuo {
                         if (genes[j] != 0 && genes[j + 1] == 0) {
                             //Aula não vaga seguida de aula vaga.
 
-                            for (int k = j+2; k < ((i * 4) + 4); k++) {
+                            for (int k = j + 2; k < ((i * 4) + 4); k++) {
                                 //Busca do dia por uma aula não vaga após a aula vaga.
-                                if(genes[k] != 0){
+                                if (genes[k] != 0) {
                                     aptidao += 3;
                                     break;
                                 }
@@ -248,13 +248,96 @@ public class Individuo {
                 //ID do professor da disciplina na posição i do gene.
                 Disciplina disciplinaTemp = DataAccessObject.getDisciplinaByID(genes[i]);
                 int idProfessorTemp = disciplinaTemp.getIdProfessor();
-                //Se o professor possuir restrição nesse horário.
 
-                if (DataAccessObject.getProfessorByID(idProfessorTemp).getRestricoes()[i + turmaAcrescimo] == '1') {
-                    aptidao += 5; //Penaliza com 5 pontos.
-                    //System.out.println("Penalidade restrição professor!");
+                //---------------------------------------------------------------------------
+                //Verificar turmas conjuntas.
+                //---------------------------------------------------------------------------
+                //Verificar se turma atual ou turmas conjuntas possuem horário.
+                boolean sair = false; //Variável para sair
+                boolean disciplinaConjunta = false; //Variável para saber se essa
+                //disciplina é conjunta com outra turma e se essa outra turma já
+                //definiu o horário dessa disciplina.
+
+                int idTurmaConjunta = DataAccessObject.getIDTurmaConjunta(genes[i], idTurma);
+                 
+                if (idTurmaConjunta != 0) {
+                    //Essa aula é conjunta com outra turma.
+                    ArrayList<Integer> idsTurmasConjuntasVerificadas = new ArrayList<>();
+                    //Marcar turma atual para não verificar.
+                    idsTurmasConjuntasVerificadas.add(idTurma);
+                    while (!sair) {
+                        idsTurmasConjuntasVerificadas.add(idTurmaConjunta);
+                        if (DataAccessObject.turmaTemHorario(idTurmaConjunta)) {
+                            //Turma conjunta possui horário.
+
+                            disciplinaConjunta = true; //Uma turma conjunta
+                            //já definiu o horário dessa disciplina.
+
+                            //Verificar se a disciplina da turma atual está na
+                            //mesma posição que a da turma conjunta.
+                            if (DataAccessObject.getHorarioTurma(idTurmaConjunta).getHorarioTurma()[i]
+                                    != genes[i]) {
+                                //Disciplina em posições diferentes, penalizar.
+                                aptidao++;
+                                sair = true;
+                            } else{
+                                sair = true;
+                            }
+                        } else {
+                            idTurmaConjunta = DataAccessObject.getIDTurmaConjunta(genes[i], idTurmaConjunta);
+                            if (idTurmaConjunta != 0) {
+                                //Possui turma conjunta.
+                                if (idsTurmasConjuntasVerificadas.contains(idTurmaConjunta)) {
+                                    //Turma conjunta já verificada, encerrar verificação 
+                                    //para evitar loop infinito.
+                                    sair = true;
+                                }
+                            } else {
+                                //Não possui turma conjunta. Encerrar verificação.
+                                sair = true;
+                            }
+                        }
+                    }
                 }
 
+                //Verificar se turma atual é turma conjunta de alguma outra turma
+                //na disciplina atual.
+                ArrayList<Integer> idsTurmas = DataAccessObject.
+                        getIDsTurmasByIDTurmaConjuntaIDDisciplina(idTurma, genes[i]);
+                if (!idsTurmas.isEmpty()) {
+                    //Turma atual é conjunta de outra turma na disciplina atual.
+
+                    //Verificar se as turmas encontradas possuem horário.
+                    for (Integer idsTurma : idsTurmas) {
+                        if (DataAccessObject.turmaTemHorario(idsTurma)) {
+                            //Turma possui horário.
+                            
+                            disciplinaConjunta = true; //Uma turma conjunta já
+                            //definiu o horário dessa disciplina.
+                            
+                            //Verificar se a disciplina da turma atual está na
+                            //mesma posição que a da turma conjunta.
+                            if (DataAccessObject.getHorarioTurma(idsTurma).getHorarioTurma()[i]
+                                    != genes[i]) {                               
+                                //Disciplina em posições diferentes, penalizar.
+                                aptidao++;
+                                //System.out.println("Penalizou turma conjunta");
+                            }
+                        }
+                    }
+                }
+                //---------------------------------------------------------------------------------
+
+                if (disciplinaConjunta == false) {
+                    //Não possui turmas conjuntas que já definiram o horário.
+
+                    //Se o professor possuir restrição nesse horário.
+                    if (DataAccessObject.getProfessorByID(idProfessorTemp).getRestricoes()[i + turmaAcrescimo] == '1') {
+                        aptidao += 5; //Penaliza com 5 pontos.
+                        System.out.println("Penalidade restrição professor!");
+                    }
+                }
+                
                 //Verificar se já foi feita a contagem dessa disciplina.
                 if (!idsVerificados.contains(disciplinaTemp.getID())) {
                     //Não verificou ainda.
