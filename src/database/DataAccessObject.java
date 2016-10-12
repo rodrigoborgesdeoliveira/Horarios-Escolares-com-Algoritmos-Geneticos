@@ -710,6 +710,27 @@ public class DataAccessObject {
                     + ex.getMessage(), "Erro no método updateTurma", JOptionPane.ERROR_MESSAGE);
         }
     }
+    
+    public static void update(Aula aula){
+        stmt = null;
+        rs = null;
+        
+        try{
+            stmt = con.prepareStatement("UPDATE aula SET disciplina_id = (?), "
+                    + "turma_id = (?), turma_conjunta_id = (?) WHERE (disciplina_id, turma_id) "
+                    + "= (?,?);");
+            stmt.setInt(1, aula.getIDDisciplina());
+            stmt.setInt(2, aula.getIDTurma());
+            stmt.setInt(3, aula.getIDTurmaConjunta());
+            stmt.setInt(4, aula.getIDDisciplina());
+            stmt.setInt(5, aula.getIDTurma());
+            
+            stmt.executeUpdate();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Não foi possível conectar ao banco de dados.\n"
+                    + ex.getMessage(), "Erro no método updateAula", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
     //Retorna as posições de uma disciplina nos horários de todas as turmas.
     public static ArrayList<Integer> getPosicoesHorarioByIDDisciplina(int idDisciplina) {

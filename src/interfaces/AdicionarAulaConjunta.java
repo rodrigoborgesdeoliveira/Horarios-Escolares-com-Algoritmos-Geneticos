@@ -10,17 +10,21 @@ import gerenciarhorarios.Aula;
 import gerenciarhorarios.Disciplina;
 import gerenciarhorarios.Turma;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author Rodrigo
  */
 public class AdicionarAulaConjunta extends javax.swing.JInternalFrame {
-
+    //Variáveis para controle de turma.
     ArrayList<Turma> turmas = new ArrayList<>();
     ArrayList<Turma> turmasConjuntas = new ArrayList<>();
     Turma turma = null, turmaConjunta = null;
+    
+    //Variáveis para controle de disciplina.
     ArrayList<Disciplina> disciplinas = new ArrayList<>();
+    Disciplina disciplinaSelecionada;
 
     /**
      * Creates new form AdicionarAulaConjunta
@@ -89,6 +93,11 @@ public class AdicionarAulaConjunta extends javax.swing.JInternalFrame {
         jLabelTurmaConjunta.setText("Turma conjunta");
 
         jButtonConfirmar.setText("Confirmar");
+        jButtonConfirmar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonConfirmarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -163,6 +172,12 @@ public class AdicionarAulaConjunta extends javax.swing.JInternalFrame {
                     + DataAccessObject.getProfessorByID(disciplina.getIdProfessor()).getNome() + ")");
             }
         }
+        
+        if(disciplinas.isEmpty()){
+            JOptionPane.showMessageDialog(null, "Todas as disciplinas dessa turma já "
+                    + "possuem uma aula conjunta.\nPor favor, remova ou edite a aula conjunta desejada.",
+                    "Nenhuma disciplina disponível", JOptionPane.WARNING_MESSAGE);
+        }
 
         DataAccessObject.fecharConexao();
     }//GEN-LAST:event_jButtonSelecionarTurmaActionPerformed
@@ -173,7 +188,7 @@ public class AdicionarAulaConjunta extends javax.swing.JInternalFrame {
         jComboBoxTurmaConjunta.removeAllItems(); //Limpar jComboBox.
         turmasConjuntas.clear(); //Limpar turmas conjuntas.
         
-        Disciplina disciplinaSelecionada = disciplinas
+        disciplinaSelecionada = disciplinas
                 .get(jComboBoxDisciplinaConjunta.getSelectedIndex());
         ArrayList<Aula> aulas = DataAccessObject.getAulasByIDDisciplina
         (disciplinaSelecionada.getID()); //Aulas que contém essa disciplina.
@@ -202,6 +217,26 @@ public class AdicionarAulaConjunta extends javax.swing.JInternalFrame {
         
         DataAccessObject.fecharConexao();
     }//GEN-LAST:event_jButtonSelecionarDisciplinaConjuntaActionPerformed
+
+    private void jButtonConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConfirmarActionPerformed
+        DataAccessObject.abrirConexao();
+        
+        Aula aula = new Aula();
+        aula.setIDDisciplina(disciplinaSelecionada.getID());
+        aula.setIDTurma(turma.getID());
+        aula.setIDTurmaConjunta(turmasConjuntas.get(jComboBoxTurmaConjunta.getSelectedIndex()).getID());
+        
+        DataAccessObject.update(aula);
+        
+        JOptionPane.showMessageDialog(null, "Aula conjunta cadastrada com sucesso!");
+        
+        jComboBoxDisciplinaConjunta.removeAllItems();
+        jComboBoxTurmaConjunta.removeAllItems();
+        disciplinas.clear();
+        turmasConjuntas.clear();
+        
+        DataAccessObject.fecharConexao();
+    }//GEN-LAST:event_jButtonConfirmarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
