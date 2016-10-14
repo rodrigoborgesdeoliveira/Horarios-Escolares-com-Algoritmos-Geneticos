@@ -156,12 +156,15 @@
     </Component>
     <Component class="javax.swing.JRadioButton" name="jRadioButtonJanelamentoDisciplinasHabilitar">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Habilitar"/>
+        <Property name="text" type="java.lang.String" value="Permitir"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jRadioButtonJanelamentoDisciplinasHabilitarActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JRadioButton" name="jRadioButtonJanelamentoDisciplinasDesabilitar">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Desabilitar"/>
+        <Property name="text" type="java.lang.String" value="N&#xe3;o permitir"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabelDiasSemana">

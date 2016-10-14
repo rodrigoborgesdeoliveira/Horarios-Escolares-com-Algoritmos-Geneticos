@@ -99,9 +99,14 @@ public class HabilitarDesabilitarRestricoesTurma extends javax.swing.JInternalFr
             }
         });
 
-        jRadioButtonJanelamentoDisciplinasHabilitar.setText("Habilitar");
+        jRadioButtonJanelamentoDisciplinasHabilitar.setText("Permitir");
+        jRadioButtonJanelamentoDisciplinasHabilitar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButtonJanelamentoDisciplinasHabilitarActionPerformed(evt);
+            }
+        });
 
-        jRadioButtonJanelamentoDisciplinasDesabilitar.setText("Desabilitar");
+        jRadioButtonJanelamentoDisciplinasDesabilitar.setText("Não permitir");
 
         jLabelDiasSemana.setText("Dias da semana (marcar para habilitar)");
 
@@ -393,6 +398,10 @@ public class HabilitarDesabilitarRestricoesTurma extends javax.swing.JInternalFr
 
         DataAccessObject.fecharConexao();
     }//GEN-LAST:event_jButtonConfirmarActionPerformed
+
+    private void jRadioButtonJanelamentoDisciplinasHabilitarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonJanelamentoDisciplinasHabilitarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jRadioButtonJanelamentoDisciplinasHabilitarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

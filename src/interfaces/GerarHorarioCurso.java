@@ -286,6 +286,9 @@ public class GerarHorarioCurso extends javax.swing.JInternalFrame {
             } else {
                 //Gerar o horário das turmas.
                 DataAccessObject.abrirConexao();
+                ordenarTurmasSelecionadas(); //Organizar as turmas selecionadas
+                //pela quantidade de restrições, do maior para o menor.
+                
                 for (int i = 0; i < turmasSelecionadas.size(); i++) {
                     Turma turma = turmasSelecionadas.get(i); //Turma selecionada.
                     if (DataAccessObject.turmaTemHorario(turma.getID())) {
@@ -445,6 +448,9 @@ public class GerarHorarioCurso extends javax.swing.JInternalFrame {
             //Gerar o horário das turmas.
             DataAccessObject.abrirConexao();
             turmasSelecionadas = DataAccessObject.getTurmasByNivelEnsino(nivelSelecionado);
+            ordenarTurmasSelecionadas(); //Organizar as turmas selecionadas
+                //pela quantidade de restrições, do maior para o menor.
+                
             for (int i = 0; i < turmasSelecionadas.size(); i++) {
                 Turma turma = turmasSelecionadas.get(i); //Turma selecionada.
                 if (DataAccessObject.turmaTemHorario(turma.getID())) {
@@ -596,11 +602,69 @@ public class GerarHorarioCurso extends javax.swing.JInternalFrame {
 
             JOptionPane.showMessageDialog(null, "Horários gerados e armazenados "
                     + "com sucesso!");
+            
+            //Limpar campos.
+            jComboBoxCurso.removeAllItems();
+            jComboBoxTurmas.removeAllItems();
+            listModel.clear();
 
             DataAccessObject.fecharConexao();
         }
     }//GEN-LAST:event_jButtonGerarActionPerformed
-
+    
+    //Organiza as turmas selecionadas pela quantidade de restrições, do maior 
+    //para o menor.
+    private void ordenarTurmasSelecionadas(){
+        int qtdRestricoesTurmaAnterior = 0, qtdRestricoesTurmaAtual = 0;
+        boolean trocou;
+        do {
+            trocou = false;
+            for (int i = 1; i < turmasSelecionadas.size(); i++) {
+                //Contagem de restrições da turma anterior.
+                if(!turmasSelecionadas.get(i-1).getJanelamentoDisciplinas()){
+                    //Possui restrição de janelamento de disciplinas.
+                    qtdRestricoesTurmaAnterior++;
+                }
+                char[] diasSemana = turmasSelecionadas.get(i-1).getDiasSemana();
+                for (int j = 0; j < diasSemana.length; j++) {
+                    if(diasSemana[j] == '0'){
+                        //Possui restrição nesse dia.
+                        qtdRestricoesTurmaAnterior++;
+                    }                    
+                }
+                if(turmasSelecionadas.get(i-1).getAulasGeminadas() || 
+                        turmasSelecionadas.get(i-1).getSemAulasGeminadas()){
+                    //Possui restrição de aulas geminadas.
+                    qtdRestricoesTurmaAnterior++;
+                }
+                
+                //Contagem de restrições da turma atual.
+                if(!turmasSelecionadas.get(i).getJanelamentoDisciplinas()){
+                    //Possui restrição de janelamento de disciplinas.
+                    qtdRestricoesTurmaAtual++;
+                }
+                diasSemana = turmasSelecionadas.get(i).getDiasSemana();
+                for (int j = 0; j < diasSemana.length; j++) {
+                    if(diasSemana[j] == '0'){
+                        //Possui restrição nesse dia.
+                        qtdRestricoesTurmaAtual++;
+                    }                    
+                }
+                if(turmasSelecionadas.get(i).getAulasGeminadas() || 
+                        turmasSelecionadas.get(i).getSemAulasGeminadas()){
+                    //Possui restrição de aulas geminadas.
+                    qtdRestricoesTurmaAtual++;
+                }
+                
+                if (qtdRestricoesTurmaAnterior < qtdRestricoesTurmaAtual) {
+                    Turma temp = turmasSelecionadas.get(i);
+                    turmasSelecionadas.set(i, turmasSelecionadas.get(i - 1));
+                    turmasSelecionadas.set(i - 1, temp);
+                    trocou = true;
+                }
+            }
+        } while (trocou);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAdicionar;
