@@ -306,9 +306,9 @@ public class DataAccessObject {
                 aula = new Aula();
                 aula.setIDDisciplina(rs.getInt(1));
                 aula.setIDTurma(rs.getInt(2));
-                if(rs.getString(3) == null){
+                if (rs.getString(3) == null) {
                     aula.setIDTurmaConjunta(0); //Não possui turma conjunta.
-                } else{
+                } else {
                     aula.setIDTurmaConjunta(rs.getInt(3));
                 }
                 aulas.add(aula);
@@ -323,7 +323,7 @@ public class DataAccessObject {
 
         return aulas;
     }
-    
+
     //Retorna as aulas que possuem um dado id de disciplina.
     public static ArrayList<Aula> getAulasByIDDisciplina(int id) {
         Aula aula = null;
@@ -341,9 +341,9 @@ public class DataAccessObject {
                 aula = new Aula();
                 aula.setIDDisciplina(rs.getInt(1));
                 aula.setIDTurma(rs.getInt(2));
-                if(rs.getString(3) == null){
+                if (rs.getString(3) == null) {
                     aula.setIDTurmaConjunta(0); //Não possui turma conjunta.
-                } else{
+                } else {
                     aula.setIDTurmaConjunta(rs.getInt(3));
                 }
                 aulas.add(aula);
@@ -651,7 +651,11 @@ public class DataAccessObject {
                 aula = new Aula();
                 aula.setIDDisciplina(rs.getInt(1));
                 aula.setIDTurma(rs.getInt(2));
-                aula.setIDTurmaConjunta(rs.getInt(3));
+                if (rs.getString(3) != null) {
+                    aula.setIDTurmaConjunta(rs.getInt(3));
+                } else{
+                    aula.setIDTurmaConjunta(0); //Não possui turma conjunta.
+                }
                 aulas.add(aula);
             }
         } catch (SQLException ex) {
@@ -710,12 +714,12 @@ public class DataAccessObject {
                     + ex.getMessage(), "Erro no método updateTurma", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
-    public static void update(Aula aula){
+
+    public static void update(Aula aula) {
         stmt = null;
         rs = null;
-        
-        try{
+
+        try {
             stmt = con.prepareStatement("UPDATE aula SET disciplina_id = (?), "
                     + "turma_id = (?), turma_conjunta_id = (?) WHERE (disciplina_id, turma_id) "
                     + "= (?,?);");
@@ -724,7 +728,7 @@ public class DataAccessObject {
             stmt.setInt(3, aula.getIDTurmaConjunta());
             stmt.setInt(4, aula.getIDDisciplina());
             stmt.setInt(5, aula.getIDTurma());
-            
+
             stmt.executeUpdate();
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Não foi possível conectar ao banco de dados.\n"
@@ -782,24 +786,24 @@ public class DataAccessObject {
 
         return posicoes;
     }
-    
+
     //Retorna a turma conjunta de uma dada aula.
-    public static int getIDTurmaConjunta(int idDisciplina, int idTurma){
+    public static int getIDTurmaConjunta(int idDisciplina, int idTurma) {
         stmt = null;
         rs = null;
-        
+
         int idTurmaConjunta = 0;
-        
+
         try {
             stmt = con.prepareStatement("SELECT turma_conjunta_id FROM aula WHERE (disciplina_id, "
                     + "turma_id) = (?,?);");
             stmt.setInt(1, idDisciplina);
             stmt.setInt(2, idTurma);
-            
+
             rs = stmt.executeQuery();
-            
-            while(rs.next()){
-                if(rs.getString(1) != null){
+
+            while (rs.next()) {
+                if (rs.getString(1) != null) {
                     idTurmaConjunta = rs.getInt(1);
                 }
             }
@@ -807,31 +811,31 @@ public class DataAccessObject {
             JOptionPane.showMessageDialog(null, "Não foi possível conectar ao banco de dados.\n"
                     + ex.getMessage(), "Erro no método getIDTurmaConjunta", JOptionPane.ERROR_MESSAGE);
         }
-        
+
         return idTurmaConjunta;
     }
-    
+
     //Retorna ids de turmas que possuem uma dada turma como conjunta para uma determinada disciplina.
-    public static ArrayList<Integer> getIDsTurmasByIDTurmaConjuntaIDDisciplina(int idTurmaConjunta, int idDisciplina){
+    public static ArrayList<Integer> getIDsTurmasByIDTurmaConjuntaIDDisciplina(int idTurmaConjunta, int idDisciplina) {
         stmt = null;
         rs = null;
         ArrayList<Integer> idsTurmas = new ArrayList<>();
-        
+
         try {
             stmt = con.prepareStatement("SELECT turma_id FROM aula WHERE "
                     + "(turma_conjunta_id, disciplina_id) = (?,?);");
             stmt.setInt(1, idTurmaConjunta);
             stmt.setInt(2, idDisciplina);
-            
+
             rs = stmt.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 idsTurmas.add(rs.getInt(1));
             }
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Não foi possível conectar ao banco de dados.\n"
                     + ex.getMessage(), "Erro no método getIDsTurmasByIDTurmaConjunta", JOptionPane.ERROR_MESSAGE);
         }
-        
+
         return idsTurmas;
     }
 

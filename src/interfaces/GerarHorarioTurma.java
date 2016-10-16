@@ -41,7 +41,7 @@ public class GerarHorarioTurma extends javax.swing.JInternalFrame {
                 jComboBoxTurmas.addItem("Curso: " + turmas.get(i).getCurso() + " | Nível de ensino: "
                         + turmas.get(i).getNivelEnsino() + " | Turma: " + turmas.get(i).getNome()
                         + " | Série/Semestre: " + turmas.get(i).getAno() + " | Turno: " + turmas.get(i).getTurno());
-            } else{
+            } else {
                 jComboBoxTurmas.addItem("Nível de ensino: "
                         + turmas.get(i).getNivelEnsino() + " | Turma: " + turmas.get(i).getNome()
                         + " | Série/Semestre: " + turmas.get(i).getAno() + " | Turno: " + turmas.get(i).getTurno());
@@ -215,15 +215,14 @@ public class GerarHorarioTurma extends javax.swing.JInternalFrame {
         while (!(temSolucao || geracao > numMaxGeracoes)) {
             //Criar nova população para substituir a população inicial aleatória.
             populacao = new Populacao(Algoritmo.gerarNovaGeracao(populacao, elitismo));
-            //Analisar se a nova população possui um indivíduo que é a solução (aptidão = 0).
-            //populacao.getMelhorIndividuo().geraAptidao();
-                       
+            
             System.out.println("Genes: ");
             for (int i = 0; i < populacao.getMelhorIndividuo().getGenes().length; i++) {
-                System.out.print(populacao.getMelhorIndividuo().getGenes()[i]);
-            }            
+                System.out.print(populacao.getMelhorIndividuo().getGenes()[i] + " ");
+            }
 
-            System.out.println(" | Geração = " + geracao + "| Aptidão = " + populacao.getMelhorIndividuo().getAptidao());
+            System.out.println("| Geração = " + geracao + "| Aptidão = " + populacao.getMelhorIndividuo().getAptidao());
+            //Analisar se a nova população possui um indivíduo que é a solução (aptidão = 0).
             if (populacao.getMelhorIndividuo().getAptidao() == 0) {
                 //Indivíduo é a solução.
                 //Armazenar os genes do indivíduo (solução) no horário da turma.
@@ -271,7 +270,6 @@ public class GerarHorarioTurma extends javax.swing.JInternalFrame {
                     }
                     posicaoHorario++;
                 }
-
             }
         }
 

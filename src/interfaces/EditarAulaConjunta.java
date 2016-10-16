@@ -16,7 +16,7 @@ import javax.swing.JOptionPane;
  *
  * @author Rodrigo
  */
-public class AdicionarAulaConjunta extends javax.swing.JInternalFrame {
+public class EditarAulaConjunta extends javax.swing.JInternalFrame {
 
     //Variáveis para controle de turma.
     ArrayList<Turma> turmas = new ArrayList<>();
@@ -28,12 +28,19 @@ public class AdicionarAulaConjunta extends javax.swing.JInternalFrame {
     Disciplina disciplinaSelecionada;
 
     /**
-     * Creates new form AdicionarAulaConjunta
+     * Creates new form EditarAulaConjunta
      */
-    public AdicionarAulaConjunta() {
+    public EditarAulaConjunta() {
         initComponents();
 
-        turmas = DataAccessObject.getTurmas();
+        ArrayList<Aula> aulas = DataAccessObject.getAulas();
+
+        for (int i = 0; i < aulas.size(); i++) {
+            if (aulas.get(i).getIDTurmaConjunta() != 0) {
+                //Possui turma conjunta.
+                turmas.add(DataAccessObject.getTurmaByID(aulas.get(i).getIDTurma()));
+            }
+        }
 
         //Adicionar as turmas ao jComboBox.
         for (int i = 0; i < turmas.size(); i++) {
@@ -126,7 +133,7 @@ public class AdicionarAulaConjunta extends javax.swing.JInternalFrame {
                             .addComponent(jComboBoxTurmaConjunta, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jComboBoxTurma, 0, 368, Short.MAX_VALUE)
+                                    .addComponent(jComboBoxTurma, 0, 426, Short.MAX_VALUE)
                                     .addComponent(jComboBoxDisciplinaConjunta, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -159,6 +166,10 @@ public class AdicionarAulaConjunta extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jComboBoxTurmaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxTurmaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBoxTurmaActionPerformed
+
     private void jButtonSelecionarTurmaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSelecionarTurmaActionPerformed
         DataAccessObject.abrirConexao();
 
@@ -172,20 +183,14 @@ public class AdicionarAulaConjunta extends javax.swing.JInternalFrame {
 
         //Adicionar as disciplinas das aulas ao array list.
         for (int i = 0; i < aulas.size(); i++) {
-            if (aulas.get(i).getIDTurmaConjunta() == 0) {
-                //Não possui turma conjunta para essa disciplina ainda, 
+            if (aulas.get(i).getIDTurmaConjunta() != 0) {
+                //Possui turma conjunta para essa disciplina,
                 //fornecer como opção.
                 Disciplina disciplina = DataAccessObject.getDisciplinaByID(aulas.get(i).getIDDisciplina());
                 disciplinas.add(disciplina);
                 jComboBoxDisciplinaConjunta.addItem(disciplina.getNome() + " (Professor(a): "
                         + DataAccessObject.getProfessorByID(disciplina.getIdProfessor()).getNome() + ")");
             }
-        }
-
-        if (disciplinas.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Todas as disciplinas dessa turma já "
-                    + "possuem uma aula conjunta.\nPor favor, remova ou edite a aula conjunta desejada.",
-                    "Nenhuma disciplina disponível", JOptionPane.WARNING_MESSAGE);
         }
 
         DataAccessObject.fecharConexao();
@@ -248,10 +253,6 @@ public class AdicionarAulaConjunta extends javax.swing.JInternalFrame {
 
         DataAccessObject.fecharConexao();
     }//GEN-LAST:event_jButtonConfirmarActionPerformed
-
-    private void jComboBoxTurmaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxTurmaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBoxTurmaActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
