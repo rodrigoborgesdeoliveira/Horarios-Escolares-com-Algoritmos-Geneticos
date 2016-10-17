@@ -41,11 +41,6 @@ public class Algoritmo {
         //Se elitismo = true, manter o melhor indivíduo da geração anterior.
         if (elitismo) {
             novaPopulacao.setIndividuo(populacao.getMelhorIndividuo());
-//            System.out.println("\nMelhor indivíduo: ");
-//            for (int i = 0; i < novaPopulacao.getIndividuo(0).getGenes().length; i++) {
-//                System.out.print(novaPopulacao.getIndividuo(0).getGenes()[i]);
-//            }
-//            System.out.println(" | Minha aptidão: " + novaPopulacao.getIndividuo(0).getAptidao());
         }
 
         //Inserir novos indivíduos na nova população, até atingir o tamanho máximo.
@@ -53,12 +48,7 @@ public class Algoritmo {
             //Seleciona o pais por seleção torneio.
             Individuo[] pais = new Individuo[2];
             pais = retornaIndividuos(selecaoTorneio(populacao));
-
-//            System.out.println("\nApós seleção torneio: ");
-//            for (int i = 0; i < novaPopulacao.getIndividuo(0).getGenes().length; i++) {
-//                System.out.print(novaPopulacao.getIndividuo(0).getGenes()[i]);
-//            }
-//            System.out.println(" | Minha aptidão: " + novaPopulacao.getIndividuo(0).getAptidao());
+            
             Individuo[] filhos = new Individuo[2];
 
             //Faz ou não o cruzamento (crossover) segundo a taxa de crossover.
@@ -73,25 +63,9 @@ public class Algoritmo {
             //Adiciona os filhos na nova geração.
             novaPopulacao.setIndividuo(filhos[0]);
             novaPopulacao.setIndividuo(filhos[1]);
-//            System.out.println("\nApós crossover: ");
-//            for (int i = 0; i < novaPopulacao.getIndividuo(0).getGenes().length; i++) {
-//                System.out.print(novaPopulacao.getIndividuo(0).getGenes()[i]);
-//            }
-//            System.out.println(" | Minha aptidão: " + novaPopulacao.getIndividuo(0).getAptidao());
         }
-
-//        System.out.println("\nApós criar nova população: ");
-//        for (int i = 0; i < novaPopulacao.getIndividuo(0).getGenes().length; i++) {
-//            System.out.print(novaPopulacao.getIndividuo(0).getGenes()[i]);
-//        }
-//        System.out.println(" | Minha aptidão: " + novaPopulacao.getIndividuo(0).getAptidao());
+        
         novaPopulacao.ordenarPopulacao();
-//        System.out.println("\nApós ordenar nova população: ");
-//        for (int i = 0; i < novaPopulacao.getIndividuo(0).getGenes().length; i++) {
-//            System.out.print(novaPopulacao.getIndividuo(0).getGenes()[i]);
-//        }
-//        System.out.println(" | Minha aptidão: " + novaPopulacao.getIndividuo(0).getAptidao());
-//        System.exit(0);
         return novaPopulacao;
     }
 
@@ -112,81 +86,17 @@ public class Algoritmo {
         int[] genesFilho1 = genesPai1;
         int[] genesFilho2 = genesPai2;
 
-        //Verificar restrições dos professores das disciplinas.
-//        int turmaAcrescimo; //Valor para comparação das restrições do professor de acordo com o turno. 
-        //Matutino = 0, Vespertino = 36 e Noturno = 72.
-//        Turma turmaTemp = DataAccessObject.getTurmaByID(individuo1.getIDTurma());
-//        switch (turmaTemp.getTurno()) {
-//            case "Matutino":
-//                turmaAcrescimo = 0;
-//                break;
-//            case "Vespertino":
-//                turmaAcrescimo = 36;
-//                break;
-//            default:
-//                //Noturno.
-//                turmaAcrescimo = 72;
-//                break;
-//        }
         //Realiza o corte e distribui os genes dos pais. 
         //Genes entre pontoCorte1 e pontoCorte2.
         for (int i = pontoCorte1; i < pontoCorte2; i++) {
-            //Preserva quantidade de um alelo.
-//            if(genesFilho1[i] != genesPai2[i]){
-//                for (int j = 0; j < corte; j++) {
-//                    if(genesFilho1[j] == genesPai2[i]){
-//                        genesFilho1[j] = genesFilho1[i];
-//                        break;
-//                    }                    
-//                }
-//            }
-//            if (genesFilho1[i] != 0) {
-//                //ID do professor da disciplina na posição i do gene.
-//                Disciplina disciplinaTemp = DataAccessObject.getDisciplinaByID(genesFilho1[i]);
-//                int idProfessorTemp = disciplinaTemp.getIdProfessor();
-//                //Se o professor possuir restrição nesse horário.
-//                if (DataAccessObject.getProfessorByID(idProfessorTemp).getRestricoes()[i + turmaAcrescimo] == '1') {
-//                    genesFilho1[i] = genesPai2[i];                    
-//                }
-//
-//            }
-//            if(genesFilho2[i] != genesPai1[i]){
-//                for (int j = 0; j < corte; j++) {
-//                    if(genesFilho2[j] == genesPai1[i]){
-//                        genesFilho2[j] = genesFilho2[i];
-//                        break;
-//                    }                    
-//                }
-//            }
-//            if (genesFilho2[i] != 0) {
-//                //ID do professor da disciplina na posição i do gene.
-//                Disciplina disciplinaTemp = DataAccessObject.getDisciplinaByID(genesFilho2[i]);
-//                int idProfessorTemp = disciplinaTemp.getIdProfessor();
-//                //Se o professor possuir restrição nesse horário.
-//                if (DataAccessObject.getProfessorByID(idProfessorTemp).getRestricoes()[i + turmaAcrescimo] == '1') {
-//                    genesFilho2[i] = genesPai1[i];
-//                }
-//
-//            }
-
             genesFilho1[i] = genesPai2[i];
             genesFilho2[i] = genesPai1[i];
         }
-//        System.out.println("\nAntes de guardar filhos: ");
-//        for (int i = 0; i < novaPopulacao.getIndividuo(0).getGenes().length; i++) {
-//            System.out.print(novaPopulacao.getIndividuo(0).getGenes()[i]);
-//        }
-//        System.out.println(" | Minha aptidão: " + novaPopulacao.getIndividuo(0).getAptidao());
 
         //Cria os novos indivíduos com os genes dos pais.
         filhos[0] = new Individuo(genesFilho1, individuo1.getIDTurma(), individuo1.getQtdAlelosVazios(), novaPopulacao);
         filhos[1] = new Individuo(genesFilho2, individuo2.getIDTurma(), individuo2.getQtdAlelosVazios(), novaPopulacao);
 
-//        System.out.println("\nDepois de guardar filhos: ");
-//        for (int i = 0; i < novaPopulacao.getIndividuo(0).getGenes().length; i++) {
-//            System.out.print(novaPopulacao.getIndividuo(0).getGenes()[i]);
-//        }
-//        System.out.println(" | Minha aptidão: " + novaPopulacao.getIndividuo(0).getAptidao());
         return filhos;
     }
 

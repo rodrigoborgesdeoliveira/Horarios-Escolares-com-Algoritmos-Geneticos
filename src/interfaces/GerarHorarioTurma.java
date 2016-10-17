@@ -40,11 +40,11 @@ public class GerarHorarioTurma extends javax.swing.JInternalFrame {
             if (turmas.get(i).getNivelEnsino().equals("Superior")) {
                 jComboBoxTurmas.addItem("Curso: " + turmas.get(i).getCurso() + " | Nível de ensino: "
                         + turmas.get(i).getNivelEnsino() + " | Turma: " + turmas.get(i).getNome()
-                        + " | Série/Semestre: " + turmas.get(i).getAno() + " | Turno: " + turmas.get(i).getTurno());
+                        + " | Semestre: " + turmas.get(i).getAno() + " | Turno: " + turmas.get(i).getTurno());
             } else {
                 jComboBoxTurmas.addItem("Nível de ensino: "
                         + turmas.get(i).getNivelEnsino() + " | Turma: " + turmas.get(i).getNome()
-                        + " | Série/Semestre: " + turmas.get(i).getAno() + " | Turno: " + turmas.get(i).getTurno());
+                        + " | Série: " + turmas.get(i).getAno() + " | Turno: " + turmas.get(i).getTurno());
             }
         }
     }

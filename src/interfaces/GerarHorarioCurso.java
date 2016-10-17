@@ -38,8 +38,6 @@ public class GerarHorarioCurso extends javax.swing.JInternalFrame {
         initComponents();
 
         jListTurmas.setModel(listModel);
-
-//        jButtonSelecionarCurso.setVisible(false);
     }
 
     /**
@@ -200,7 +198,7 @@ public class GerarHorarioCurso extends javax.swing.JInternalFrame {
             for (int i = 0; i < turmasCurso.size(); i++) {
                 jComboBoxTurmas.addItem("Curso: " + turmasCurso.get(i).getCurso() + " | Nível de ensino: "
                         + turmasCurso.get(i).getNivelEnsino() + " | Turma: " + turmasCurso.get(i).getNome()
-                        + " | Série/Semestre: " + turmasCurso.get(i).getAno() + " | Turno: " + turmasCurso.get(i).getTurno());
+                        + " | Semestre: " + turmasCurso.get(i).getAno() + " | Turno: " + turmasCurso.get(i).getTurno());
             }
 
             DataAccessObject.fecharConexao();
@@ -261,14 +259,14 @@ public class GerarHorarioCurso extends javax.swing.JInternalFrame {
         for (int i = 0; i < listModel.size(); i++) {
             if (listModel.get(i).equals("Curso: " + turma.getCurso() + " | Nível de ensino: "
                     + turma.getNivelEnsino() + " | Turma: " + turma.getNome()
-                    + " | Série/Semestre: " + turma.getAno() + " | Turno: " + turma.getTurno())) {
+                    + " | Semestre: " + turma.getAno() + " | Turno: " + turma.getTurno())) {
                 return;
             }
         }
 
         listModel.addElement("Curso: " + turma.getCurso() + " | Nível de ensino: "
                 + turma.getNivelEnsino() + " | Turma: " + turma.getNome()
-                + " | Série/Semestre: " + turma.getAno() + " | Turno: " + turma.getTurno());
+                + " | Semestre: " + turma.getAno() + " | Turno: " + turma.getTurno());
 
         DataAccessObject.fecharConexao();
     }//GEN-LAST:event_jButtonAdicionarActionPerformed

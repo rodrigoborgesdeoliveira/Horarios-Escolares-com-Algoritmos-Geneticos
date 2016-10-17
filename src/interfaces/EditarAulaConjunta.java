@@ -47,11 +47,11 @@ public class EditarAulaConjunta extends javax.swing.JInternalFrame {
             if (turmas.get(i).getNivelEnsino().equals("Superior")) {
                 jComboBoxTurma.addItem("Curso: " + turmas.get(i).getCurso() + " | Nível de ensino: "
                         + turmas.get(i).getNivelEnsino() + " | Turma: " + turmas.get(i).getNome()
-                        + " | Série/Semestre: " + turmas.get(i).getAno() + " | Turno: " + turmas.get(i).getTurno());
+                        + " | Semestre: " + turmas.get(i).getAno() + " | Turno: " + turmas.get(i).getTurno());
             } else {
                 jComboBoxTurma.addItem("Nível de ensino: "
                         + turmas.get(i).getNivelEnsino() + " | Turma: " + turmas.get(i).getNome()
-                        + " | Série/Semestre: " + turmas.get(i).getAno() + " | Turno: " + turmas.get(i).getTurno());
+                        + " | Série: " + turmas.get(i).getAno() + " | Turno: " + turmas.get(i).getTurno());
             }
         }
     }
@@ -208,26 +208,30 @@ public class EditarAulaConjunta extends javax.swing.JInternalFrame {
 
         for (int i = 0; i < aulas.size(); i++) {
             if (aulas.get(i).getIDTurma() != turma.getID()) {
-                //Turma não é a selecionada, adicionar à listas de possíveis turmas conjuntas.
-                turmasConjuntas.add(DataAccessObject.getTurmaByID(aulas.get(i).getIDTurma()));
+                //Turma não é a selecionada, adicionar à lista de possíveis turmas conjuntas.
+                turmaConjunta = DataAccessObject.getTurmaByID(aulas.get(i).getIDTurma());
+                //Apenas adicionar turmas do mesmo nível de ensino e do mesmo turno.
+                if (turma.getNivelEnsino().equals(turmaConjunta.getNivelEnsino()) &&
+                        turma.getTurno().equals(turmaConjunta.getTurno())) {
+                    turmasConjuntas.add(turmaConjunta);
+                }
             }
         }
 
         //Adicionar as turmas ao jComboBox.
         for (int i = 0; i < turmasConjuntas.size(); i++) {
-            //Apenas adicionar turmas do mesmo nível de ensino.
-            if (turma.getNivelEnsino().equals(turmasConjuntas.get(i).getNivelEnsino())) {
-                if (turmasConjuntas.get(i).getNivelEnsino().equals("Superior")) {
-                    jComboBoxTurmaConjunta.addItem("Curso: " + turmasConjuntas.get(i).getCurso() + " | Nível de ensino: "
-                            + turmasConjuntas.get(i).getNivelEnsino() + " | Turma: " + turmasConjuntas.get(i).getNome()
-                            + " | Série/Semestre: " + turmasConjuntas.get(i).getAno() + " | Turno: "
-                            + turmasConjuntas.get(i).getTurno());
-                } else {
-                    jComboBoxTurmaConjunta.addItem("Nível de ensino: "
-                            + turmasConjuntas.get(i).getNivelEnsino() + " | Turma: " + turmasConjuntas.get(i).getNome()
-                            + " | Série/Semestre: " + turmasConjuntas.get(i).getAno() + " | Turno: "
-                            + turmasConjuntas.get(i).getTurno());
-                }
+
+            if (turmasConjuntas.get(i).getNivelEnsino().equals("Superior")) {
+                jComboBoxTurmaConjunta.addItem("Curso: " + turmasConjuntas.get(i).getCurso() + " | Nível de ensino: "
+                        + turmasConjuntas.get(i).getNivelEnsino() + " | Turma: " + turmasConjuntas.get(i).getNome()
+                        + " | Semestre: " + turmasConjuntas.get(i).getAno() + " | Turno: "
+                        + turmasConjuntas.get(i).getTurno());
+            } else {
+                jComboBoxTurmaConjunta.addItem("Nível de ensino: "
+                        + turmasConjuntas.get(i).getNivelEnsino() + " | Turma: " + turmasConjuntas.get(i).getNome()
+                        + " | Série: " + turmasConjuntas.get(i).getAno() + " | Turno: "
+                        + turmasConjuntas.get(i).getTurno());
+
             }
         }
 
