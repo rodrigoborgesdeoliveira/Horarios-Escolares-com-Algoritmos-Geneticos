@@ -63,7 +63,7 @@ public class Principal extends javax.swing.JFrame {
         jMenuItemAdicionarAulaConjunta = new javax.swing.JMenuItem();
         jMenuItemEditarAulaConjunta = new javax.swing.JMenuItem();
         jMenuItemListarAulasConjuntas = new javax.swing.JMenuItem();
-        jMenuItem19 = new javax.swing.JMenuItem();
+        jMenuItemRemoverAulaConjunta = new javax.swing.JMenuItem();
         jMenuGerenciarHorarios = new javax.swing.JMenu();
         jMenuItemGerarHorarioCurso = new javax.swing.JMenuItem();
         jMenuItemGerarHorarioTurma = new javax.swing.JMenuItem();
@@ -227,8 +227,13 @@ public class Principal extends javax.swing.JFrame {
         });
         jMenuGerenciarAulasConjuntas.add(jMenuItemListarAulasConjuntas);
 
-        jMenuItem19.setText("Remover aula conjunta");
-        jMenuGerenciarAulasConjuntas.add(jMenuItem19);
+        jMenuItemRemoverAulaConjunta.setText("Remover aula conjunta");
+        jMenuItemRemoverAulaConjunta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemRemoverAulaConjuntaActionPerformed(evt);
+            }
+        });
+        jMenuGerenciarAulasConjuntas.add(jMenuItemRemoverAulaConjunta);
 
         jMenuBarPrincipal.add(jMenuGerenciarAulasConjuntas);
 
@@ -439,6 +444,20 @@ public class Principal extends javax.swing.JFrame {
         DataAccessObject.fecharConexao();
     }//GEN-LAST:event_jMenuItemListarAulasConjuntasActionPerformed
 
+    private void jMenuItemRemoverAulaConjuntaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemRemoverAulaConjuntaActionPerformed
+        DataAccessObject.abrirConexao();
+        if (!DataAccessObject.getTurmas().isEmpty()) {
+            RemoverAulaConjunta removerAulaConjunta
+                    = new RemoverAulaConjunta();
+            jDesktopPanePrincipal.add(removerAulaConjunta);
+            removerAulaConjunta.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(null, "É necessário cadastrar ao menos "
+                    + "uma turma primeiro.", "Nenhuma turma cadastrada", JOptionPane.ERROR_MESSAGE);
+        }
+        DataAccessObject.fecharConexao();
+    }//GEN-LAST:event_jMenuItemRemoverAulaConjuntaActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -493,7 +512,6 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem11;
     private javax.swing.JMenuItem jMenuItem12;
     private javax.swing.JMenuItem jMenuItem13;
-    private javax.swing.JMenuItem jMenuItem19;
     private javax.swing.JMenuItem jMenuItem25;
     private javax.swing.JMenuItem jMenuItem26;
     private javax.swing.JMenuItem jMenuItem3;
@@ -513,6 +531,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemGerarHorarioTurma;
     private javax.swing.JMenuItem jMenuItemHabilitarDesabilitarRestricoesTurma;
     private javax.swing.JMenuItem jMenuItemListarAulasConjuntas;
+    private javax.swing.JMenuItem jMenuItemRemoverAulaConjunta;
     private javax.swing.JMenuItem jMenuItemRemoverHorário;
     private javax.swing.JPopupMenu jPopupMenu1;
     // End of variables declaration//GEN-END:variables

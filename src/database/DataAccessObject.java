@@ -653,7 +653,7 @@ public class DataAccessObject {
                 aula.setIDTurma(rs.getInt(2));
                 if (rs.getString(3) != null) {
                     aula.setIDTurmaConjunta(rs.getInt(3));
-                } else{
+                } else {
                     aula.setIDTurmaConjunta(0); //Não possui turma conjunta.
                 }
                 aulas.add(aula);
@@ -725,7 +725,13 @@ public class DataAccessObject {
                     + "= (?,?);");
             stmt.setInt(1, aula.getIDDisciplina());
             stmt.setInt(2, aula.getIDTurma());
-            stmt.setInt(3, aula.getIDTurmaConjunta());
+            if (aula.getIDTurmaConjunta() != 0) {
+                //Possui turma conjunta.
+                stmt.setInt(3, aula.getIDTurmaConjunta());
+            } else{
+                //Não possui.
+                stmt.setString(3, null);
+            }
             stmt.setInt(4, aula.getIDDisciplina());
             stmt.setInt(5, aula.getIDTurma());
 
