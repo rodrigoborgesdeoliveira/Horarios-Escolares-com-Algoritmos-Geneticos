@@ -162,10 +162,13 @@
                 <Property name="text" type="java.lang.String" value="Listar restri&#xe7;&#xf5;es"/>
               </Properties>
               <SubComponents>
-                <MenuItem class="javax.swing.JMenuItem" name="jMenuItem25">
+                <MenuItem class="javax.swing.JMenuItem" name="jMenuItemExibirIndisponibilidadesProfessor">
                   <Properties>
                     <Property name="text" type="java.lang.String" value="Exibir indisponibilidades de um professor"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItemExibirIndisponibilidadesProfessorActionPerformed"/>
+                  </Events>
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="jMenuItem26">
                   <Properties>

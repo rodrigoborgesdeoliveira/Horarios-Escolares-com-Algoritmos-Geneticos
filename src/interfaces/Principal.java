@@ -57,7 +57,7 @@ public class Principal extends javax.swing.JFrame {
         jMenuItemDefinirIndisponibilidadesProfessor = new javax.swing.JMenuItem();
         jMenuItemHabilitarDesabilitarRestricoesTurma = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
-        jMenuItem25 = new javax.swing.JMenuItem();
+        jMenuItemExibirIndisponibilidadesProfessor = new javax.swing.JMenuItem();
         jMenuItem26 = new javax.swing.JMenuItem();
         jMenuGerenciarAulasConjuntas = new javax.swing.JMenu();
         jMenuItemAdicionarAulaConjunta = new javax.swing.JMenuItem();
@@ -191,8 +191,13 @@ public class Principal extends javax.swing.JFrame {
 
         jMenu2.setText("Listar restrições");
 
-        jMenuItem25.setText("Exibir indisponibilidades de um professor");
-        jMenu2.add(jMenuItem25);
+        jMenuItemExibirIndisponibilidadesProfessor.setText("Exibir indisponibilidades de um professor");
+        jMenuItemExibirIndisponibilidadesProfessor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemExibirIndisponibilidadesProfessorActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jMenuItemExibirIndisponibilidadesProfessor);
 
         jMenuItem26.setText("Exibir restrições de uma turma");
         jMenu2.add(jMenuItem26);
@@ -458,6 +463,20 @@ public class Principal extends javax.swing.JFrame {
         DataAccessObject.fecharConexao();
     }//GEN-LAST:event_jMenuItemRemoverAulaConjuntaActionPerformed
 
+    private void jMenuItemExibirIndisponibilidadesProfessorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemExibirIndisponibilidadesProfessorActionPerformed
+        DataAccessObject.abrirConexao();
+        if (DataAccessObject.getProfessores().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "É necessário cadastrar ao menos "
+                    + "um professor primeiro.", "Nenhum professor cadastrado", JOptionPane.ERROR_MESSAGE);
+        } else {
+            ExibirIndisponibilidadesProfessor exibirIndisponibilidadesProfessor 
+                    = new ExibirIndisponibilidadesProfessor();
+            jDesktopPanePrincipal.add(exibirIndisponibilidadesProfessor);
+            exibirIndisponibilidadesProfessor.setVisible(true);
+        }
+        DataAccessObject.fecharConexao();
+    }//GEN-LAST:event_jMenuItemExibirIndisponibilidadesProfessorActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -512,7 +531,6 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem11;
     private javax.swing.JMenuItem jMenuItem12;
     private javax.swing.JMenuItem jMenuItem13;
-    private javax.swing.JMenuItem jMenuItem25;
     private javax.swing.JMenuItem jMenuItem26;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem5;
@@ -527,6 +545,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemDefinirIndisponibilidadesProfessor;
     private javax.swing.JMenuItem jMenuItemEditarAulaConjunta;
     private javax.swing.JMenuItem jMenuItemExibirHorario;
+    private javax.swing.JMenuItem jMenuItemExibirIndisponibilidadesProfessor;
     private javax.swing.JMenuItem jMenuItemGerarHorarioCurso;
     private javax.swing.JMenuItem jMenuItemGerarHorarioTurma;
     private javax.swing.JMenuItem jMenuItemHabilitarDesabilitarRestricoesTurma;
