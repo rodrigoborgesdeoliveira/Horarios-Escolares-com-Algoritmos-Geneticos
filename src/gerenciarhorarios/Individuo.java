@@ -149,11 +149,6 @@ public class Individuo {
                 break;
         }
 
-        //Variável para armazenar disciplinas conjuntas e verificar posteriormente
-        //se o posicionamento dela está de acordo com as restrições das turmas
-        //conjuntas.
-        ArrayList<Integer> idsDisciplinasConjuntas = new ArrayList<>();
-
         int qtdGenesVazios = 0;
         ArrayList<Integer> idsVerificados = new ArrayList<>();
         for (int i = 0; i < genes.length; i++) {
@@ -175,10 +170,7 @@ public class Individuo {
 
                 if (idTurmaConjunta != 0) {
                     //Essa aula é conjunta com outra turma.
-                    if (!idsDisciplinasConjuntas.contains(genes[i])) {
-                        //Não adicionou essa disciplina conjunta à lista ainda.
-                        idsDisciplinasConjuntas.add(genes[i]); //Adicionar.
-                    }
+                    
                     ArrayList<Integer> idsTurmasConjuntasVerificadas = new ArrayList<>();
                     //Marcar turma atual para não verificar.
                     idsTurmasConjuntasVerificadas.add(idTurma);
@@ -318,10 +310,7 @@ public class Individuo {
                         getIDsTurmasByIDTurmaConjuntaIDDisciplina(idTurma, genes[i]);
                 if (!idsTurmas.isEmpty()) {
                     //Turma atual é conjunta de outra turma na disciplina atual.
-                    if (!idsDisciplinasConjuntas.contains(genes[i])) {
-                        //Não adicionou essa disciplina conjunta à lista ainda.
-                        idsDisciplinasConjuntas.add(genes[i]); //Adicionar.
-                    }
+                    
                     //Verificar se as turmas encontradas possuem horário.
                     for (Integer idsTurma : idsTurmas) {
                         if (DataAccessObject.turmaTemHorario(idsTurma)) {
