@@ -741,7 +741,24 @@ public class DataAccessObject {
                     + ex.getMessage(), "Erro no método updateAula", JOptionPane.ERROR_MESSAGE);
         }
     }
+    
+    public static void remove(Aula aula) {
+        stmt = null;
+        rs = null;
 
+        try {
+            stmt = con.prepareStatement("DELETE FROM aula WHERE (disciplina_id, turma_id) "
+                    + "= (?,?);");
+            stmt.setInt(1, aula.getIDDisciplina());
+            stmt.setInt(2, aula.getIDTurma());
+            
+            stmt.executeUpdate();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Não foi possível conectar ao banco de dados.\n"
+                    + ex.getMessage(), "Erro no método removeAula", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
     //Retorna as posições de uma disciplina nos horários de todas as turmas.
     public static ArrayList<Integer> getPosicoesHorarioByIDDisciplina(int idDisciplina) {
         PreparedStatement stmtHorario = null;
