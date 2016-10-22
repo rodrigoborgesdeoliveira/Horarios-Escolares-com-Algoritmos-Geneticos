@@ -759,6 +759,21 @@ public class DataAccessObject {
         }
     }
     
+    public static void remove(Turma turma){
+        stmt = null;
+        rs = null;
+        
+        try{
+            stmt = con.prepareStatement("DELETE FROM turma WHERE id = ?;");
+            stmt.setInt(1, turma.getID());
+            
+            stmt.executeUpdate();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Não foi possível conectar ao banco de dados.\n"
+                    + ex.getMessage(), "Erro no método removeTurma", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
     //Retorna as posições de uma disciplina nos horários de todas as turmas.
     public static ArrayList<Integer> getPosicoesHorarioByIDDisciplina(int idDisciplina) {
         PreparedStatement stmtHorario = null;

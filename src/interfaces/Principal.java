@@ -51,7 +51,7 @@ public class Principal extends javax.swing.JFrame {
         jMenuItemCadastrarTurma = new javax.swing.JMenuItem();
         jMenuItemEditarTurma = new javax.swing.JMenuItem();
         jMenuItemListarTurmas = new javax.swing.JMenuItem();
-        jMenuItem13 = new javax.swing.JMenuItem();
+        jMenuItemRemoverTurma = new javax.swing.JMenuItem();
         jMenuGerenciarRestricoes = new javax.swing.JMenu();
         jMenu1 = new javax.swing.JMenu();
         jMenuItemDefinirIndisponibilidadesProfessor = new javax.swing.JMenuItem();
@@ -172,8 +172,13 @@ public class Principal extends javax.swing.JFrame {
         });
         jMenuGerenciarTurmas.add(jMenuItemListarTurmas);
 
-        jMenuItem13.setText("Remover turma");
-        jMenuGerenciarTurmas.add(jMenuItem13);
+        jMenuItemRemoverTurma.setText("Remover turma");
+        jMenuItemRemoverTurma.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemRemoverTurmaActionPerformed(evt);
+            }
+        });
+        jMenuGerenciarTurmas.add(jMenuItemRemoverTurma);
 
         jMenuBarPrincipal.add(jMenuGerenciarTurmas);
 
@@ -532,6 +537,19 @@ public class Principal extends javax.swing.JFrame {
         DataAccessObject.fecharConexao();
     }//GEN-LAST:event_jMenuItemListarTurmasActionPerformed
 
+    private void jMenuItemRemoverTurmaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemRemoverTurmaActionPerformed
+        DataAccessObject.abrirConexao();
+        if (!DataAccessObject.getTurmas().isEmpty()) {
+            RemoverTurma removerTurma = new RemoverTurma();
+            jDesktopPanePrincipal.add(removerTurma);
+            removerTurma.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(null, "É necessário cadastrar ao menos "
+                    + "uma turma primeiro.", "Nenhuma turma cadastrada", JOptionPane.ERROR_MESSAGE);
+        }
+        DataAccessObject.fecharConexao();
+    }//GEN-LAST:event_jMenuItemRemoverTurmaActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -583,7 +601,6 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenu jMenuGerenciarRestricoes;
     private javax.swing.JMenu jMenuGerenciarTurmas;
     private javax.swing.JMenuItem jMenuItem10;
-    private javax.swing.JMenuItem jMenuItem13;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;
@@ -607,6 +624,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemListarTurmas;
     private javax.swing.JMenuItem jMenuItemRemoverAulaConjunta;
     private javax.swing.JMenuItem jMenuItemRemoverHorário;
+    private javax.swing.JMenuItem jMenuItemRemoverTurma;
     private javax.swing.JPopupMenu jPopupMenu1;
     // End of variables declaration//GEN-END:variables
 }
