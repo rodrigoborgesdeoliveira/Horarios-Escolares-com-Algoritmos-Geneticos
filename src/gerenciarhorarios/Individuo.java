@@ -460,7 +460,6 @@ public class Individuo {
         }
 
         if (qtdAlelosVazios != qtdGenesVazios) {
-            //System.out.println("Alelos vazios, penalização += " + abs(20*(qtdGenesVazios - qtdAlelosVazios)));
             //Possui mais genes vazios do que deveria.
             //Penaliza com 20+ pontos.
             aptidao += abs(15 * (qtdGenesVazios - qtdAlelosVazios));

@@ -470,7 +470,11 @@ public class EditarTurma extends javax.swing.JInternalFrame {
             nomeCurso = "";
         }
 
-        Turma turma = new Turma(nomeCurso, nivelEnsino, nomeTurma, anoTurma, turnoTurma);
+        turma.setCurso(nomeCurso);
+        turma.setNivelEnsino(nivelEnsino);
+        turma.setNome(nomeTurma);
+        turma.setAno(anoTurma);
+        turma.setTurno(turnoTurma);
 
         DataAccessObject.abrirConexao();
 
