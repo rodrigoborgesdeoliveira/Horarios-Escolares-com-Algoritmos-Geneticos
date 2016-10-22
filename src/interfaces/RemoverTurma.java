@@ -7,6 +7,8 @@ package interfaces;
 
 import database.DataAccessObject;
 import gerenciarhorarios.Aula;
+import gerenciarhorarios.Disciplina;
+import gerenciarhorarios.Professor;
 import gerenciarhorarios.Turma;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
@@ -128,12 +130,46 @@ public class RemoverTurma extends javax.swing.JInternalFrame {
                 }
             }
         }
-        
-        //Apaga o horário da turma.
-        DataAccessObject.removeHorarioByIDTurma(turma.getID());
 
-        DataAccessObject.remove(turma); //Remover a turma da tabela turma.
+        //Se já tiver cadastrado um horário da turma antes, remover e editar as
+        //restrições dos professores.
+        if (DataAccessObject.turmaTemHorario(turma.getID())) {
+            //Antes de remover, dizer que os professores possuem disponibilidade
+            //nesses horários. 
+            int turmaAcrescimo; //Acréscimo para definir as restrições de acordo com o turno.
+            switch (turma.getTurno()) {
+                case "Matutino":
+                    turmaAcrescimo = 0;
+                    break;
+                case "Vespertino":
+                    turmaAcrescimo = 36;
+                    break;
+                default:
+                    //Noturno.
+                    turmaAcrescimo = 72;
+                    break;
+            }
+
+            int[] horario = DataAccessObject.getHorarioTurma(turma.getID()).getHorarioTurma();
+            for (int i = 0; i < horario.length; i++) {
+                if (horario[i] != 0) {
+                    //Se não for uma aula vazia, editar restrição do professor.
+                    Disciplina disciplina = DataAccessObject.getDisciplinaByID(horario[i]);
+                    Professor professor = DataAccessObject.getProfessorByID(disciplina.getIdProfessor());
+
+                    char[] restricoes = professor.getRestricoes();
+                    restricoes[i + turmaAcrescimo] = '0'; //Disponibilidade de horário.
+                    professor.setRestricoes(restricoes);
+
+                    DataAccessObject.update(professor);
+                }
+            }
+            //Apaga o horário da turma.
+            DataAccessObject.removeHorarioByIDTurma(turma.getID());
+        }
         
+        DataAccessObject.remove(turma); //Remover a turma da tabela turma.
+
         JOptionPane.showMessageDialog(null, "Turma removida com sucesso!");
 
         DataAccessObject.fecharConexao();

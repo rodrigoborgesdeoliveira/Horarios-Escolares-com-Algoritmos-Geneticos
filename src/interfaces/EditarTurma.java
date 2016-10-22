@@ -413,6 +413,23 @@ public class EditarTurma extends javax.swing.JInternalFrame {
 
             jTextFieldNomeCurso.requestFocus();
 
+            //Atualizar a caixa das turmas para corresponder aos novos dados.
+            turmas = DataAccessObject.getTurmas();
+            jComboBoxTurma.removeAllItems();
+
+            //Adicionar as turmas ao jComboBox.
+            for (int i = 0; i < turmas.size(); i++) {
+                if (turmas.get(i).getNivelEnsino().equals("Superior")) {
+                    jComboBoxTurma.addItem("Curso: " + turmas.get(i).getCurso() + " | Nível de ensino: "
+                            + turmas.get(i).getNivelEnsino() + " | Turma: " + turmas.get(i).getNome()
+                            + " | Semestre: " + turmas.get(i).getAno() + " | Turno: " + turmas.get(i).getTurno());
+                } else {
+                    jComboBoxTurma.addItem("Nível de ensino: "
+                            + turmas.get(i).getNivelEnsino() + " | Turma: " + turmas.get(i).getNome()
+                            + " | Série: " + turmas.get(i).getAno() + " | Turno: " + turmas.get(i).getTurno());
+                }
+            }
+
             DataAccessObject.fecharConexao();
 
             listModel.clear(); //Limpa o jList.
@@ -553,6 +570,23 @@ public class EditarTurma extends javax.swing.JInternalFrame {
         JOptionPane.showMessageDialog(null, "Aulas atualizadas com sucesso!");
 
         jTextFieldNomeCurso.requestFocus();
+
+        //Atualizar a caixa das turmas para corresponder aos novos dados.
+        turmas = DataAccessObject.getTurmas();
+        jComboBoxTurma.removeAllItems();
+
+        //Adicionar as turmas ao jComboBox.
+        for (int i = 0; i < turmas.size(); i++) {
+            if (turmas.get(i).getNivelEnsino().equals("Superior")) {
+                jComboBoxTurma.addItem("Curso: " + turmas.get(i).getCurso() + " | Nível de ensino: "
+                        + turmas.get(i).getNivelEnsino() + " | Turma: " + turmas.get(i).getNome()
+                        + " | Semestre: " + turmas.get(i).getAno() + " | Turno: " + turmas.get(i).getTurno());
+            } else {
+                jComboBoxTurma.addItem("Nível de ensino: "
+                        + turmas.get(i).getNivelEnsino() + " | Turma: " + turmas.get(i).getNome()
+                        + " | Série: " + turmas.get(i).getAno() + " | Turno: " + turmas.get(i).getTurno());
+            }
+        }
 
         DataAccessObject.fecharConexao();
 

@@ -6,8 +6,10 @@
 package interfaces;
 
 import database.DataAccessObject;
+import gerenciarhorarios.Aula;
 import gerenciarhorarios.Turma;
 import java.util.ArrayList;
+import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -20,6 +22,8 @@ public class ExibirHorario extends javax.swing.JInternalFrame {
     ArrayList<Turma> turmas = new ArrayList<>();
     Turma turma = null;
     
+    DefaultListModel listModel = new DefaultListModel(); //Modelo para o JList.
+    
     /**
      * Creates new form ExibirHorario
      */
@@ -27,6 +31,7 @@ public class ExibirHorario extends javax.swing.JInternalFrame {
         initComponents();
         
         turmasGeral = DataAccessObject.getTurmas();
+        jListProfessores.setModel(listModel);
         
         for (int i = 0; i < turmasGeral.size(); i++) {
             if(DataAccessObject.turmaTemHorario(turmasGeral.get(i).getID())){
@@ -68,6 +73,8 @@ public class ExibirHorario extends javax.swing.JInternalFrame {
         jButtonSelecionar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableHorario = new javax.swing.JTable();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jListProfessores = new javax.swing.JList<>();
 
         setClosable(true);
         setIconifiable(true);
@@ -97,7 +104,7 @@ public class ExibirHorario extends javax.swing.JInternalFrame {
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, true, false
+                false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -106,6 +113,8 @@ public class ExibirHorario extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(jTableHorario);
 
+        jScrollPane2.setViewportView(jListProfessores);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -113,13 +122,14 @@ public class ExibirHorario extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 591, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 624, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabelTurma)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jComboBoxTurmas, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonSelecionar, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jButtonSelecionar))
+                    .addComponent(jScrollPane2))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -132,7 +142,9 @@ public class ExibirHorario extends javax.swing.JInternalFrame {
                     .addComponent(jButtonSelecionar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(12, Short.MAX_VALUE))
         );
 
         pack();
@@ -148,6 +160,8 @@ public class ExibirHorario extends javax.swing.JInternalFrame {
                 modelo.setValueAt("", j, i);
             }
         }
+        
+        listModel.clear(); //Limpar o jList.
         
         turma = turmas.get(jComboBoxTurmas.getSelectedIndex()); //Turma selecionada.
         
@@ -174,8 +188,16 @@ public class ExibirHorario extends javax.swing.JInternalFrame {
                     }
                     posicaoHorario++;
                 }
-
             }
+        }
+        
+        //Adicionar a relação de professores que lecionam as disciplinas ao jList.
+        ArrayList<Aula> aulas = DataAccessObject.getAulasByIDTurma(turma.getID());
+        for (int i = 0; i < aulas.size(); i++) {
+            listModel.addElement("Disciplina: " + DataAccessObject.
+                    getDisciplinaByID(aulas.get(i).getIDDisciplina()).getNome()
+            + " | Professor(a): " + DataAccessObject.getProfessorByID(DataAccessObject.
+                    getDisciplinaByID(aulas.get(i).getIDDisciplina()).getIdProfessor()).getNome());
         }
         
          DataAccessObject.fecharConexao();
@@ -186,7 +208,9 @@ public class ExibirHorario extends javax.swing.JInternalFrame {
     private javax.swing.JButton jButtonSelecionar;
     private javax.swing.JComboBox<String> jComboBoxTurmas;
     private javax.swing.JLabel jLabelTurma;
+    private javax.swing.JList<String> jListProfessores;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTableHorario;
     // End of variables declaration//GEN-END:variables
 }

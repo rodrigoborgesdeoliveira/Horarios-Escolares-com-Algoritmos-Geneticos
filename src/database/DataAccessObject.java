@@ -742,6 +742,25 @@ public class DataAccessObject {
         }
     }
     
+    public static void update(Disciplina disciplina){
+        stmt = null;
+        rs = null;
+        
+        try{
+            stmt = con.prepareStatement("UPDATE disciplina SET nome = ?, "
+                    + "qtd_aulas_semanais = ?, professor_id = ? WHERE id = ?;");
+            stmt.setString(1, disciplina.getNome());
+            stmt.setInt(2, disciplina.getQtdAulasSemanais());
+            stmt.setInt(3, disciplina.getIdProfessor());
+            stmt.setInt(4, disciplina.getID());
+            
+            stmt.executeUpdate();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Não foi possível conectar ao banco de dados.\n"
+                    + ex.getMessage(), "Erro no método updateDisciplina", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
     public static void remove(Aula aula) {
         stmt = null;
         rs = null;
