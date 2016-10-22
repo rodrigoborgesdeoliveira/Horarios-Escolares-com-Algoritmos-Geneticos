@@ -326,79 +326,99 @@ public class EditarTurma extends javax.swing.JInternalFrame {
 
     private void jTextFieldNomeCursoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldNomeCursoKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-//            String nomeCurso = jTextFieldNomeCurso.getText();
-//            String nivelEnsino = (String) jComboBoxNivelEnsino.getSelectedItem();
-//            String nomeTurma = (String) jComboBoxNomeTurma.getSelectedItem();
-//            int anoTurma = Integer.parseInt((String) jComboBoxAnoTurma.getSelectedItem());
-//            String turnoTurma = (String) jComboBoxTurnoTurma.getSelectedItem();
-//
-//            nomeCurso = nomeCurso.trim().replaceAll("\\s+", " "); //Apagar os espaços em branco no início e final
-//            //da string, e tratar espaços duplicados no  meio da string.
-//
-//            //Se o nível de ensino for superior, é obrigatório preencher o campo
-//            //nome do curso.
-//            if (nivelEnsino.equals("Superior") && nomeCurso.isEmpty()) {
-//                JOptionPane.showMessageDialog(null, "O campo 'Nome do curso' é obrigatório "
-//                    + "para o nível de ensino Superior", "Campo Vazio",
-//                    JOptionPane.ERROR_MESSAGE);
-//                jTextFieldNomeCurso.requestFocus();
-//                return;
-//            }
-//
-//            if (!nivelEnsino.equals("Superior")) {
-//                nomeCurso = "";
-//            }
-//
-//            Turma turma = new Turma(nomeCurso, nivelEnsino, nomeTurma, anoTurma, turnoTurma);
-//
-//            DataAccessObject.abrirConexao();
-//            //Verificar se a turma já existe.
-//            if (DataAccessObject.turmaExiste(turma.getCurso(), turma.getNivelEnsino(),
-//                turma.getNome(), turma.getAno(), turma.getTurno())) {
-//            JOptionPane.showMessageDialog(null, "A turma já existe. \nAltere o valor 'Turma' "
-//                + "de " + turma.getNome() + " para o próximo valor.", "Turma já existe",
-//                JOptionPane.ERROR_MESSAGE);
-//            return;
-//        }
-//
-//        DataAccessObject.insert(turma);
-//
-//        JOptionPane.showMessageDialog(null, "Turma cadastrada com sucesso!");
-//
-//        if (!disciplinasTurma.isEmpty()) {
-//            Aula aula = new Aula();
-//            Disciplina disciplina;
-//
-//            //Capturar o ID da turma atual (a ser cadastrada).
-//            ArrayList<Turma> turmas;
-//            turmas = DataAccessObject.getTurmas(); //A turma aqui está ordenada por ordem crescente do nome.
-//            //Por isso é necessário buscar qual é o último ID, ele poderá não ser o último da lista.
-//
-//            int id = turmas.get(0).getID(); //Inicialmente considera-se que o primeiro elemento é o que possui o último id.
-//            for (int i = 1; i < turmas.size(); i++) { //Começa a checar a partir do segundo elemento da lista.
-//                if (id < turmas.get(i).getID()) {
-//                    id = turmas.get(i).getID(); //Atualiza o valor do id.
-//                }
-//            }
-//
-//            for (int i = 0; i < disciplinasTurma.size(); i++) {
-//                disciplina = disciplinasTurma.get(i);
-//                aula.setIDDisciplina(disciplina.getID());
-//                aula.setIDTurma(id);
-//
-//                DataAccessObject.insert(aula); //Insere a aula no banco de dados.
-//            }
-//
-//            JOptionPane.showMessageDialog(null, "Aulas adicionadas com sucesso!");
-//        }
-//
-//        jTextFieldNomeCurso.requestFocus();
-//
-//        DataAccessObject.fecharConexao();
-//
-//        listModel.clear(); //Limpa o jList.
-//        disciplinasTurma.clear(); //Esvazia a lista.
-//        jTextFieldNomeCurso.setText("");
+            String nomeCurso = jTextFieldNomeCurso.getText();
+            String nivelEnsino = (String) jComboBoxNivelEnsino.getSelectedItem();
+            String nomeTurma = (String) jComboBoxNomeTurma.getSelectedItem();
+            int anoTurma = Integer.parseInt((String) jComboBoxAnoTurma.getSelectedItem());
+            String turnoTurma = (String) jComboBoxTurnoTurma.getSelectedItem();
+
+            nomeCurso = nomeCurso.trim().replaceAll("\\s+", " "); //Apagar os espaços em branco no início e final
+            //da string, e tratar espaços duplicados no  meio da string.
+
+            //Se o nível de ensino for superior, é obrigatório preencher o campo
+            //nome do curso.
+            if (nivelEnsino.equals("Superior") && nomeCurso.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "O campo 'Nome do curso' é obrigatório "
+                        + "para o nível de ensino Superior", "Campo vazio",
+                        JOptionPane.ERROR_MESSAGE);
+                jTextFieldNomeCurso.requestFocus();
+                return;
+            }
+
+            if (!nivelEnsino.equals("Superior")) {
+                nomeCurso = "";
+            }
+
+            turma.setCurso(nomeCurso);
+            turma.setNivelEnsino(nivelEnsino);
+            turma.setNome(nomeTurma);
+            turma.setAno(anoTurma);
+            turma.setTurno(turnoTurma);
+
+            DataAccessObject.abrirConexao();
+
+            DataAccessObject.update(turma);
+
+            JOptionPane.showMessageDialog(null, "Turma atualizada com sucesso!");
+
+            if (!disciplinasTurma.isEmpty()) {
+                boolean jaPossuiaDisciplina;
+                for (int i = 0; i < disciplinasTurma.size(); i++) {
+                    jaPossuiaDisciplina = false;
+                    //Verificar se a turma já possuía a disciplina antes.
+                    for (int j = 0; j < aulas.size(); j++) {
+                        if (aulas.get(j).getIDDisciplina() == disciplinasTurma.get(i).getID()) {
+                            //A disciplina já estava presente na turma antes.
+                            jaPossuiaDisciplina = true;
+                            aulas.remove(j);
+                            break;
+                        }
+                    }
+                    if (jaPossuiaDisciplina == false) {
+                        //Não possuía a disciplina ainda, adicionar aula com ela.
+                        Aula aula = new Aula();
+                        aula.setIDDisciplina(disciplinasTurma.get(i).getID());
+                        aula.setIDTurma(turma.getID());
+
+                        DataAccessObject.insert(aula); //Insere a aula no banco de dados.
+                    }
+                }
+            }
+
+            if (!aulas.isEmpty()) {
+                //Aulas para remover, pois disciplinas foram removidas da turma.
+                for (int i = 0; i < aulas.size(); i++) {
+                    DataAccessObject.remove(aulas.get(i));
+
+                    //Verificar se turma atual é turma conjunta de alguma outra turma
+                    //na disciplina atual.
+                    ArrayList<Integer> idsTurmas = DataAccessObject.
+                            getIDsTurmasByIDTurmaConjuntaIDDisciplina(turma.getID(), aulas.get(i).getIDDisciplina());
+                    //Remover turma do campo turma conjunta de outras turmas para 
+                    //essa disciplina.
+                    if (!idsTurmas.isEmpty()) {
+                        for (int j = 0; j < idsTurmas.size(); j++) {
+                            Aula aula = new Aula();
+                            aula.setIDTurma(idsTurmas.get(j));
+                            aula.setIDDisciplina(aulas.get(i).getIDDisciplina());
+                            aula.setIDTurmaConjunta(0);
+
+                            DataAccessObject.update(aula);
+                        }
+                    }
+                }
+            }
+
+            JOptionPane.showMessageDialog(null, "Aulas atualizadas com sucesso!");
+
+            jTextFieldNomeCurso.requestFocus();
+
+            DataAccessObject.fecharConexao();
+
+            listModel.clear(); //Limpa o jList.
+            disciplinasTurma.clear(); //Esvazia a lista.
+            aulas.clear();
+            jTextFieldNomeCurso.setText("");
         }
     }//GEN-LAST:event_jTextFieldNomeCursoKeyPressed
 
@@ -523,7 +543,7 @@ public class EditarTurma extends javax.swing.JInternalFrame {
                         aula.setIDTurma(idsTurmas.get(j));
                         aula.setIDDisciplina(aulas.get(i).getIDDisciplina());
                         aula.setIDTurmaConjunta(0);
-                        
+
                         DataAccessObject.update(aula);
                     }
                 }
