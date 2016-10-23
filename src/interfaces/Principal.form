@@ -92,7 +92,7 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItemListarDisciplinasActionPerformed"/>
               </Events>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem10">
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemRemoverDisciplina">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Remover disciplina"/>
               </Properties>

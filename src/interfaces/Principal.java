@@ -54,7 +54,7 @@ public class Principal extends javax.swing.JFrame {
         jMenuItemCadastrarDisciplina = new javax.swing.JMenuItem();
         jMenuItemEditarDisciplina = new javax.swing.JMenuItem();
         jMenuItemListarDisciplinas = new javax.swing.JMenuItem();
-        jMenuItem10 = new javax.swing.JMenuItem();
+        jMenuItemRemoverDisciplina = new javax.swing.JMenuItem();
         jMenuGerenciarTurmas = new javax.swing.JMenu();
         jMenuItemCadastrarTurma = new javax.swing.JMenuItem();
         jMenuItemEditarTurma = new javax.swing.JMenuItem();
@@ -149,8 +149,8 @@ public class Principal extends javax.swing.JFrame {
         });
         jMenuGerenciarDisciplinas.add(jMenuItemListarDisciplinas);
 
-        jMenuItem10.setText("Remover disciplina");
-        jMenuGerenciarDisciplinas.add(jMenuItem10);
+        jMenuItemRemoverDisciplina.setText("Remover disciplina");
+        jMenuGerenciarDisciplinas.add(jMenuItemRemoverDisciplina);
 
         jMenuBarPrincipal.add(jMenuGerenciarDisciplinas);
 
@@ -626,7 +626,6 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenu jMenuGerenciarProfessores;
     private javax.swing.JMenu jMenuGerenciarRestricoes;
     private javax.swing.JMenu jMenuGerenciarTurmas;
-    private javax.swing.JMenuItem jMenuItem10;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;
@@ -649,6 +648,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemListarDisciplinas;
     private javax.swing.JMenuItem jMenuItemListarTurmas;
     private javax.swing.JMenuItem jMenuItemRemoverAulaConjunta;
+    private javax.swing.JMenuItem jMenuItemRemoverDisciplina;
     private javax.swing.JMenuItem jMenuItemRemoverHorário;
     private javax.swing.JMenuItem jMenuItemRemoverTurma;
     private javax.swing.JPopupMenu jPopupMenu1;
