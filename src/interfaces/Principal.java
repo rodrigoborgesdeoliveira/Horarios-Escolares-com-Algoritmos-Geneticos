@@ -4,8 +4,16 @@
 package interfaces;
 
 import database.DataAccessObject;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDesktopPane;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.plaf.DesktopPaneUI;
+import javax.swing.plaf.InternalFrameUI;
 
 /**
  *
@@ -17,8 +25,8 @@ public class Principal extends javax.swing.JFrame {
      * Creates new form Tela
      */
     public Principal() {
-        initComponents();       
-        
+        initComponents();
+
     }
 
     /**
@@ -87,11 +95,11 @@ public class Principal extends javax.swing.JFrame {
         jDesktopPanePrincipal.setLayout(jDesktopPanePrincipalLayout);
         jDesktopPanePrincipalLayout.setHorizontalGroup(
             jDesktopPanePrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 873, Short.MAX_VALUE)
+            .addGap(0, 879, Short.MAX_VALUE)
         );
         jDesktopPanePrincipalLayout.setVerticalGroup(
             jDesktopPanePrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 478, Short.MAX_VALUE)
+            .addGap(0, 487, Short.MAX_VALUE)
         );
 
         jMenuGerenciarProfessores.setText("Gerenciar professores");
@@ -375,8 +383,8 @@ public class Principal extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "É necessário cadastrar ao menos "
                     + "um professor primeiro.", "Nenhum professor cadastrado", JOptionPane.ERROR_MESSAGE);
         } else {
-            DefinirIndisponibilidadesProfessor definirIndisponibilidadesProfessor =
-                    new DefinirIndisponibilidadesProfessor();
+            DefinirIndisponibilidadesProfessor definirIndisponibilidadesProfessor
+                    = new DefinirIndisponibilidadesProfessor();
             jDesktopPanePrincipal.add(definirIndisponibilidadesProfessor);
             definirIndisponibilidadesProfessor.setVisible(true);
         }
@@ -498,7 +506,7 @@ public class Principal extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "É necessário cadastrar ao menos "
                     + "um professor primeiro.", "Nenhum professor cadastrado", JOptionPane.ERROR_MESSAGE);
         } else {
-            ExibirIndisponibilidadesProfessor exibirIndisponibilidadesProfessor 
+            ExibirIndisponibilidadesProfessor exibirIndisponibilidadesProfessor
                     = new ExibirIndisponibilidadesProfessor();
             jDesktopPanePrincipal.add(exibirIndisponibilidadesProfessor);
             exibirIndisponibilidadesProfessor.setVisible(true);

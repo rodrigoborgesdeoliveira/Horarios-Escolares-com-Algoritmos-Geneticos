@@ -10,7 +10,11 @@ import gerenciarhorarios.Aula;
 import gerenciarhorarios.Disciplina;
 import gerenciarhorarios.Turma;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  *
@@ -79,6 +83,7 @@ public class EditarAulaConjunta extends javax.swing.JInternalFrame {
         setIconifiable(true);
         setMaximizable(true);
         setResizable(true);
+        setTitle("Editar aula conjunta");
 
         jLabelTurma.setText("Turma");
 

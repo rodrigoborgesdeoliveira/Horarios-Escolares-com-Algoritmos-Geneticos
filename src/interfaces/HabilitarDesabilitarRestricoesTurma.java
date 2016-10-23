@@ -9,7 +9,11 @@ import database.DataAccessObject;
 import gerenciarhorarios.Turma;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  *
@@ -87,6 +91,7 @@ public class HabilitarDesabilitarRestricoesTurma extends javax.swing.JInternalFr
         setIconifiable(true);
         setMaximizable(true);
         setResizable(true);
+        setTitle("Habilitar/desabilitar restrições de uma turma");
 
         jLabelJanelamentoDisciplinas.setText("Janelamento entre disciplinas");
 

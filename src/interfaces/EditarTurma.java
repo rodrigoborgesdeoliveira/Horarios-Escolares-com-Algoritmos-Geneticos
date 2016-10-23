@@ -11,8 +11,12 @@ import gerenciarhorarios.Disciplina;
 import gerenciarhorarios.Turma;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  *
@@ -93,6 +97,7 @@ public class EditarTurma extends javax.swing.JInternalFrame {
         setIconifiable(true);
         setMaximizable(true);
         setResizable(true);
+        setTitle("Editar turma");
 
         jLabelTurma.setText("Turma");
 

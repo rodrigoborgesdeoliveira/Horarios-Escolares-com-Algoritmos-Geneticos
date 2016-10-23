@@ -11,8 +11,12 @@ import gerenciarhorarios.Disciplina;
 import gerenciarhorarios.Turma;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  *
@@ -30,6 +34,7 @@ public class CadastrarTurma extends javax.swing.JInternalFrame {
      */
     public CadastrarTurma() {
         initComponents();
+        
         jListDisciplinas.setModel(listModel);
 
         DataAccessObject.abrirConexao();
@@ -74,6 +79,7 @@ public class CadastrarTurma extends javax.swing.JInternalFrame {
         setIconifiable(true);
         setMaximizable(true);
         setResizable(true);
+        setTitle("Cadastrar turma");
 
         jLabelNomeCurso.setText("Nome do curso");
 
@@ -175,9 +181,9 @@ public class CadastrarTurma extends javax.swing.JInternalFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabelNivelEnsino)
                             .addComponent(jLabelNomeTurma)
-                            .addComponent(jLabelNomeCurso)
                             .addComponent(jLabelAnoTurma)
-                            .addComponent(jLabelTurnoTurma))
+                            .addComponent(jLabelTurnoTurma)
+                            .addComponent(jLabelNomeCurso, javax.swing.GroupLayout.Alignment.TRAILING))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jTextFieldNomeCurso)
@@ -197,10 +203,10 @@ public class CadastrarTurma extends javax.swing.JInternalFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabelNomeCurso)
-                    .addComponent(jTextFieldNomeCurso, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextFieldNomeCurso, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabelNomeCurso))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabelNivelEnsino)

@@ -8,7 +8,11 @@ package interfaces;
 import database.DataAccessObject;
 import gerenciarhorarios.Turma;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  *
@@ -84,6 +88,7 @@ public class ExibirRestricoesTurma extends javax.swing.JInternalFrame {
         setIconifiable(true);
         setMaximizable(true);
         setResizable(true);
+        setTitle("Exibir restrições da turma");
 
         jLabelTurma.setText("Turma");
 

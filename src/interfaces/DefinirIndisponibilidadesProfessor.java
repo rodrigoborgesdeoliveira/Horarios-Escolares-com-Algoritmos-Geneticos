@@ -10,7 +10,11 @@ import gerenciarhorarios.Disciplina;
 import gerenciarhorarios.Professor;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -64,6 +68,7 @@ public class DefinirIndisponibilidadesProfessor extends javax.swing.JInternalFra
         setIconifiable(true);
         setMaximizable(true);
         setResizable(true);
+        setTitle("Definir indisponibilidades do professor");
 
         jLabel1.setText("Professor");
 

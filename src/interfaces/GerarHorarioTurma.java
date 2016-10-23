@@ -13,7 +13,11 @@ import gerenciarhorarios.Populacao;
 import gerenciarhorarios.Professor;
 import gerenciarhorarios.Turma;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.html.parser.DTDConstants;
@@ -69,6 +73,7 @@ public class GerarHorarioTurma extends javax.swing.JInternalFrame {
         setIconifiable(true);
         setMaximizable(true);
         setResizable(true);
+        setTitle("Gerar horário por turma");
 
         jLabelTurma.setText("Turma");
 

@@ -11,7 +11,11 @@ import gerenciarhorarios.Disciplina;
 import gerenciarhorarios.Professor;
 import gerenciarhorarios.Turma;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  *
@@ -62,6 +66,7 @@ public class RemoverTurma extends javax.swing.JInternalFrame {
         setIconifiable(true);
         setMaximizable(true);
         setResizable(true);
+        setTitle("Remover turma");
 
         jLabelTurma.setText("Turma");
 

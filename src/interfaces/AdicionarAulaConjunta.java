@@ -10,7 +10,11 @@ import gerenciarhorarios.Aula;
 import gerenciarhorarios.Disciplina;
 import gerenciarhorarios.Turma;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  *
@@ -31,7 +35,7 @@ public class AdicionarAulaConjunta extends javax.swing.JInternalFrame {
      * Creates new form AdicionarAulaConjunta
      */
     public AdicionarAulaConjunta() {
-        initComponents();
+       initComponents();
 
         turmas = DataAccessObject.getTurmas();
 
@@ -72,6 +76,7 @@ public class AdicionarAulaConjunta extends javax.swing.JInternalFrame {
         setIconifiable(true);
         setMaximizable(true);
         setResizable(true);
+        setTitle("Adicionar aula conjunta");
 
         jLabelTurma.setText("Turma");
 

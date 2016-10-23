@@ -9,8 +9,12 @@ import database.DataAccessObject;
 import gerenciarhorarios.Aula;
 import gerenciarhorarios.Turma;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -80,6 +84,7 @@ public class ExibirHorario extends javax.swing.JInternalFrame {
         setIconifiable(true);
         setMaximizable(true);
         setResizable(true);
+        setTitle("Exibir horário");
 
         jLabelTurma.setText("Turma");
 
