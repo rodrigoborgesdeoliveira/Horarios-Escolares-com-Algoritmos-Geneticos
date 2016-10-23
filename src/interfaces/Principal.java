@@ -53,7 +53,7 @@ public class Principal extends javax.swing.JFrame {
         jMenuGerenciarDisciplinas = new javax.swing.JMenu();
         jMenuItemCadastrarDisciplina = new javax.swing.JMenuItem();
         jMenuItemEditarDisciplina = new javax.swing.JMenuItem();
-        jMenuItem9 = new javax.swing.JMenuItem();
+        jMenuItemListarDisciplinas = new javax.swing.JMenuItem();
         jMenuItem10 = new javax.swing.JMenuItem();
         jMenuGerenciarTurmas = new javax.swing.JMenu();
         jMenuItemCadastrarTurma = new javax.swing.JMenuItem();
@@ -141,13 +141,13 @@ public class Principal extends javax.swing.JFrame {
         });
         jMenuGerenciarDisciplinas.add(jMenuItemEditarDisciplina);
 
-        jMenuItem9.setText("Listar disciplinas");
-        jMenuItem9.addActionListener(new java.awt.event.ActionListener() {
+        jMenuItemListarDisciplinas.setText("Listar disciplinas");
+        jMenuItemListarDisciplinas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem9ActionPerformed(evt);
+                jMenuItemListarDisciplinasActionPerformed(evt);
             }
         });
-        jMenuGerenciarDisciplinas.add(jMenuItem9);
+        jMenuGerenciarDisciplinas.add(jMenuItemListarDisciplinas);
 
         jMenuItem10.setText("Remover disciplina");
         jMenuGerenciarDisciplinas.add(jMenuItem10);
@@ -354,9 +354,18 @@ public class Principal extends javax.swing.JFrame {
         DataAccessObject.fecharConexao();
     }//GEN-LAST:event_jMenuItemEditarDisciplinaActionPerformed
 
-    private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem9ActionPerformed
+    private void jMenuItemListarDisciplinasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemListarDisciplinasActionPerformed
+        DataAccessObject.abrirConexao();
+        if (!DataAccessObject.getDisciplinas().isEmpty()) {
+            ListarDisciplinas listarDisciplinas = new ListarDisciplinas();
+            jDesktopPanePrincipal.add(listarDisciplinas);
+            listarDisciplinas.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(null, "É necessário cadastrar ao menos "
+                    + "uma disciplina primeiro.", "Nenhuma disciplina cadastrada", JOptionPane.ERROR_MESSAGE);
+        }
+        DataAccessObject.fecharConexao();
+    }//GEN-LAST:event_jMenuItemListarDisciplinasActionPerformed
 
     private void jMenuItemCadastrarTurmaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemCadastrarTurmaActionPerformed
         CadastrarTurma cadastrarTurma = new CadastrarTurma();
@@ -622,7 +631,6 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
-    private javax.swing.JMenuItem jMenuItem9;
     private javax.swing.JMenuItem jMenuItemAdicionarAulaConjunta;
     private javax.swing.JMenuItem jMenuItemCadastrarDisciplina;
     private javax.swing.JMenuItem jMenuItemCadastrarProfessor;
@@ -638,6 +646,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemGerarHorarioTurma;
     private javax.swing.JMenuItem jMenuItemHabilitarDesabilitarRestricoesTurma;
     private javax.swing.JMenuItem jMenuItemListarAulasConjuntas;
+    private javax.swing.JMenuItem jMenuItemListarDisciplinas;
     private javax.swing.JMenuItem jMenuItemListarTurmas;
     private javax.swing.JMenuItem jMenuItemRemoverAulaConjunta;
     private javax.swing.JMenuItem jMenuItemRemoverHorário;
