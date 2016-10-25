@@ -47,7 +47,7 @@ public class Principal extends javax.swing.JFrame {
         jMenuBarPrincipal = new javax.swing.JMenuBar();
         jMenuGerenciarProfessores = new javax.swing.JMenu();
         jMenuItemCadastrarProfessor = new javax.swing.JMenuItem();
-        jMenuItem5 = new javax.swing.JMenuItem();
+        jMenuItemEditarProfessor = new javax.swing.JMenuItem();
         jMenuItem6 = new javax.swing.JMenuItem();
         jMenuItem7 = new javax.swing.JMenuItem();
         jMenuGerenciarDisciplinas = new javax.swing.JMenu();
@@ -112,8 +112,13 @@ public class Principal extends javax.swing.JFrame {
         });
         jMenuGerenciarProfessores.add(jMenuItemCadastrarProfessor);
 
-        jMenuItem5.setText("Editar professor");
-        jMenuGerenciarProfessores.add(jMenuItem5);
+        jMenuItemEditarProfessor.setText("Editar professor");
+        jMenuItemEditarProfessor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemEditarProfessorActionPerformed(evt);
+            }
+        });
+        jMenuGerenciarProfessores.add(jMenuItemEditarProfessor);
 
         jMenuItem6.setText("Listar professores");
         jMenuGerenciarProfessores.add(jMenuItem6);
@@ -594,6 +599,19 @@ public class Principal extends javax.swing.JFrame {
         DataAccessObject.fecharConexao();
     }//GEN-LAST:event_jMenuItemRemoverDisciplinaActionPerformed
 
+    private void jMenuItemEditarProfessorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemEditarProfessorActionPerformed
+        DataAccessObject.abrirConexao();
+        if (DataAccessObject.getProfessores().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "É necessário cadastrar ao menos "
+                    + "um professor primeiro.", "Nenhum professor cadastrado", JOptionPane.ERROR_MESSAGE);
+        } else {
+            EditarProfessor editarProfessor = new EditarProfessor();
+            jDesktopPanePrincipal.add(editarProfessor);
+            editarProfessor.setVisible(true);
+        }
+        DataAccessObject.fecharConexao();
+    }//GEN-LAST:event_jMenuItemEditarProfessorActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -645,7 +663,6 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenu jMenuGerenciarRestricoes;
     private javax.swing.JMenu jMenuGerenciarTurmas;
     private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItemAdicionarAulaConjunta;
@@ -655,6 +672,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemDefinirIndisponibilidadesProfessor;
     private javax.swing.JMenuItem jMenuItemEditarAulaConjunta;
     private javax.swing.JMenuItem jMenuItemEditarDisciplina;
+    private javax.swing.JMenuItem jMenuItemEditarProfessor;
     private javax.swing.JMenuItem jMenuItemEditarTurma;
     private javax.swing.JMenuItem jMenuItemExibirHorario;
     private javax.swing.JMenuItem jMenuItemExibirIndisponibilidadesProfessor;

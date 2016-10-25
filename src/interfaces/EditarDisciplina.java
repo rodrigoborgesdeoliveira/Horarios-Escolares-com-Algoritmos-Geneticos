@@ -21,26 +21,27 @@ import javax.swing.UnsupportedLookAndFeelException;
  * @author Rodrigo
  */
 public class EditarDisciplina extends javax.swing.JInternalFrame {
+
     ArrayList<Professor> professores = null;
-    
+
     ArrayList<Disciplina> disciplinas = null; //Lista das disciplinas do banco de dados.
     Disciplina disciplina = null; //Disciplina selecionada.
-    
+
     /**
      * Creates new form EditarDisciplina
      */
     public EditarDisciplina() {
         initComponents();
-        
+
         DataAccessObject.abrirConexao();
         professores = DataAccessObject.getProfessores();
         disciplinas = DataAccessObject.getDisciplinas();
-        
+
         for (int i = 0; i < disciplinas.size(); i++) {
             jComboBoxDisciplina.addItem(disciplinas.get(i).getNome() + " (Professor(a): "
                     + DataAccessObject.getProfessorByID(disciplinas.get(i).getIdProfessor()).getNome() + ")");
         }
-        
+
         DataAccessObject.fecharConexao();
 
         //Adiciona o nome dos professores ao jComboBox.
@@ -187,89 +188,121 @@ public class EditarDisciplina extends javax.swing.JInternalFrame {
 
     private void jTextFieldNomeDisciplinaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldNomeDisciplinaKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) { //Se pressionar enter.
-//            if (jTextFieldNomeDisciplina.getText().trim().isEmpty()
-//                || jTextFieldQtdAulasSemanais.getText().trim().isEmpty()) {
-//                if (jTextFieldNomeDisciplina.getText().trim().isEmpty()) { //Se campo nome da disciplina for vazio.
-//                    JOptionPane.showMessageDialog(null, "O campo nome da disciplina não pode ser vazio.", "Campo "
-//                        + "vazio", JOptionPane.ERROR_MESSAGE);
-//                    jTextFieldNomeDisciplina.requestFocus(); //Focar no campo.
-//                    return;
-//                }
-//                if (jTextFieldQtdAulasSemanais.getText().trim().isEmpty()) { //Se campo quantidade de aulas semanais for vazio.
-//                    JOptionPane.showMessageDialog(null, "O campo quantidade de aulas semanais não pode ser vazio.", "Campo "
-//                        + "vazio", JOptionPane.ERROR_MESSAGE);
-//                    jTextFieldQtdAulasSemanais.requestFocus();
-//                    return;
-//                }
-//            }
-//
-//            for (int i = 0; i < jTextFieldQtdAulasSemanais.getText().trim().length(); i++) { //Verificar se o campo qtd aulas semanais possui apenas números.
-//                if (!Character.isDigit(jTextFieldQtdAulasSemanais.getText().trim().charAt(i))) {
-//                    JOptionPane.showMessageDialog(null, "O campo quantidade de aulas semanais deve possuir "
-//                        + "apenas números", "Caractere inválido", JOptionPane.ERROR_MESSAGE);
-//                    jTextFieldQtdAulasSemanais.requestFocus();
-//                    return;
-//                }
-//            }
-//
-//            String nomeDisciplina = jTextFieldNomeDisciplina.getText().trim().replaceAll("\\s+", " ");
-//            int cargaHorariaDisciplina = Integer.parseInt(jTextFieldQtdAulasSemanais.getText().trim());
-//            int posProfessor = jComboBoxProfessorDisciplina.getSelectedIndex(); //Posição do professor no ArrayList.
-//            Disciplina disciplina = new Disciplina(nomeDisciplina, cargaHorariaDisciplina, professores.get(posProfessor).getID());
-//
-//            DataAccessObject.abrirConexao();
-//            DataAccessObject.insert(disciplina); //Insere a disciplina no banco de dados.
-//            DataAccessObject.fecharConexao();
-//
-//            JOptionPane.showMessageDialog(null, "Disciplina cadastrada com sucesso!");
-//            jTextFieldNomeDisciplina.setText("");
-//            jTextFieldQtdAulasSemanais.setText("");
-//
-//            jTextFieldNomeDisciplina.requestFocus();
+            if (jTextFieldNomeDisciplina.getText().trim().isEmpty()
+                    || jTextFieldQtdAulasSemanais.getText().trim().isEmpty()) {
+                if (jTextFieldNomeDisciplina.getText().trim().isEmpty()) { //Se campo nome da disciplina for vazio.
+                    JOptionPane.showMessageDialog(null, "O campo nome da disciplina não pode ser vazio.", "Campo "
+                            + "vazio", JOptionPane.ERROR_MESSAGE);
+                    jTextFieldNomeDisciplina.requestFocus(); //Focar no campo.
+                    return;
+                }
+                if (jTextFieldQtdAulasSemanais.getText().trim().isEmpty()) { //Se campo quantidade de aulas semanais for vazio.
+                    JOptionPane.showMessageDialog(null, "O campo quantidade de aulas semanais não pode ser vazio.", "Campo "
+                            + "vazio", JOptionPane.ERROR_MESSAGE);
+                    jTextFieldQtdAulasSemanais.requestFocus();
+                    return;
+                }
+            }
+
+            for (int i = 0; i < jTextFieldQtdAulasSemanais.getText().trim().length(); i++) {
+                //Verificar se o campo qtd aulas semanais possui apenas números.
+                if (!Character.isDigit(jTextFieldQtdAulasSemanais.getText().trim().charAt(i))) {
+                    JOptionPane.showMessageDialog(null, "O campo quantidade de aulas semanais deve possuir "
+                            + "apenas números", "Caractere inválido", JOptionPane.ERROR_MESSAGE);
+                    jTextFieldQtdAulasSemanais.requestFocus();
+                    return;
+                }
+            }
+
+            String nomeDisciplina = jTextFieldNomeDisciplina.getText().trim().replaceAll("\\s+", " ");
+            int cargaHorariaDisciplina = Integer.parseInt(jTextFieldQtdAulasSemanais.getText().trim());
+            int posProfessor = jComboBoxProfessorDisciplina.getSelectedIndex(); //Posição do professor no ArrayList.
+
+            //Atualizar os dados da disciplina.
+            disciplina.setNome(nomeDisciplina);
+            disciplina.setQtdAulasSemanais(cargaHorariaDisciplina);
+            disciplina.setIdProfessor(professores.get(posProfessor).getID());
+
+            DataAccessObject.abrirConexao();
+            DataAccessObject.update(disciplina); //Insere a disciplina no banco de dados.
+
+            //Atualizar a caixa de disciplinas para corresponder ao novo nome e ao novo
+            //professor.
+            disciplinas = DataAccessObject.getDisciplinas();
+            jComboBoxDisciplina.removeAllItems();
+
+            for (int i = 0; i < disciplinas.size(); i++) {
+                jComboBoxDisciplina.addItem(disciplinas.get(i).getNome() + " (Professor(a): "
+                        + DataAccessObject.getProfessorByID(disciplinas.get(i).getIdProfessor()).getNome() + ")");
+            }
+
+            DataAccessObject.fecharConexao();
+
+            JOptionPane.showMessageDialog(null, "Disciplina atualizada com sucesso!");
+            jTextFieldNomeDisciplina.setText("");
+            jTextFieldQtdAulasSemanais.setText("");
+
+            jTextFieldNomeDisciplina.requestFocus();
         }
     }//GEN-LAST:event_jTextFieldNomeDisciplinaKeyPressed
 
     private void jTextFieldQtdAulasSemanaisKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldQtdAulasSemanaisKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) { //Se pressionar enter.
-//            if (jTextFieldNomeDisciplina.getText().trim().isEmpty()
-//                || jTextFieldQtdAulasSemanais.getText().trim().isEmpty()) {
-//                if (jTextFieldNomeDisciplina.getText().trim().isEmpty()) { //Se campo nome da disciplina for vazio.
-//                    JOptionPane.showMessageDialog(null, "O campo nome da disciplina não pode ser vazio.", "Campo "
-//                        + "vazio", JOptionPane.ERROR_MESSAGE);
-//                    jTextFieldNomeDisciplina.requestFocus(); //Focar no campo.
-//                    return;
-//                }
-//                if (jTextFieldQtdAulasSemanais.getText().trim().isEmpty()) { //Se campo quantidade de aulas semanais for vazio.
-//                    JOptionPane.showMessageDialog(null, "O campo quantidade de aulas semanais não pode ser vazio.", "Campo "
-//                        + "vazio", JOptionPane.ERROR_MESSAGE);
-//                    jTextFieldQtdAulasSemanais.requestFocus();
-//                    return;
-//                }
-//            }
-//
-//            for (int i = 0; i < jTextFieldQtdAulasSemanais.getText().trim().length(); i++) { //Verificar se o campo qtd aulas semanais possui apenas números.
-//                if (!Character.isDigit(jTextFieldQtdAulasSemanais.getText().trim().charAt(i))) {
-//                    JOptionPane.showMessageDialog(null, "O campo quantidade de aulas semanais deve possuir "
-//                        + "apenas números", "Caractere inválido", JOptionPane.ERROR_MESSAGE);
-//                    jTextFieldQtdAulasSemanais.requestFocus();
-//                    return;
-//                }
-//            }
-//
-//            String nomeDisciplina = jTextFieldNomeDisciplina.getText().trim().replaceAll("\\s+", " ");
-//            int cargaHorariaDisciplina = Integer.parseInt(jTextFieldQtdAulasSemanais.getText().trim());
-//            int posProfessor = jComboBoxProfessorDisciplina.getSelectedIndex(); //Posição do professor no ArrayList.
-//            Disciplina disciplina = new Disciplina(nomeDisciplina, cargaHorariaDisciplina, professores.get(posProfessor).getID());
-//
-//            DataAccessObject.abrirConexao();
-//            DataAccessObject.insert(disciplina); //Insere a disciplina no banco de dados.
-//            DataAccessObject.fecharConexao();
-//
-//            JOptionPane.showMessageDialog(null, "Disciplina cadastrada com sucesso!");
-//            jTextFieldNomeDisciplina.setText("");
-//            jTextFieldQtdAulasSemanais.setText("");
-//
-//            jTextFieldNomeDisciplina.requestFocus();
+            if (jTextFieldNomeDisciplina.getText().trim().isEmpty()
+                    || jTextFieldQtdAulasSemanais.getText().trim().isEmpty()) {
+                if (jTextFieldNomeDisciplina.getText().trim().isEmpty()) { //Se campo nome da disciplina for vazio.
+                    JOptionPane.showMessageDialog(null, "O campo nome da disciplina não pode ser vazio.", "Campo "
+                            + "vazio", JOptionPane.ERROR_MESSAGE);
+                    jTextFieldNomeDisciplina.requestFocus(); //Focar no campo.
+                    return;
+                }
+                if (jTextFieldQtdAulasSemanais.getText().trim().isEmpty()) { //Se campo quantidade de aulas semanais for vazio.
+                    JOptionPane.showMessageDialog(null, "O campo quantidade de aulas semanais não pode ser vazio.", "Campo "
+                            + "vazio", JOptionPane.ERROR_MESSAGE);
+                    jTextFieldQtdAulasSemanais.requestFocus();
+                    return;
+                }
+            }
+
+            for (int i = 0; i < jTextFieldQtdAulasSemanais.getText().trim().length(); i++) {
+                //Verificar se o campo qtd aulas semanais possui apenas números.
+                if (!Character.isDigit(jTextFieldQtdAulasSemanais.getText().trim().charAt(i))) {
+                    JOptionPane.showMessageDialog(null, "O campo quantidade de aulas semanais deve possuir "
+                            + "apenas números", "Caractere inválido", JOptionPane.ERROR_MESSAGE);
+                    jTextFieldQtdAulasSemanais.requestFocus();
+                    return;
+                }
+            }
+
+            String nomeDisciplina = jTextFieldNomeDisciplina.getText().trim().replaceAll("\\s+", " ");
+            int cargaHorariaDisciplina = Integer.parseInt(jTextFieldQtdAulasSemanais.getText().trim());
+            int posProfessor = jComboBoxProfessorDisciplina.getSelectedIndex(); //Posição do professor no ArrayList.
+
+            //Atualizar os dados da disciplina.
+            disciplina.setNome(nomeDisciplina);
+            disciplina.setQtdAulasSemanais(cargaHorariaDisciplina);
+            disciplina.setIdProfessor(professores.get(posProfessor).getID());
+
+            DataAccessObject.abrirConexao();
+            DataAccessObject.update(disciplina); //Insere a disciplina no banco de dados.
+
+            //Atualizar a caixa de disciplinas para corresponder ao novo nome e ao novo
+            //professor.
+            disciplinas = DataAccessObject.getDisciplinas();
+            jComboBoxDisciplina.removeAllItems();
+
+            for (int i = 0; i < disciplinas.size(); i++) {
+                jComboBoxDisciplina.addItem(disciplinas.get(i).getNome() + " (Professor(a): "
+                        + DataAccessObject.getProfessorByID(disciplinas.get(i).getIdProfessor()).getNome() + ")");
+            }
+
+            DataAccessObject.fecharConexao();
+
+            JOptionPane.showMessageDialog(null, "Disciplina atualizada com sucesso!");
+            jTextFieldNomeDisciplina.setText("");
+            jTextFieldQtdAulasSemanais.setText("");
+
+            jTextFieldNomeDisciplina.requestFocus();
         }
     }//GEN-LAST:event_jTextFieldQtdAulasSemanaisKeyPressed
 
@@ -283,26 +316,26 @@ public class EditarDisciplina extends javax.swing.JInternalFrame {
 
     private void jButtonConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConfirmarActionPerformed
         if (jTextFieldNomeDisciplina.getText().trim().isEmpty()
-            || jTextFieldQtdAulasSemanais.getText().trim().isEmpty()) {
+                || jTextFieldQtdAulasSemanais.getText().trim().isEmpty()) {
             if (jTextFieldNomeDisciplina.getText().trim().isEmpty()) { //Se campo nome da disciplina for vazio.
                 JOptionPane.showMessageDialog(null, "O campo nome da disciplina não pode ser vazio.", "Campo "
-                    + "vazio", JOptionPane.ERROR_MESSAGE);
+                        + "vazio", JOptionPane.ERROR_MESSAGE);
                 jTextFieldNomeDisciplina.requestFocus(); //Focar no campo.
                 return;
             }
             if (jTextFieldQtdAulasSemanais.getText().trim().isEmpty()) { //Se campo quantidade de aulas semanais for vazio.
                 JOptionPane.showMessageDialog(null, "O campo quantidade de aulas semanais não pode ser vazio.", "Campo "
-                    + "vazio", JOptionPane.ERROR_MESSAGE);
+                        + "vazio", JOptionPane.ERROR_MESSAGE);
                 jTextFieldQtdAulasSemanais.requestFocus();
                 return;
             }
         }
 
-        for (int i = 0; i < jTextFieldQtdAulasSemanais.getText().trim().length(); i++) { 
+        for (int i = 0; i < jTextFieldQtdAulasSemanais.getText().trim().length(); i++) {
             //Verificar se o campo qtd aulas semanais possui apenas números.
             if (!Character.isDigit(jTextFieldQtdAulasSemanais.getText().trim().charAt(i))) {
                 JOptionPane.showMessageDialog(null, "O campo quantidade de aulas semanais deve possuir "
-                    + "apenas números", "Caractere inválido", JOptionPane.ERROR_MESSAGE);
+                        + "apenas números", "Caractere inválido", JOptionPane.ERROR_MESSAGE);
                 jTextFieldQtdAulasSemanais.requestFocus();
                 return;
             }
@@ -311,7 +344,7 @@ public class EditarDisciplina extends javax.swing.JInternalFrame {
         String nomeDisciplina = jTextFieldNomeDisciplina.getText().trim().replaceAll("\\s+", " ");
         int cargaHorariaDisciplina = Integer.parseInt(jTextFieldQtdAulasSemanais.getText().trim());
         int posProfessor = jComboBoxProfessorDisciplina.getSelectedIndex(); //Posição do professor no ArrayList.
-        
+
         //Atualizar os dados da disciplina.
         disciplina.setNome(nomeDisciplina);
         disciplina.setQtdAulasSemanais(cargaHorariaDisciplina);
@@ -319,17 +352,17 @@ public class EditarDisciplina extends javax.swing.JInternalFrame {
 
         DataAccessObject.abrirConexao();
         DataAccessObject.update(disciplina); //Insere a disciplina no banco de dados.
-        
+
         //Atualizar a caixa de disciplinas para corresponder ao novo nome e ao novo
         //professor.
         disciplinas = DataAccessObject.getDisciplinas();
         jComboBoxDisciplina.removeAllItems();
-        
+
         for (int i = 0; i < disciplinas.size(); i++) {
             jComboBoxDisciplina.addItem(disciplinas.get(i).getNome() + " (Professor(a): "
                     + DataAccessObject.getProfessorByID(disciplinas.get(i).getIdProfessor()).getNome() + ")");
         }
-        
+
         DataAccessObject.fecharConexao();
 
         JOptionPane.showMessageDialog(null, "Disciplina atualizada com sucesso!");
@@ -341,7 +374,7 @@ public class EditarDisciplina extends javax.swing.JInternalFrame {
 
     private void jButtonSelecionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSelecionarActionPerformed
         disciplina = disciplinas.get(jComboBoxDisciplina.getSelectedIndex());
-        
+
         //Definir os valores dos campos de acordo com os dados da disciplina.
         jTextFieldNomeDisciplina.setText(disciplina.getNome());
         jTextFieldQtdAulasSemanais.setText(String.valueOf(disciplina.getQtdAulasSemanais()));

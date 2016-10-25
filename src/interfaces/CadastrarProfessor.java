@@ -37,7 +37,7 @@ public class CadastrarProfessor extends javax.swing.JInternalFrame {
     private void initComponents() {
 
         jTextFieldNomeProfessor = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
+        jLabelNomeProfessor = new javax.swing.JLabel();
         jButtonConfirmar = new javax.swing.JButton();
 
         setClosable(true);
@@ -57,7 +57,7 @@ public class CadastrarProfessor extends javax.swing.JInternalFrame {
             }
         });
 
-        jLabel1.setText("Nome completo do professor");
+        jLabelNomeProfessor.setText("Nome completo do professor");
 
         jButtonConfirmar.setText("Confirmar");
         jButtonConfirmar.addActionListener(new java.awt.event.ActionListener() {
@@ -77,7 +77,7 @@ public class CadastrarProfessor extends javax.swing.JInternalFrame {
                         .addComponent(jButtonConfirmar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(10, 10, 10)
-                        .addComponent(jLabel1)
+                        .addComponent(jLabelNomeProfessor)
                         .addGap(4, 4, 4)
                         .addComponent(jTextFieldNomeProfessor, javax.swing.GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE)))
                 .addGap(10, 10, 10))
@@ -89,7 +89,7 @@ public class CadastrarProfessor extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(3, 3, 3)
-                        .addComponent(jLabel1))
+                        .addComponent(jLabelNomeProfessor))
                     .addComponent(jTextFieldNomeProfessor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonConfirmar)
@@ -158,7 +158,7 @@ public class CadastrarProfessor extends javax.swing.JInternalFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonConfirmar;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabelNomeProfessor;
     private javax.swing.JTextField jTextFieldNomeProfessor;
     // End of variables declaration//GEN-END:variables
 }

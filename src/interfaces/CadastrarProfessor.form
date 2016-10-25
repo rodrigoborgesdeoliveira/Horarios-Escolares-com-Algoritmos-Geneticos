@@ -34,7 +34,7 @@
                   </Group>
                   <Group type="102" attributes="0">
                       <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
-                      <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                      <Component id="jLabelNomeProfessor" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
                       <Component id="jTextFieldNomeProfessor" pref="424" max="32767" attributes="0"/>
                   </Group>
@@ -50,7 +50,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <EmptySpace min="3" pref="3" max="-2" attributes="0"/>
-                      <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                      <Component id="jLabelNomeProfessor" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Component id="jTextFieldNomeProfessor" min="-2" max="-2" attributes="0"/>
               </Group>
@@ -68,7 +68,7 @@
         <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="jTextFieldNomeProfessorKeyPressed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JLabel" name="jLabel1">
+    <Component class="javax.swing.JLabel" name="jLabelNomeProfessor">
       <Properties>
         <Property name="text" type="java.lang.String" value="Nome completo do professor"/>
       </Properties>
