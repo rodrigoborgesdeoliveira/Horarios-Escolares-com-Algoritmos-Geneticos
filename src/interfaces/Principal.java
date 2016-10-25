@@ -150,6 +150,11 @@ public class Principal extends javax.swing.JFrame {
         jMenuGerenciarDisciplinas.add(jMenuItemListarDisciplinas);
 
         jMenuItemRemoverDisciplina.setText("Remover disciplina");
+        jMenuItemRemoverDisciplina.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemRemoverDisciplinaActionPerformed(evt);
+            }
+        });
         jMenuGerenciarDisciplinas.add(jMenuItemRemoverDisciplina);
 
         jMenuBarPrincipal.add(jMenuGerenciarDisciplinas);
@@ -575,6 +580,19 @@ public class Principal extends javax.swing.JFrame {
         }
         DataAccessObject.fecharConexao();
     }//GEN-LAST:event_jMenuItemRemoverTurmaActionPerformed
+
+    private void jMenuItemRemoverDisciplinaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemRemoverDisciplinaActionPerformed
+        DataAccessObject.abrirConexao();
+        if (!DataAccessObject.getDisciplinas().isEmpty()) {
+            RemoverDisciplina removerDisciplina = new RemoverDisciplina();
+            jDesktopPanePrincipal.add(removerDisciplina);
+            removerDisciplina.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(null, "É necessário cadastrar ao menos "
+                    + "uma disciplina primeiro.", "Nenhuma disciplina cadastrada", JOptionPane.ERROR_MESSAGE);
+        }
+        DataAccessObject.fecharConexao();
+    }//GEN-LAST:event_jMenuItemRemoverDisciplinaActionPerformed
 
     /**
      * @param args the command line arguments

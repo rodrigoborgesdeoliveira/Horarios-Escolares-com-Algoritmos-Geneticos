@@ -17,7 +17,7 @@ import javax.swing.UnsupportedLookAndFeelException;
  */
 public class GerenciarHorarios {
     public static void main(String[] args) {
-        //Utilizar a aparencia do sistema.
+        //Utilizar a aparência do sistema.
         String laf = UIManager.getSystemLookAndFeelClassName();
         try {
             UIManager.setLookAndFeel(laf);

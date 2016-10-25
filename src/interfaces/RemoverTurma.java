@@ -172,10 +172,13 @@ public class RemoverTurma extends javax.swing.JInternalFrame {
             //Apaga o horário da turma.
             DataAccessObject.removeHorarioByIDTurma(turma.getID());
         }
-        
+
         DataAccessObject.remove(turma); //Remover a turma da tabela turma.
 
         JOptionPane.showMessageDialog(null, "Turma removida com sucesso!");
+
+        turmas.remove(jComboBoxTurmas.getSelectedIndex());
+        jComboBoxTurmas.removeItemAt(jComboBoxTurmas.getSelectedIndex());
 
         DataAccessObject.fecharConexao();
     }//GEN-LAST:event_jButtonConfirmarActionPerformed

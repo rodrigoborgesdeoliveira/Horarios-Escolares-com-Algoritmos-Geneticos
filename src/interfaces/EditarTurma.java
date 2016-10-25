@@ -8,6 +8,7 @@ package interfaces;
 import database.DataAccessObject;
 import gerenciarhorarios.Aula;
 import gerenciarhorarios.Disciplina;
+import gerenciarhorarios.Professor;
 import gerenciarhorarios.Turma;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -411,6 +412,45 @@ public class EditarTurma extends javax.swing.JInternalFrame {
                             DataAccessObject.update(aula);
                         }
                     }
+
+                    //Se já tiver cadastrado um horário da turma antes, remover e editar as
+                    //restrições dos professores.
+                    if (DataAccessObject.turmaTemHorario(turma.getID())) {
+                        //Antes de remover, dizer que os professores possuem disponibilidade
+                        //nesses horários. 
+                        int turmaAcrescimo; //Acréscimo para definir as restrições de acordo com o turno.
+                        switch (turma.getTurno()) {
+                            case "Matutino":
+                                turmaAcrescimo = 0;
+                                break;
+                            case "Vespertino":
+                                turmaAcrescimo = 36;
+                                break;
+                            default:
+                                //Noturno.
+                                turmaAcrescimo = 72;
+                                break;
+                        }
+
+                        int[] horario = DataAccessObject.getHorarioTurma(turma.getID()).getHorarioTurma();
+                        for (int j = 0; j < horario.length; j++) {
+                            if (horario[j] == aulas.get(i).getIDDisciplina()) {
+                                //Se a aula for relacionada à disciplina a ser removida, editar restrição do professor.
+                                Professor professor = DataAccessObject.getProfessorByID(
+                                        DataAccessObject.getDisciplinaByID(aulas.get(i).getIDDisciplina())
+                                        .getIdProfessor());
+
+                                char[] restricoes = professor.getRestricoes();
+                                restricoes[j + turmaAcrescimo] = '0'; //Disponibilidade de horário.
+                                professor.setRestricoes(restricoes);
+                                DataAccessObject.update(professor);
+
+                                //Dizer que a aula ocupada pela disciplina no horário
+                                //agora é vaga.
+                                DataAccessObject.setAulaVaga(j, turma.getID());
+                            }
+                        }
+                    }
                 }
             }
 
@@ -567,6 +607,45 @@ public class EditarTurma extends javax.swing.JInternalFrame {
                         aula.setIDTurmaConjunta(0);
 
                         DataAccessObject.update(aula);
+                    }
+                }
+
+                //Se já tiver cadastrado um horário da turma antes, remover e editar as
+                //restrições dos professores.
+                if (DataAccessObject.turmaTemHorario(turma.getID())) {
+                    //Antes de remover, dizer que os professores possuem disponibilidade
+                    //nesses horários. 
+                    int turmaAcrescimo; //Acréscimo para definir as restrições de acordo com o turno.
+                    switch (turma.getTurno()) {
+                        case "Matutino":
+                            turmaAcrescimo = 0;
+                            break;
+                        case "Vespertino":
+                            turmaAcrescimo = 36;
+                            break;
+                        default:
+                            //Noturno.
+                            turmaAcrescimo = 72;
+                            break;
+                    }
+
+                    int[] horario = DataAccessObject.getHorarioTurma(turma.getID()).getHorarioTurma();
+                    for (int j = 0; j < horario.length; j++) {
+                        if (horario[j] == aulas.get(i).getIDDisciplina()) {
+                            //Se a aula for relacionada à disciplina a ser removida, editar restrição do professor.
+                            Professor professor = DataAccessObject.getProfessorByID(
+                                    DataAccessObject.getDisciplinaByID(aulas.get(i).getIDDisciplina())
+                                    .getIdProfessor());
+
+                            char[] restricoes = professor.getRestricoes();
+                            restricoes[j + turmaAcrescimo] = '0'; //Disponibilidade de horário.
+                            professor.setRestricoes(restricoes);
+                            DataAccessObject.update(professor);
+
+                            //Dizer que a aula ocupada pela disciplina no horário
+                            //agora é vaga.
+                            DataAccessObject.setAulaVaga(j, turma.getID());
+                        }
                     }
                 }
             }

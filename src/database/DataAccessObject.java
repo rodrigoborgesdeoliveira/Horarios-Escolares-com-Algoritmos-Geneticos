@@ -378,15 +378,9 @@ public class DataAccessObject {
             stmt = con.prepareStatement("SELECT * FROM horario WHERE turma_id = (?);");
             stmt.setInt(1, idTurma);
             rs = stmt.executeQuery();
-
+            
             while (rs.next()) {
-                if (rs.getString(3) == null) {
-                    //Se for nulo, não há disciplinas nessa posição do horário.
-                    //ID disciplina = 0.
-                    horario[rs.getInt(1)] = 0; //rs.getInt(1) = coluna posicao.                    
-                } else {
-                    horario[rs.getInt(1)] = rs.getInt(3); //rs.getInt(3) = coluna disciplina_id.
-                }
+                horario[rs.getInt(1)] = rs.getInt(3); //rs.getInt(3) = coluna disciplina_id.
             }
 
             turma.setHorarioTurma(horario);
@@ -728,7 +722,7 @@ public class DataAccessObject {
             if (aula.getIDTurmaConjunta() != 0) {
                 //Possui turma conjunta.
                 stmt.setInt(3, aula.getIDTurmaConjunta());
-            } else{
+            } else {
                 //Não possui.
                 stmt.setString(3, null);
             }
@@ -741,23 +735,40 @@ public class DataAccessObject {
                     + ex.getMessage(), "Erro no método updateAula", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
-    public static void update(Disciplina disciplina){
+
+    public static void update(Disciplina disciplina) {
         stmt = null;
         rs = null;
-        
-        try{
+
+        try {
             stmt = con.prepareStatement("UPDATE disciplina SET nome = ?, "
                     + "qtd_aulas_semanais = ?, professor_id = ? WHERE id = ?;");
             stmt.setString(1, disciplina.getNome());
             stmt.setInt(2, disciplina.getQtdAulasSemanais());
             stmt.setInt(3, disciplina.getIdProfessor());
             stmt.setInt(4, disciplina.getID());
-            
+
             stmt.executeUpdate();
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Não foi possível conectar ao banco de dados.\n"
                     + ex.getMessage(), "Erro no método updateDisciplina", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    public static void setAulaVaga(int posicao, int idTurma){
+        stmt = null;
+        rs = null;
+        
+        try {
+            stmt = con.prepareStatement("UPDATE horario SET disciplina_id = null "
+                    + "WHERE (posicao, turma_id) = (?,?);");
+            stmt.setInt(1, posicao);
+            stmt.setInt(2, idTurma);
+            
+            stmt.executeUpdate();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Não foi possível conectar ao banco de dados.\n"
+                    + ex.getMessage(), "Erro no método setAulaVaga", JOptionPane.ERROR_MESSAGE);
         }
     }
     
@@ -770,29 +781,75 @@ public class DataAccessObject {
                     + "= (?,?);");
             stmt.setInt(1, aula.getIDDisciplina());
             stmt.setInt(2, aula.getIDTurma());
-            
+
             stmt.executeUpdate();
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Não foi possível conectar ao banco de dados.\n"
                     + ex.getMessage(), "Erro no método removeAula", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
-    public static void remove(Turma turma){
+
+    public static void removeAulaByIDDisciplina(int idDisciplina) {
         stmt = null;
         rs = null;
-        
-        try{
+
+        try {
+            stmt = con.prepareStatement("DELETE FROM aula WHERE disciplina_id = ?;");
+            stmt.setInt(1, idDisciplina);
+
+            stmt.executeUpdate();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Não foi possível conectar ao banco de dados.\n"
+                    + ex.getMessage(), "Erro no método removeAulaByIDDisciplina", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public static void remove(Turma turma) {
+        stmt = null;
+        rs = null;
+
+        try {
             stmt = con.prepareStatement("DELETE FROM turma WHERE id = ?;");
             stmt.setInt(1, turma.getID());
-            
+
             stmt.executeUpdate();
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Não foi possível conectar ao banco de dados.\n"
                     + ex.getMessage(), "Erro no método removeTurma", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
+    public static void remove(Disciplina disciplina) {
+        stmt = null;
+        rs = null;
+
+        try {
+            stmt = con.prepareStatement("DELETE FROM disciplina WHERE id = ?;");
+            stmt.setInt(1, disciplina.getID());
+
+            stmt.executeUpdate();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Não foi possível conectar ao banco de dados.\n"
+                    + ex.getMessage(), "Erro no método removeDisciplina", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public static void removeIDDisciplinaFromHorario(int idDisciplina) {
+        stmt = null;
+        rs = null;
+
+        try {
+            stmt = con.prepareStatement("UPDATE horario SET disciplina_id = null "
+                    + "WHERE disciplina_id = ?;");
+            stmt.setInt(1, idDisciplina);
+
+            stmt.executeUpdate();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Não foi possível conectar ao banco de dados.\n"
+                    + ex.getMessage(), "Erro no método removeIDDisciplinaFromHorario", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     //Retorna as posições de uma disciplina nos horários de todas as turmas.
     public static ArrayList<Integer> getPosicoesHorarioByIDDisciplina(int idDisciplina) {
         PreparedStatement stmtHorario = null;
