@@ -833,6 +833,21 @@ public class DataAccessObject {
                     + ex.getMessage(), "Erro no método removeDisciplina", JOptionPane.ERROR_MESSAGE);
         }
     }
+    
+    public static void remove(Professor professor){
+        stmt = null;
+        rs = null;
+        
+        try{
+            stmt = con.prepareCall("DELETE FROM professor WHERE id = ?;");
+            stmt.setInt(1, professor.getID());
+            
+            stmt.executeUpdate();
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Não foi possível conectar ao banco de dados.\n"
+                    + ex.getMessage(), "Erro no método removeProfessor", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
     public static void removeIDDisciplinaFromHorario(int idDisciplina) {
         stmt = null;
