@@ -24,15 +24,13 @@ public class Individuo {
     //Cria um indivíduo a partir de outro indivíduo.
     public Individuo(Individuo individuoBase) {
         this.genes = new int[individuoBase.genes.length];
-        for (int i = 0; i < individuoBase.genes.length; i++) {
-            this.genes[i] = individuoBase.genes[i];
-        }
+        System.arraycopy(individuoBase.genes, 0, this.genes, 0, individuoBase.genes.length);
         this.idTurma = individuoBase.idTurma;
-        //aptidao = individuoBase.getAptidao();
+        aptidao = individuoBase.getAptidao();
         //alelos = new ArrayList<>(individuoBase.alelos);
         this.qtdAlelosVazios = individuoBase.qtdAlelosVazios;
-
-        geraAptidao();
+        
+        //geraAptidao();
     }
 
     //Cria um indivíduo aleatório.
@@ -96,7 +94,7 @@ public class Individuo {
         this.qtdAlelosVazios = qtdAlelosVazios;
 
         this.genes = genes;
-
+        
         //Faz ou não a mutação de um gene.
         if (r.nextDouble() <= Algoritmo.getTaxaMutacao()) {
             //Faz uma mutação de ordem, ou seja, dois genes aleatórios são trocados de posição entre si.
@@ -115,6 +113,7 @@ public class Individuo {
                 this.genes[posicaoAleatoria] = 0;
             }
         }
+        
         geraAptidao();
     }
 
@@ -170,7 +169,7 @@ public class Individuo {
 
                 if (idTurmaConjunta != 0) {
                     //Essa aula é conjunta com outra turma.
-                    
+
                     ArrayList<Integer> idsTurmasConjuntasVerificadas = new ArrayList<>();
                     //Marcar turma atual para não verificar.
                     idsTurmasConjuntasVerificadas.add(idTurma);
@@ -211,10 +210,12 @@ public class Individuo {
                                             aptidao += 3;
                                         }
                                     } else //Posição ímpar. Comparar com a posição anterior.
-                                     if (genes[i] != genes[i - 1]) {
+                                    {
+                                        if (genes[i] != genes[i - 1]) {
                                             //Penalizar se não for geminado.
                                             aptidao += 3;
                                         }
+                                    }
                                 }
                             } else if (DataAccessObject.getTurmaByID(idTurmaConjunta)
                                     .getSemAulasGeminadas()) {
@@ -230,10 +231,12 @@ public class Individuo {
                                             aptidao += 3;
                                         }
                                     } else //Posição ímpar. Comparar com a posição anterior.
-                                     if (genes[i] == genes[i - 1]) {
+                                    {
+                                        if (genes[i] == genes[i - 1]) {
                                             //Penalizar se não for geminado.
                                             aptidao += 3;
                                         }
+                                    }
                                 }
                             }
 
@@ -273,7 +276,8 @@ public class Individuo {
                                         }
                                     }
                                 } else //Noturno.
-                                 if ((i + 1) < genes.length) {
+                                {
+                                    if ((i + 1) < genes.length) {
                                         if (genes[i + 1] != genes[i] && (i / 4) == ((i + 1) / 4)) {
                                             //Possível janelamento.
                                             for (int j = i + 2; j < (4 * ((i / 4) + 1)); j++) {
@@ -285,6 +289,7 @@ public class Individuo {
                                             }
                                         }
                                     }
+                                }
                             }
                             //--------------------------------------------------
 
@@ -310,7 +315,7 @@ public class Individuo {
                         getIDsTurmasByIDTurmaConjuntaIDDisciplina(idTurma, genes[i]);
                 if (!idsTurmas.isEmpty()) {
                     //Turma atual é conjunta de outra turma na disciplina atual.
-                    
+
                     //Verificar se as turmas encontradas possuem horário.
                     for (Integer idsTurma : idsTurmas) {
                         if (DataAccessObject.turmaTemHorario(idsTurma)) {
@@ -345,10 +350,12 @@ public class Individuo {
                                             aptidao += 3;
                                         }
                                     } else //Posição ímpar. Comparar com a posição anterior.
-                                     if (genes[i] != genes[i - 1]) {
+                                    {
+                                        if (genes[i] != genes[i - 1]) {
                                             //Penalizar se não for geminado.
                                             aptidao += 3;
                                         }
+                                    }
                                 }
                             } else if (DataAccessObject.getTurmaByID(idsTurma)
                                     .getSemAulasGeminadas()) {
@@ -364,10 +371,12 @@ public class Individuo {
                                             aptidao += 3;
                                         }
                                     } else //Posição ímpar. Comparar com a posição anterior.
-                                     if (genes[i] == genes[i - 1]) {
+                                    {
+                                        if (genes[i] == genes[i - 1]) {
                                             //Penalizar se não for geminado.
                                             aptidao += 3;
                                         }
+                                    }
                                 }
                             }
 
@@ -407,7 +416,8 @@ public class Individuo {
                                         }
                                     }
                                 } else //Noturno.
-                                 if ((i + 1) < genes.length) {
+                                {
+                                    if ((i + 1) < genes.length) {
                                         if (genes[i + 1] != genes[i] && (i / 4) == ((i + 1) / 4)) {
                                             //Possível janelamento.
                                             for (int j = i + 2; j < (4 * ((i / 4) + 1)); j++) {
@@ -419,6 +429,7 @@ public class Individuo {
                                             }
                                         }
                                     }
+                                }
                             }
                         }
                     }

@@ -42,13 +42,13 @@ public class Algoritmo {
         if (elitismo) {
             novaPopulacao.setIndividuo(populacao.getMelhorIndividuo());
         }
-
+        long inicio = System.nanoTime();
         //Inserir novos indivíduos na nova população, até atingir o tamanho máximo.
         while (novaPopulacao.getNumIndividuos() < novaPopulacao.getTamPopulacao()) {
             //Seleciona o pais por seleção torneio.
             Individuo[] pais = new Individuo[2];
             pais = retornaIndividuos(selecaoTorneio(populacao));
-            
+
             Individuo[] filhos = new Individuo[2];
 
             //Faz ou não o cruzamento (crossover) segundo a taxa de crossover.
@@ -62,10 +62,12 @@ public class Algoritmo {
 
             //Adiciona os filhos na nova geração.
             novaPopulacao.setIndividuo(filhos[0]);
-            novaPopulacao.setIndividuo(filhos[1]);
+            novaPopulacao.setIndividuo(filhos[1]);            
         }
-        
+        long fim = System.nanoTime();
+        System.out.println("Duraçao = " + (fim / 1000000 - inicio / 1000000) + " ms.");
         novaPopulacao.ordenarPopulacao();
+        
         return novaPopulacao;
     }
 
@@ -86,11 +88,47 @@ public class Algoritmo {
         int[] genesFilho1 = genesPai1;
         int[] genesFilho2 = genesPai2;
 
-        //Realiza o corte e distribui os genes dos pais. 
-        //Genes entre pontoCorte1 e pontoCorte2.
-        for (int i = pontoCorte1; i < pontoCorte2; i++) {
-            genesFilho1[i] = genesPai2[i];
-            genesFilho2[i] = genesPai1[i];
+        //Verificar restrições dos professores das disciplinas.
+        int turmaAcrescimo; //Valor para comparação das restrições do professor de acordo com o turno. 
+        //Matutino = 0, Vespertino = 36 e Noturno = 72.
+        Turma turmaTemp = DataAccessObject.getTurmaByID(individuo1.getIDTurma());
+        switch (turmaTemp.getTurno()) {
+            case "Matutino":
+                turmaAcrescimo = 0;
+                break;
+            case "Vespertino":
+                turmaAcrescimo = 36;
+                break;
+            default:
+                //Noturno.
+                turmaAcrescimo = 72;
+                break;
+        }
+        //Distribui os genes dos pais.
+        for (int i = 0; i < genesFilho1.length; i++) {
+            if (genesFilho1[i] != 0) {
+                //ID do professor da disciplina na posição i do gene.
+                Disciplina disciplinaTemp = DataAccessObject.getDisciplinaByID(genesFilho1[i]);
+                int idProfessorTemp = disciplinaTemp.getIdProfessor();
+                //Se o professor possuir restrição nesse horário.
+                if (DataAccessObject.getProfessorByID(idProfessorTemp).getRestricoes()[i + turmaAcrescimo] == '1') {
+                    //Pegar o gene do outro pai.
+                    genesFilho1[i] = genesPai2[i];                    
+                }
+
+            }
+            
+            if (genesFilho2[i] != 0) {
+                //ID do professor da disciplina na posição i do gene.
+                Disciplina disciplinaTemp = DataAccessObject.getDisciplinaByID(genesFilho2[i]);
+                int idProfessorTemp = disciplinaTemp.getIdProfessor();
+                //Se o professor possuir restrição nesse horário.
+                if (DataAccessObject.getProfessorByID(idProfessorTemp).getRestricoes()[i + turmaAcrescimo] == '1') {
+                    //Pegar o gene do outro pai.
+                    genesFilho2[i] = genesPai1[i];
+                }
+
+            }
         }
 
         //Cria os novos indivíduos com os genes dos pais.
