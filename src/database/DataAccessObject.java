@@ -216,7 +216,7 @@ public class DataAccessObject {
         rs = null;
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM professor WHERE id LIKE ?;");
+            stmt = con.prepareStatement("SELECT * FROM professor WHERE id = ?;");
             stmt.setInt(1, id);
             rs = stmt.executeQuery();
 
@@ -230,7 +230,7 @@ public class DataAccessObject {
         } finally {
             //ConnectionFactory.closeConnection(con, stmt, rs);
         }
-
+        
         return professor;
     }
 
@@ -242,7 +242,7 @@ public class DataAccessObject {
         rs = null;
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM disciplina WHERE id LIKE ?;");
+            stmt = con.prepareStatement("SELECT * FROM disciplina WHERE id = ?;");
             stmt.setInt(1, id);
             rs = stmt.executeQuery();
 
@@ -255,7 +255,7 @@ public class DataAccessObject {
         } finally {
             //ConnectionFactory.closeConnection(con, stmt, rs);
         }
-
+        
         return disciplina;
     }
 
@@ -267,7 +267,7 @@ public class DataAccessObject {
         rs = null;
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM turma WHERE id LIKE ?;");
+            stmt = con.prepareStatement("SELECT * FROM turma WHERE id = ?;");
             stmt.setInt(1, id);
             rs = stmt.executeQuery();
 
@@ -285,7 +285,7 @@ public class DataAccessObject {
         } finally {
             //ConnectionFactory.closeConnection(con, stmt, rs);
         }
-
+        
         return turma;
     }
 
@@ -298,7 +298,7 @@ public class DataAccessObject {
         rs = null;
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM aula WHERE turma_id LIKE ?;");
+            stmt = con.prepareStatement("SELECT * FROM aula WHERE turma_id = ?;");
             stmt.setInt(1, id);
             rs = stmt.executeQuery();
 
@@ -320,7 +320,7 @@ public class DataAccessObject {
         } finally {
             //ConnectionFactory.closeConnection(con, stmt, rs);
         }
-
+        
         return aulas;
     }
 
@@ -333,7 +333,7 @@ public class DataAccessObject {
         rs = null;
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM aula WHERE disciplina_id LIKE ?;");
+            stmt = con.prepareStatement("SELECT * FROM aula WHERE disciplina_id = ?;");
             stmt.setInt(1, id);
             rs = stmt.executeQuery();
 
@@ -355,7 +355,7 @@ public class DataAccessObject {
         } finally {
             //ConnectionFactory.closeConnection(con, stmt, rs);
         }
-
+        
         return aulas;
     }
 
@@ -375,7 +375,7 @@ public class DataAccessObject {
         }
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM horario WHERE turma_id = (?);");
+            stmt = con.prepareStatement("SELECT * FROM horario WHERE turma_id = ?;");
             stmt.setInt(1, idTurma);
             rs = stmt.executeQuery();
             
@@ -388,7 +388,7 @@ public class DataAccessObject {
             JOptionPane.showMessageDialog(null, "Não foi possível conectar ao banco de dados.\n"
                     + ex.getMessage(), "Erro no método getHorarioTurma", JOptionPane.ERROR_MESSAGE);
         }
-
+        
         return turma;
     }
 
@@ -399,7 +399,7 @@ public class DataAccessObject {
         rs = null;
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM disciplina WHERE professor_id = (?);");
+            stmt = con.prepareStatement("SELECT * FROM disciplina WHERE professor_id = ?;");
             stmt.setInt(1, idProfessor);
             rs = stmt.executeQuery();
 
@@ -413,7 +413,7 @@ public class DataAccessObject {
             JOptionPane.showMessageDialog(null, "Não foi possível conectar ao banco de dados.\n"
                     + ex.getMessage(), "Erro no método getDisciplinasByIDProfessor", JOptionPane.ERROR_MESSAGE);
         }
-
+        
         return disciplinas;
     }
 
@@ -423,7 +423,7 @@ public class DataAccessObject {
         rs = null;
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM horario WHERE turma_id = (?);");
+            stmt = con.prepareStatement("SELECT * FROM horario WHERE turma_id = ?;");
             stmt.setInt(1, id);
             rs = stmt.executeQuery();
 
@@ -435,7 +435,7 @@ public class DataAccessObject {
             JOptionPane.showMessageDialog(null, "Não foi possível conectar ao banco de dados.\n"
                     + ex.getMessage(), "Erro no método turmaTemHorario", JOptionPane.ERROR_MESSAGE);
         }
-
+        
         return turmaTemHorario;
     }
 
@@ -462,7 +462,7 @@ public class DataAccessObject {
             JOptionPane.showMessageDialog(null, "Não foi possível conectar ao banco de dados.\n"
                     + ex.getMessage(), "Erro no método turmaExiste", JOptionPane.ERROR_MESSAGE);
         }
-
+        
         return turmaExiste;
     }
 
@@ -472,7 +472,7 @@ public class DataAccessObject {
 
         try {
             stmt = con.prepareStatement("DELETE FROM horario "
-                    + "WHERE turma_id = (?);");
+                    + "WHERE turma_id = ?;");
             stmt.setInt(1, id);
             stmt.executeUpdate();
         } catch (SQLException ex) {
@@ -490,8 +490,8 @@ public class DataAccessObject {
         rs = null;
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM professor ORDER BY nome ASC;"); //Pega todos os elementos da tabela professor
-            //com o nome em ordem crescente.
+            stmt = con.prepareStatement("SELECT * FROM professor ORDER BY nome ASC;"); //Pega todos os elementos 
+            //da tabela professor com o nome em ordem crescente.
             rs = stmt.executeQuery();
             while (rs.next()) { //Pegar os elementos do ResultSet e colocar no ArrayList.
                 professor = new Professor(rs.getString(2));
@@ -505,7 +505,7 @@ public class DataAccessObject {
         } finally {
             //ConnectionFactory.closeConnection(con, stmt, rs);
         }
-
+        
         return professores;
     }
 
@@ -518,8 +518,8 @@ public class DataAccessObject {
         rs = null;
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM disciplina ORDER BY nome ASC;"); //Pega todos os elementos da tabela disciplina
-            //com o nome em ordem crescente.
+            stmt = con.prepareStatement("SELECT * FROM disciplina ORDER BY nome ASC;"); //Pega todos os 
+            //elementos da tabela disciplina com o nome em ordem crescente.
             rs = stmt.executeQuery();
             while (rs.next()) { //Pegar os elementos do ResultSet e colocar no ArrayList.
                 disciplina = new Disciplina(rs.getString(2), rs.getInt(3), rs.getInt(4));
@@ -532,7 +532,7 @@ public class DataAccessObject {
         } finally {
             //ConnectionFactory.closeConnection(con, stmt, rs);
         }
-
+        
         return disciplinas;
     }
 
@@ -565,7 +565,7 @@ public class DataAccessObject {
         } finally {
             //ConnectionFactory.closeConnection(con, stmt, rs);
         }
-
+        
         return turmas;
     }
 
@@ -577,7 +577,7 @@ public class DataAccessObject {
         rs = null;
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM turma WHERE curso = (?) ORDER BY curso, ano, nome, turno ASC;");
+            stmt = con.prepareStatement("SELECT * FROM turma WHERE curso = ? ORDER BY curso, ano, nome, turno ASC;");
             stmt.setString(1, curso);
             rs = stmt.executeQuery();
 
@@ -594,7 +594,7 @@ public class DataAccessObject {
             JOptionPane.showMessageDialog(null, "Não foi possível conectar ao banco de dados.\n"
                     + ex.getMessage(), "Erro no método getTurmasByCurso", JOptionPane.ERROR_MESSAGE);
         }
-
+        
         return turmas;
     }
 
@@ -607,7 +607,7 @@ public class DataAccessObject {
         rs = null;
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM turma WHERE nivel_ensino = (?) ORDER BY curso, nivel_ensino,"
+            stmt = con.prepareStatement("SELECT * FROM turma WHERE nivel_ensino = ? ORDER BY curso, nivel_ensino,"
                     + " ano, nome, turno ASC;");
             stmt.setString(1, nivelEnsino);
             rs = stmt.executeQuery();
@@ -625,7 +625,7 @@ public class DataAccessObject {
             JOptionPane.showMessageDialog(null, "Não foi possível conectar ao banco de dados.\n"
                     + ex.getMessage(), "Erro no método getTurmasByNivelEnsino", JOptionPane.ERROR_MESSAGE);
         }
-
+        
         return turmas;
     }
 
@@ -658,7 +658,7 @@ public class DataAccessObject {
         } finally {
             //ConnectionFactory.closeConnection(con, stmt, rs);
         }
-
+        
         return aulas;
     }
 
@@ -872,7 +872,7 @@ public class DataAccessObject {
         ArrayList<Integer> posicoes = new ArrayList<>();
 
         try {
-            stmtHorario = con.prepareStatement("SELECT * FROM horario WHERE disciplina_id = (?);");
+            stmtHorario = con.prepareStatement("SELECT posicao,turma_id FROM horario WHERE disciplina_id = (?);");
             stmtHorario.setInt(1, idDisciplina);
             rsHorario = stmtHorario.executeQuery();
 
@@ -940,7 +940,7 @@ public class DataAccessObject {
             JOptionPane.showMessageDialog(null, "Não foi possível conectar ao banco de dados.\n"
                     + ex.getMessage(), "Erro no método getIDTurmaConjunta", JOptionPane.ERROR_MESSAGE);
         }
-
+        
         return idTurmaConjunta;
     }
 
@@ -964,7 +964,7 @@ public class DataAccessObject {
             JOptionPane.showMessageDialog(null, "Não foi possível conectar ao banco de dados.\n"
                     + ex.getMessage(), "Erro no método getIDsTurmasByIDTurmaConjunta", JOptionPane.ERROR_MESSAGE);
         }
-
+        
         return idsTurmas;
     }
 

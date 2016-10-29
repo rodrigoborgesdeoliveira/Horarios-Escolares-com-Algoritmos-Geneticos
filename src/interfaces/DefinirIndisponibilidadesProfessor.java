@@ -24,6 +24,8 @@ import javax.swing.table.DefaultTableModel;
 public class DefinirIndisponibilidadesProfessor extends javax.swing.JInternalFrame {
 
     ArrayList<Professor> professores = null;
+    
+    Professor professor = null; //Professor selecionado.
 
     /**
      * Creates new form DefinirIndisponibilidadesProfessor
@@ -63,6 +65,7 @@ public class DefinirIndisponibilidadesProfessor extends javax.swing.JInternalFra
         jLabel5 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTableNoturno = new javax.swing.JTable();
+        jButtonSelecionar = new javax.swing.JButton();
 
         setClosable(true);
         setIconifiable(true);
@@ -154,6 +157,13 @@ public class DefinirIndisponibilidadesProfessor extends javax.swing.JInternalFra
         });
         jScrollPane3.setViewportView(jTableNoturno);
 
+        jButtonSelecionar.setText("Selecionar");
+        jButtonSelecionar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonSelecionarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -172,11 +182,13 @@ public class DefinirIndisponibilidadesProfessor extends javax.swing.JInternalFra
                         .addGap(0, 228, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jComboBoxProfessor, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(jComboBoxProfessor, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButtonSelecionar, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
                                 .addComponent(jButtonConfirmar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -190,7 +202,8 @@ public class DefinirIndisponibilidadesProfessor extends javax.swing.JInternalFra
                 .addGap(23, 23, 23)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jComboBoxProfessor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jComboBoxProfessor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonSelecionar))
                 .addGap(16, 16, 16)
                 .addComponent(jLabel3)
                 .addGap(18, 18, 18)
@@ -216,8 +229,6 @@ public class DefinirIndisponibilidadesProfessor extends javax.swing.JInternalFra
     private void jButtonConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConfirmarActionPerformed
         DataAccessObject.abrirConexao();
 
-        int posProfessor = jComboBoxProfessor.getSelectedIndex(); //Posição do professor no ArrayList.        
-        Professor professor = professores.get(posProfessor); //Professor que terá restrições editadas.
         char[] restricoes = professor.getRestricoes(); //Restrições atuais do professor.
         int posRestricao = 0; //Posição da restrição a ser definida.
 
@@ -303,9 +314,65 @@ public class DefinirIndisponibilidadesProfessor extends javax.swing.JInternalFra
         DataAccessObject.fecharConexao();
     }//GEN-LAST:event_jButtonConfirmarActionPerformed
 
+    private void jButtonSelecionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSelecionarActionPerformed
+        professor = professores.get(jComboBoxProfessor.getSelectedIndex());
+        
+        char[] restricoes = professor.getRestricoes(); //Restrições atuais do professor.
+        int posRestricao = 0; //Posição da restrição a ser definida.
+
+        DefaultTableModel modelo = (DefaultTableModel) jTableMatutino.getModel(); //Modelo da tabela matutino.
+        
+        //Definição das restrições do turno matutino.
+        for (int i = 0; i < 6; i++) { //Colunas da tabela.
+            for (int j = 0; j < 6; j++) { //Linhas da tabela.
+                if (restricoes[posRestricao] == '1') {
+                    //Há restrição nessa posição.
+                    modelo.setValueAt(true, j, i);
+                } else { 
+                    //Não há restrição nessa posição.
+                    modelo.setValueAt(false, j, i);
+                }
+                posRestricao++;
+            }
+        }
+
+        modelo = (DefaultTableModel) jTableVespertino.getModel(); //Modelo da tabela vespertino.
+
+        //Definição das restrições do turno vespertino.
+        for (int i = 0; i < 6; i++) { //Colunas da tabela.
+            for (int j = 0; j < 6; j++) { //Linhas da tabela.
+                if (restricoes[posRestricao] == '1') {
+                    //Há restrição nessa posição.
+                    modelo.setValueAt(true, j, i);
+                } else { 
+                    //Não há restrição nessa posição.
+                    modelo.setValueAt(false, j, i);
+                }
+                posRestricao++;
+            }
+        }
+
+        modelo = (DefaultTableModel) jTableNoturno.getModel(); //Modelo da tabela noturno.
+
+        //Definição das restrições do turno noturno.
+        for (int i = 0; i < 6; i++) { //Colunas da tabela.
+            for (int j = 0; j < 4; j++) { //Linhas da tabela.
+                if (restricoes[posRestricao] == '1') {
+                    //Há restrição nessa posição.
+                    modelo.setValueAt(true, j, i);
+                } else { 
+                    //Não há restrição nessa posição.
+                    modelo.setValueAt(false, j, i);
+                }
+                posRestricao++;
+            }
+        }
+    }//GEN-LAST:event_jButtonSelecionarActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonConfirmar;
+    private javax.swing.JButton jButtonSelecionar;
     private javax.swing.JComboBox<String> jComboBoxProfessor;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

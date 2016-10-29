@@ -74,8 +74,8 @@ public class Algoritmo {
         Random r = new Random();
 
         //Sorteia o ponto de corte.
-//        int pontoCorte1 = r.nextInt((individuo1.getGenes().length / 2) - 2);
-//        int pontoCorte2 = r.nextInt((individuo1.getGenes().length / 2) - 2) + (individuo1.getGenes().length / 2);
+        int pontoCorte1 = r.nextInt((individuo1.getGenes().length / 2) - 2);
+        int pontoCorte2 = r.nextInt(individuo1.getGenes().length / 2) + (individuo1.getGenes().length / 2);
 
         Individuo[] filhos = new Individuo[2];
 
@@ -86,50 +86,11 @@ public class Algoritmo {
         //Possuirão os mesmos genes que o pai entre 0 e o pontoCorte1, e entre pontoCorte2 e o final.
         int[] genesFilho1 = genesPai1;
         int[] genesFilho2 = genesPai2;
-
-        //Verificar restrições dos professores das disciplinas.
-        int turmaAcrescimo; //Valor para comparação das restrições do professor de acordo com o turno. 
-        //Matutino = 0, Vespertino = 36 e Noturno = 72.
-        Turma turmaTemp = DataAccessObject.getTurmaByID(individuo1.getIDTurma());
-        switch (turmaTemp.getTurno()) {
-            case "Matutino":
-                turmaAcrescimo = 0;
-                break;
-            case "Vespertino":
-                turmaAcrescimo = 36;
-                break;
-            default:
-                //Noturno.
-                turmaAcrescimo = 72;
-                break;
-        }
         
         //Distribui os genes dos pais.
-        for (int i = 0; i < genesFilho1.length; i++) {
-            if (genesFilho1[i] != 0) {
-                //ID do professor da disciplina na posição i do gene.
-                Disciplina disciplinaTemp = DataAccessObject.getDisciplinaByID(genesFilho1[i]);                
-                int idProfessorTemp = disciplinaTemp.getIdProfessor();
-                //Se o professor possuir restrição nesse horário.
-                if (DataAccessObject.getProfessorByID(idProfessorTemp).getRestricoes()[i + turmaAcrescimo] == '1') {
-                    //Pegar o gene do outro pai.
-                    genesFilho1[i] = genesPai2[i];                    
-                }
-            }
-            
-            if (genesFilho2[i] != 0) {
-                //ID do professor da disciplina na posição i do gene.
-                Disciplina disciplinaTemp = DataAccessObject.getDisciplinaByID(genesFilho2[i]);
-                int idProfessorTemp = disciplinaTemp.getIdProfessor();
-                //Se o professor possuir restrição nesse horário.
-                if (DataAccessObject.getProfessorByID(idProfessorTemp).getRestricoes()[i + turmaAcrescimo] == '1') {
-                    //Pegar o gene do outro pai.
-                    genesFilho2[i] = genesPai1[i];
-                }
-            }
-
-//            genesFilho1[i] = genesPai2[i];
-//            genesFilho2[i] = genesPai1[i];
+        for (int i = pontoCorte1; i < pontoCorte2; i++) {
+            genesFilho1[i] = genesPai2[i];
+            genesFilho2[i] = genesPai1[i];
         }
 
         //Cria os novos indivíduos com os genes dos pais.

@@ -198,6 +198,7 @@ public class GerarHorarioTurma extends javax.swing.JInternalFrame {
         for (int i = 0; i < aulas.size(); i++) {
             disciplinas.add(DataAccessObject.getDisciplinaByID(aulas.get(i).getIDDisciplina()));
         }
+        long inicio = System.nanoTime();
         //Geração dos horários utilizando o algoritmo genético.
         Algoritmo.setTaxaCrossover(0.6); //60% de chance de realizar o cruzamento.
         Algoritmo.setTaxaMutacao(0.3); //30% de chance de mutar.
@@ -219,7 +220,7 @@ public class GerarHorarioTurma extends javax.swing.JInternalFrame {
         while (!(temSolucao || geracao > numMaxGeracoes)) {
             //Criar nova população para substituir a população inicial aleatória.
             populacao = new Populacao(Algoritmo.gerarNovaGeracao(populacao, elitismo));
-            
+
             System.out.println("Genes: ");
             for (int i = 0; i < populacao.getMelhorIndividuo().getGenes().length; i++) {
                 System.out.print(populacao.getMelhorIndividuo().getGenes()[i] + " ");
@@ -243,7 +244,16 @@ public class GerarHorarioTurma extends javax.swing.JInternalFrame {
                 DataAccessObject.abrirConexao();
             }
         }
-
+        long fim = System.nanoTime();
+        long duracao = (fim - inicio) / 1000000000; //Duraçao em segundos.
+        if (duracao < 60) {
+            System.out.println("Gerado em: " + duracao + " segundos.");
+        } else{
+            //Passou de um minuto.
+            int minutos = (int) (duracao/60);
+            int segundos = (int) (duracao - minutos*60);
+            System.out.println("Gerado em: " + minutos + " minutos e " + segundos + " segundos.");
+        }
         if (geracao >= numMaxGeracoes) {
             turma.setHorarioTurma(populacao.getMelhorIndividuo().getGenes());
             JOptionPane.showMessageDialog(null, "Nenhuma solução encontrada."

@@ -206,13 +206,13 @@ public class Individuo {
                                         //posição.
                                         if (genes[i] != genes[i + 1]) {
                                             //Penalizar se não for geminado.
-                                            aptidao += 3;
+                                            aptidao += 1;
                                         }
                                     } else //Posição ímpar. Comparar com a posição anterior.
                                     {
                                         if (genes[i] != genes[i - 1]) {
                                             //Penalizar se não for geminado.
-                                            aptidao += 3;
+                                            aptidao += 1;
                                         }
                                     }
                                 }
@@ -227,13 +227,13 @@ public class Individuo {
                                         //posição.
                                         if (genes[i] == genes[i + 1]) {
                                             //Penalizar se for geminado.
-                                            aptidao += 3;
+                                            aptidao += 1;
                                         }
                                     } else //Posição ímpar. Comparar com a posição anterior.
                                     {
                                         if (genes[i] == genes[i - 1]) {
                                             //Penalizar se não for geminado.
-                                            aptidao += 3;
+                                            aptidao += 1;
                                         }
                                     }
                                 }
@@ -246,12 +246,12 @@ public class Individuo {
                                 if (DataAccessObject.getTurmaByID(idTurmaConjunta)
                                         .getDiasSemana()[i / 6] == '0' && genes[i] != 0) {
                                     //Dia não disponível e aula não vaga, penalizar.
-                                    aptidao += 3;
+                                    aptidao += 4;
                                 }
                             } else if (DataAccessObject.getTurmaByID(idTurmaConjunta)
                                     .getDiasSemana()[i / 4] == '0' && genes[i] != 0) {
                                 //Dia não disponível e aula não vaga, penalizar.
-                                aptidao += 3;
+                                aptidao += 4;
                             }
 
                             //Validar janelamento entre disciplinas.
@@ -268,7 +268,7 @@ public class Individuo {
                                             for (int j = i + 2; j < (6 * ((i / 6) + 1)); j++) {
                                                 if (genes[j] == genes[i]) {
                                                     //Houve janelamento. Penalizar.
-                                                    aptidao += 3;
+                                                    aptidao += 1;
                                                     break;
                                                 }
                                             }
@@ -282,7 +282,7 @@ public class Individuo {
                                             for (int j = i + 2; j < (4 * ((i / 4) + 1)); j++) {
                                                 if (genes[j] == genes[i]) {
                                                     //Houve janelamento. Penalizar.
-                                                    aptidao += 3;
+                                                    aptidao += 1;
                                                     break;
                                                 }
                                             }
@@ -346,13 +346,13 @@ public class Individuo {
                                         //posição.
                                         if (genes[i] != genes[i + 1]) {
                                             //Penalizar se não for geminado.
-                                            aptidao += 3;
+                                            aptidao += 1;
                                         }
                                     } else //Posição ímpar. Comparar com a posição anterior.
                                     {
                                         if (genes[i] != genes[i - 1]) {
                                             //Penalizar se não for geminado.
-                                            aptidao += 3;
+                                            aptidao += 1;
                                         }
                                     }
                                 }
@@ -367,13 +367,13 @@ public class Individuo {
                                         //posição.
                                         if (genes[i] == genes[i + 1]) {
                                             //Penalizar se for geminado.
-                                            aptidao += 3;
+                                            aptidao += 1;
                                         }
                                     } else //Posição ímpar. Comparar com a posição anterior.
                                     {
                                         if (genes[i] == genes[i - 1]) {
                                             //Penalizar se não for geminado.
-                                            aptidao += 3;
+                                            aptidao += 1;
                                         }
                                     }
                                 }
@@ -386,12 +386,12 @@ public class Individuo {
                                 if (DataAccessObject.getTurmaByID(idsTurma)
                                         .getDiasSemana()[i / 6] == '0' && genes[i] != 0) {
                                     //Dia não disponível e aula não vaga, penalizar.
-                                    aptidao += 3;
+                                    aptidao += 4;
                                 }
                             } else if (DataAccessObject.getTurmaByID(idsTurma)
                                     .getDiasSemana()[i / 4] == '0' && genes[i] != 0) {
                                 //Dia não disponível e aula não vaga, penalizar.
-                                aptidao += 3;
+                                aptidao += 4;
                             }
 
                             //Validar janelamento entre disciplinas.
@@ -408,7 +408,7 @@ public class Individuo {
                                             for (int j = i + 2; j < (6 * ((i / 6) + 1)); j++) {
                                                 if (genes[j] == genes[i]) {
                                                     //Houve janelamento. Penalizar.
-                                                    aptidao += 3;
+                                                    aptidao += 1;
                                                     break;
                                                 }
                                             }
@@ -422,7 +422,7 @@ public class Individuo {
                                             for (int j = i + 2; j < (4 * ((i / 4) + 1)); j++) {
                                                 if (genes[j] == genes[i]) {
                                                     //Houve janelamento. Penalizar.
-                                                    aptidao += 3;
+                                                    aptidao += 1;
                                                     break;
                                                 }
                                             }
@@ -481,7 +481,7 @@ public class Individuo {
             for (int i = 0; i < genes.length; i += 2) {
                 if (genes[i] != genes[i + 1]) {
                     //Penalizar se não for geminado.
-                    aptidao += 3;
+                    aptidao += 1;
                 }
             }
         } else if (turmaTemp.getSemAulasGeminadas()) {
@@ -490,7 +490,7 @@ public class Individuo {
                 if (genes[i] != 0) {
                     if (genes[i] == genes[i + 1]) {
                         //Penalizar se for geminado.
-                        aptidao += 3;
+                        aptidao += 1;
                     }
                 }
             }
@@ -505,7 +505,7 @@ public class Individuo {
                     //Genes correspondentes ao dia.
                     if (turmaTemp.getDiasSemana()[i] == '0' && genes[j] != 0) {
                         //Dia não disponível e aula não vaga, penalizar.
-                        aptidao += 3;
+                        aptidao += 4;
                     }
                 }
             }
@@ -517,7 +517,7 @@ public class Individuo {
                     //Genes correspondentes ao dia.
                     if (turmaTemp.getDiasSemana()[i] == '0' && genes[j] != 0) {
                         //Dia não disponível e aula não vaga, penalizar.
-                        aptidao += 3;
+                        aptidao += 4;
                     }
                 }
             }
@@ -537,7 +537,7 @@ public class Individuo {
                             for (int k = j + 2; k < ((i * 6) + 6); k++) {
                                 //Busca do dia por uma aula não vaga após a aula vaga.
                                 if (genes[k] != 0) {
-                                    aptidao += 3;
+                                    aptidao += 1;
                                     break;
                                 }
                             }
@@ -557,7 +557,7 @@ public class Individuo {
                             for (int k = j + 2; k < ((i * 4) + 4); k++) {
                                 //Busca do dia por uma aula não vaga após a aula vaga.
                                 if (genes[k] != 0) {
-                                    aptidao += 3;
+                                    aptidao += 1;
                                     break;
                                 }
                             }
