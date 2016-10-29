@@ -42,7 +42,7 @@ public class Algoritmo {
         if (elitismo) {
             novaPopulacao.setIndividuo(populacao.getMelhorIndividuo());
         }
-        long inicio = System.nanoTime();
+        
         //Inserir novos indivíduos na nova população, até atingir o tamanho máximo.
         while (novaPopulacao.getNumIndividuos() < novaPopulacao.getTamPopulacao()) {
             //Seleciona o pais por seleção torneio.
@@ -64,8 +64,7 @@ public class Algoritmo {
             novaPopulacao.setIndividuo(filhos[0]);
             novaPopulacao.setIndividuo(filhos[1]);            
         }
-        long fim = System.nanoTime();
-        System.out.println("Duraçao = " + (fim / 1000000 - inicio / 1000000) + " ms.");
+        
         novaPopulacao.ordenarPopulacao();
         
         return novaPopulacao;
@@ -75,8 +74,8 @@ public class Algoritmo {
         Random r = new Random();
 
         //Sorteia o ponto de corte.
-        int pontoCorte1 = r.nextInt((individuo1.getGenes().length / 2) - 2) + 1;
-        int pontoCorte2 = r.nextInt((individuo1.getGenes().length / 2) - 2) + (individuo1.getGenes().length / 2);
+//        int pontoCorte1 = r.nextInt((individuo1.getGenes().length / 2) - 2);
+//        int pontoCorte2 = r.nextInt((individuo1.getGenes().length / 2) - 2) + (individuo1.getGenes().length / 2);
 
         Individuo[] filhos = new Individuo[2];
 
@@ -104,18 +103,18 @@ public class Algoritmo {
                 turmaAcrescimo = 72;
                 break;
         }
+        
         //Distribui os genes dos pais.
         for (int i = 0; i < genesFilho1.length; i++) {
             if (genesFilho1[i] != 0) {
                 //ID do professor da disciplina na posição i do gene.
-                Disciplina disciplinaTemp = DataAccessObject.getDisciplinaByID(genesFilho1[i]);
+                Disciplina disciplinaTemp = DataAccessObject.getDisciplinaByID(genesFilho1[i]);                
                 int idProfessorTemp = disciplinaTemp.getIdProfessor();
                 //Se o professor possuir restrição nesse horário.
                 if (DataAccessObject.getProfessorByID(idProfessorTemp).getRestricoes()[i + turmaAcrescimo] == '1') {
                     //Pegar o gene do outro pai.
                     genesFilho1[i] = genesPai2[i];                    
                 }
-
             }
             
             if (genesFilho2[i] != 0) {
@@ -127,8 +126,10 @@ public class Algoritmo {
                     //Pegar o gene do outro pai.
                     genesFilho2[i] = genesPai1[i];
                 }
-
             }
+
+//            genesFilho1[i] = genesPai2[i];
+//            genesFilho2[i] = genesPai1[i];
         }
 
         //Cria os novos indivíduos com os genes dos pais.

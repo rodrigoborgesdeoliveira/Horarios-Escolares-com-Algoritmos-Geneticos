@@ -169,7 +169,6 @@ public class Individuo {
 
                 if (idTurmaConjunta != 0) {
                     //Essa aula é conjunta com outra turma.
-
                     ArrayList<Integer> idsTurmasConjuntasVerificadas = new ArrayList<>();
                     //Marcar turma atual para não verificar.
                     idsTurmasConjuntasVerificadas.add(idTurma);
@@ -306,7 +305,7 @@ public class Individuo {
                                 sair = true;
                             }
                         }
-                    }
+                    }                   
                 }
 
                 //Verificar se turma atual é turma conjunta de alguma outra turma
@@ -435,7 +434,7 @@ public class Individuo {
                     }
                 }
                 //---------------------------------------------------------------------------------
-
+                
                 if (disciplinaConjunta == false) {
                     //Não possui turmas conjuntas que já definiram o horário.
 
@@ -463,7 +462,7 @@ public class Individuo {
                         aptidao += abs(10 * (ocorrencias - disciplinaTemp.getQtdAulasSemanais())); //Penaliza com 10+ pontos.
                     }
                     idsVerificados.add(disciplinaTemp.getID());
-                }
+                }                
             } else {
                 //Quantidade de genes vazios.
                 qtdGenesVazios++;
