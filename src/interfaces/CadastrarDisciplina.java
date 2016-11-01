@@ -191,6 +191,12 @@ public class CadastrarDisciplina extends javax.swing.JInternalFrame {
             Disciplina disciplina = new Disciplina(nomeDisciplina, cargaHorariaDisciplina, professores.get(posProfessor).getID());
 
             DataAccessObject.abrirConexao();
+            if (DataAccessObject.disciplinaExiste(disciplina)) {
+                //A disciplina já existe. Não cadastrar a disciplina.
+                JOptionPane.showMessageDialog(null, "A disciplina informada já existe para os valores"
+                        + " informados", "Disciplina já existe", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             DataAccessObject.insert(disciplina); //Insere a disciplina no banco de dados.
             DataAccessObject.fecharConexao();
 
@@ -235,6 +241,12 @@ public class CadastrarDisciplina extends javax.swing.JInternalFrame {
             Disciplina disciplina = new Disciplina(nomeDisciplina, cargaHorariaDisciplina, professores.get(posProfessor).getID());
 
             DataAccessObject.abrirConexao();
+            if (DataAccessObject.disciplinaExiste(disciplina)) {
+                //A disciplina já existe. Não cadastrar a disciplina.
+                JOptionPane.showMessageDialog(null, "A disciplina informada já existe para os valores"
+                        + " informados", "Disciplina já existe", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             DataAccessObject.insert(disciplina); //Insere a disciplina no banco de dados.
             DataAccessObject.fecharConexao();
 
@@ -278,6 +290,12 @@ public class CadastrarDisciplina extends javax.swing.JInternalFrame {
         Disciplina disciplina = new Disciplina(nomeDisciplina, cargaHorariaDisciplina, professores.get(posProfessor).getID());
 
         DataAccessObject.abrirConexao();
+        if (DataAccessObject.disciplinaExiste(disciplina)) {
+            //A disciplina já existe. Não cadastrar a disciplina.
+            JOptionPane.showMessageDialog(null, "A disciplina informada já existe para os valores"
+                    + " informados", "Disciplina já existe", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         DataAccessObject.insert(disciplina); //Insere a disciplina no banco de dados.
         DataAccessObject.fecharConexao();
 

@@ -33,7 +33,8 @@ public class RemoverDisciplina extends javax.swing.JInternalFrame {
 
         for (int i = 0; i < disciplinas.size(); i++) {
             jComboBoxDisciplinas.addItem(disciplinas.get(i).getNome() + " (Professor(a): "
-                    + DataAccessObject.getProfessorByID(disciplinas.get(i).getIdProfessor()).getNome() + ")");
+                    + DataAccessObject.getProfessorByID(disciplinas.get(i).getIdProfessor()).getNome() + ")"
+                    + " - " + disciplinas.get(i).getQtdAulasSemanais() + " aulas semanais");
         }
 
         DataAccessObject.fecharConexao();

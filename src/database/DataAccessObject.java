@@ -465,6 +465,31 @@ public class DataAccessObject {
         
         return turmaExiste;
     }
+    
+    public static boolean disciplinaExiste(Disciplina disciplina){
+        boolean disciplinaExiste = false;
+        stmt = null;
+        rs = null;
+        
+        try{
+            stmt = con.prepareStatement("SELECT * FROM disciplina "
+                    + "WHERE (nome,qtd_aulas_semanais,professor_id) = (?,?,?);");
+            stmt.setString(1, disciplina.getNome());
+            stmt.setInt(2, disciplina.getQtdAulasSemanais());
+            stmt.setInt(3, disciplina.getIdProfessor());
+            
+            rs = stmt.executeQuery();
+            
+            if(rs.next()){
+                disciplinaExiste = true;
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Não foi possível conectar ao banco de dados.\n"
+                    + ex.getMessage(), "Erro no método disciplinaExiste", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        return disciplinaExiste;
+    }
 
     public static void removeHorarioByIDTurma(int id) {
         stmt = null;
