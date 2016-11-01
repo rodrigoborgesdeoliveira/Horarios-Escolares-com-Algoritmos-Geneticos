@@ -194,7 +194,7 @@ public class CadastrarDisciplina extends javax.swing.JInternalFrame {
             if (DataAccessObject.disciplinaExiste(disciplina)) {
                 //A disciplina já existe. Não cadastrar a disciplina.
                 JOptionPane.showMessageDialog(null, "A disciplina informada já existe para os valores"
-                        + " informados", "Disciplina já existe", JOptionPane.ERROR_MESSAGE);
+                        + " informados.", "Disciplina já existe", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             DataAccessObject.insert(disciplina); //Insere a disciplina no banco de dados.
@@ -244,7 +244,7 @@ public class CadastrarDisciplina extends javax.swing.JInternalFrame {
             if (DataAccessObject.disciplinaExiste(disciplina)) {
                 //A disciplina já existe. Não cadastrar a disciplina.
                 JOptionPane.showMessageDialog(null, "A disciplina informada já existe para os valores"
-                        + " informados", "Disciplina já existe", JOptionPane.ERROR_MESSAGE);
+                        + " informados.", "Disciplina já existe", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             DataAccessObject.insert(disciplina); //Insere a disciplina no banco de dados.
@@ -293,7 +293,7 @@ public class CadastrarDisciplina extends javax.swing.JInternalFrame {
         if (DataAccessObject.disciplinaExiste(disciplina)) {
             //A disciplina já existe. Não cadastrar a disciplina.
             JOptionPane.showMessageDialog(null, "A disciplina informada já existe para os valores"
-                    + " informados", "Disciplina já existe", JOptionPane.ERROR_MESSAGE);
+                    + " informados.", "Disciplina já existe", JOptionPane.ERROR_MESSAGE);
             return;
         }
         DataAccessObject.insert(disciplina); //Insere a disciplina no banco de dados.
