@@ -200,13 +200,13 @@ public class GerarHorarioTurma extends javax.swing.JInternalFrame {
         }
         long inicio = System.nanoTime();
         //Geração dos horários utilizando o algoritmo genético.
-        Algoritmo.setTaxaCrossover(0.5); //60% de chance de realizar o cruzamento.
-        Algoritmo.setTaxaMutacao(0.05); //30% de chance de mutar.
+        Algoritmo.setTaxaCrossover(0.5); //50% de chance de realizar o cruzamento.
+        Algoritmo.setTaxaMutacao(0.35); //35% de chance de mutar.
 
         boolean elitismo = true; //Realizar elitismo (preservar melhor elitismo).
 
         int tamanhoPopulacao = 5; //Quantidade de indivíduos por população.
-        int numMaxGeracoes = 10000; //Número máximo de gerações.
+        int numMaxGeracoes = 30000; //Número máximo de gerações.
 
         //População inicial aleatória.
         Populacao populacao = new Populacao(tamanhoPopulacao, disciplinas, turma.getID());
