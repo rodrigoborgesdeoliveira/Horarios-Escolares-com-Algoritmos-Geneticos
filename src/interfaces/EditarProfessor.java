@@ -56,7 +56,7 @@ public class EditarProfessor extends javax.swing.JInternalFrame {
         setIconifiable(true);
         setMaximizable(true);
         setResizable(true);
-        setTitle("EditarProfessor");
+        setTitle("Editar Professor");
 
         jLabelProfessor.setText("Professor");
 
@@ -97,7 +97,7 @@ public class EditarProfessor extends javax.swing.JInternalFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabelProfessor)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBoxProfessores, 0, 420, Short.MAX_VALUE)
+                        .addComponent(jComboBoxProfessores, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonSelecionar))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
