@@ -323,6 +323,12 @@ public class HabilitarDesabilitarRestricoesTurma extends javax.swing.JInternalFr
     }//GEN-LAST:event_jButtonSelecionarActionPerformed
 
     private void jButtonConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConfirmarActionPerformed
+        if(turma == null){
+            JOptionPane.showMessageDialog(null, "Por favor, selecione uma turma primeiro.",
+                    "Nenhuma turma selecionada", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
         DataAccessObject.abrirConexao();
 
         //Atualizar janelamento de disciplinas na turma.

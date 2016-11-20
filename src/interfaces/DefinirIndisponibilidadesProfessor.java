@@ -228,6 +228,12 @@ public class DefinirIndisponibilidadesProfessor extends javax.swing.JInternalFra
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConfirmarActionPerformed
+        if(professor == null){
+            JOptionPane.showMessageDialog(null, "Por favor, selecione um professor primeiro.",
+                    "Nenhum professor selecionado", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
         DataAccessObject.abrirConexao();
 
         char[] restricoes = professor.getRestricoes(); //Restrições atuais do professor.

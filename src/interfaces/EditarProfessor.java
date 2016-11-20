@@ -137,6 +137,12 @@ public class EditarProfessor extends javax.swing.JInternalFrame {
 
     private void jTextFieldNomeProfessorKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldNomeProfessorKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            if (professor == null) {
+                JOptionPane.showMessageDialog(null, "Por favor, selecione um professor primeiro.",
+                        "Nenhum professor selecionado", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
             String nomeProfessor = jTextFieldNomeProfessor.getText();
 
             nomeProfessor = nomeProfessor.trim().replaceAll("\\s+", " "); //Remover espaços em branco
@@ -174,6 +180,12 @@ public class EditarProfessor extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jTextFieldNomeProfessorKeyPressed
 
     private void jButtonConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConfirmarActionPerformed
+        if (professor == null) {
+            JOptionPane.showMessageDialog(null, "Por favor, selecione um professor primeiro.",
+                    "Nenhum professor selecionado", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
         String nomeProfessor = jTextFieldNomeProfessor.getText();
 
         nomeProfessor = nomeProfessor.trim().replaceAll("\\s+", " "); //Remover espaços em branco

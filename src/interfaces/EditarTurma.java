@@ -332,6 +332,12 @@ public class EditarTurma extends javax.swing.JInternalFrame {
 
     private void jTextFieldNomeCursoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldNomeCursoKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            if (turma == null) {
+                JOptionPane.showMessageDialog(null, "Por favor, selecione uma turma primeiro.",
+                        "Nenhuma turma selecionada", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
             String nomeCurso = jTextFieldNomeCurso.getText();
             String nivelEnsino = (String) jComboBoxNivelEnsino.getSelectedItem();
             String nomeTurma = (String) jComboBoxNomeTurma.getSelectedItem();
@@ -529,6 +535,12 @@ public class EditarTurma extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButtonRemoverActionPerformed
 
     private void jButtonConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConfirmarActionPerformed
+        if (turma == null) {
+            JOptionPane.showMessageDialog(null, "Por favor, selecione uma turma primeiro.",
+                    "Nenhuma turma selecionada", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
         String nomeCurso = jTextFieldNomeCurso.getText();
         String nivelEnsino = (String) jComboBoxNivelEnsino.getSelectedItem();
         String nomeTurma = (String) jComboBoxNomeTurma.getSelectedItem();

@@ -189,6 +189,12 @@ public class EditarDisciplina extends javax.swing.JInternalFrame {
 
     private void jTextFieldNomeDisciplinaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldNomeDisciplinaKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) { //Se pressionar enter.
+            if (disciplina == null) {
+                JOptionPane.showMessageDialog(null, "Por favor, selecione uma disciplina primeiro.",
+                        "Nenhuma disciplina selecionada", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
             if (jTextFieldNomeDisciplina.getText().trim().isEmpty()
                     || jTextFieldQtdAulasSemanais.getText().trim().isEmpty()) {
                 if (jTextFieldNomeDisciplina.getText().trim().isEmpty()) { //Se campo nome da disciplina for vazio.
@@ -249,6 +255,12 @@ public class EditarDisciplina extends javax.swing.JInternalFrame {
 
     private void jTextFieldQtdAulasSemanaisKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldQtdAulasSemanaisKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) { //Se pressionar enter.
+            if (disciplina == null) {
+                JOptionPane.showMessageDialog(null, "Por favor, selecione uma disciplina primeiro.",
+                        "Nenhuma disciplina selecionada", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
             if (jTextFieldNomeDisciplina.getText().trim().isEmpty()
                     || jTextFieldQtdAulasSemanais.getText().trim().isEmpty()) {
                 if (jTextFieldNomeDisciplina.getText().trim().isEmpty()) { //Se campo nome da disciplina for vazio.
@@ -316,6 +328,12 @@ public class EditarDisciplina extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jComboBoxProfessorDisciplinaKeyPressed
 
     private void jButtonConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConfirmarActionPerformed
+        if (disciplina == null) {
+            JOptionPane.showMessageDialog(null, "Por favor, selecione uma disciplina primeiro.",
+                    "Nenhuma disciplina selecionada", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
         if (jTextFieldNomeDisciplina.getText().trim().isEmpty()
                 || jTextFieldQtdAulasSemanais.getText().trim().isEmpty()) {
             if (jTextFieldNomeDisciplina.getText().trim().isEmpty()) { //Se campo nome da disciplina for vazio.

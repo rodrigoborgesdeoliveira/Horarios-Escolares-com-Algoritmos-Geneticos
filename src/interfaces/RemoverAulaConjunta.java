@@ -180,6 +180,12 @@ public class RemoverAulaConjunta extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButtonSelecionarTurmaActionPerformed
 
     private void jButtonConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConfirmarActionPerformed
+        if(turma == null){
+            JOptionPane.showMessageDialog(null, "Por favor, selecione uma turma primeiro.",
+                    "Nenhuma turma selecionada", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
         DataAccessObject.abrirConexao();
         
         Aula aula = new Aula();
