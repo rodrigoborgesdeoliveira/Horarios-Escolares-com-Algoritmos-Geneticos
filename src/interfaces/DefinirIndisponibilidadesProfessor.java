@@ -374,6 +374,8 @@ public class DefinirIndisponibilidadesProfessor extends javax.swing.JInternalFra
                 posRestricao++;
             }
         }
+        
+        professor = null;
     }//GEN-LAST:event_jButtonSelecionarActionPerformed
 
 

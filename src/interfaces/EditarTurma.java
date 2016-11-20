@@ -487,6 +487,8 @@ public class EditarTurma extends javax.swing.JInternalFrame {
             disciplinasTurma.clear(); //Esvazia a lista.
             aulas.clear();
             jTextFieldNomeCurso.setText("");
+            
+            turma = null;
         }
     }//GEN-LAST:event_jTextFieldNomeCursoKeyPressed
 
@@ -690,6 +692,8 @@ public class EditarTurma extends javax.swing.JInternalFrame {
         disciplinasTurma.clear(); //Esvazia a lista.
         aulas.clear();
         jTextFieldNomeCurso.setText("");
+        
+        turma = null;
     }//GEN-LAST:event_jButtonConfirmarActionPerformed
 
 

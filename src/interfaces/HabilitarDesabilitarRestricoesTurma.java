@@ -408,6 +408,8 @@ public class HabilitarDesabilitarRestricoesTurma extends javax.swing.JInternalFr
         JOptionPane.showMessageDialog(null, "Restrições atualizadas com sucesso!");
 
         DataAccessObject.fecharConexao();
+        
+        turma = null;
     }//GEN-LAST:event_jButtonConfirmarActionPerformed
 
     private void jRadioButtonJanelamentoDisciplinasHabilitarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButtonJanelamentoDisciplinasHabilitarActionPerformed

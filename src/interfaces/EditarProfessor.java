@@ -176,6 +176,8 @@ public class EditarProfessor extends javax.swing.JInternalFrame {
             }
 
             jTextFieldNomeProfessor.requestFocus();
+            
+            professor = null;
         }
     }//GEN-LAST:event_jTextFieldNomeProfessorKeyPressed
 
@@ -219,6 +221,8 @@ public class EditarProfessor extends javax.swing.JInternalFrame {
         }
 
         jTextFieldNomeProfessor.requestFocus();
+        
+        professor = null;
     }//GEN-LAST:event_jButtonConfirmarActionPerformed
 
     private void jButtonSelecionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSelecionarActionPerformed

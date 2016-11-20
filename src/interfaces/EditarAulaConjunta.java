@@ -271,6 +271,9 @@ public class EditarAulaConjunta extends javax.swing.JInternalFrame {
         turmasConjuntas.clear();
 
         DataAccessObject.fecharConexao();
+        
+        turma = null;
+        disciplinaSelecionada = null;
     }//GEN-LAST:event_jButtonConfirmarActionPerformed
 
 

@@ -201,6 +201,8 @@ public class RemoverAulaConjunta extends javax.swing.JInternalFrame {
         disciplinas.clear();
         
         DataAccessObject.fecharConexao();
+        
+        turma = null;
     }//GEN-LAST:event_jButtonConfirmarActionPerformed
 
 

@@ -250,6 +250,8 @@ public class EditarDisciplina extends javax.swing.JInternalFrame {
             jTextFieldQtdAulasSemanais.setText("");
 
             jTextFieldNomeDisciplina.requestFocus();
+            
+            disciplina = null;
         }
     }//GEN-LAST:event_jTextFieldNomeDisciplinaKeyPressed
 
@@ -316,6 +318,8 @@ public class EditarDisciplina extends javax.swing.JInternalFrame {
             jTextFieldQtdAulasSemanais.setText("");
 
             jTextFieldNomeDisciplina.requestFocus();
+            
+            disciplina = null;
         }
     }//GEN-LAST:event_jTextFieldQtdAulasSemanaisKeyPressed
 
@@ -389,6 +393,8 @@ public class EditarDisciplina extends javax.swing.JInternalFrame {
         jTextFieldQtdAulasSemanais.setText("");
 
         jTextFieldNomeDisciplina.requestFocus();
+        
+        disciplina = null;
     }//GEN-LAST:event_jButtonConfirmarActionPerformed
 
     private void jButtonSelecionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSelecionarActionPerformed
