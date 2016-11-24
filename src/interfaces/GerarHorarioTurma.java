@@ -30,7 +30,7 @@ public class GerarHorarioTurma extends javax.swing.JInternalFrame {
 
     ArrayList<Turma> turmas = new ArrayList<>();
     Turma turma = null;
-
+    
     /**
      * Creates new form GerarHorario
      */
@@ -68,6 +68,7 @@ public class GerarHorarioTurma extends javax.swing.JInternalFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         jTableHorario = new javax.swing.JTable();
         jButtonConfirmar = new javax.swing.JButton();
+        jProgressBarGerarHorarioTurma = new javax.swing.JProgressBar();
 
         setClosable(true);
         setIconifiable(true);
@@ -121,6 +122,8 @@ public class GerarHorarioTurma extends javax.swing.JInternalFrame {
             }
         });
 
+        jProgressBarGerarHorarioTurma.setIndeterminate(true);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -135,7 +138,9 @@ public class GerarHorarioTurma extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonGerar, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap()
+                        .addComponent(jProgressBarGerarHorarioTurma, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButtonConfirmar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
@@ -156,14 +161,23 @@ public class GerarHorarioTurma extends javax.swing.JInternalFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(15, 15, 15)
-                .addComponent(jButtonConfirmar)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButtonConfirmar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jProgressBarGerarHorarioTurma, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+      
     private void jButtonGerarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGerarActionPerformed
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                
+            }
+        });
+        
         DataAccessObject.abrirConexao();
 
         turma = turmas.get(jComboBoxTurmas.getSelectedIndex()); //Turma selecionada.
@@ -248,10 +262,10 @@ public class GerarHorarioTurma extends javax.swing.JInternalFrame {
         long duracao = (fim - inicio) / 1000000000; //Duraçao em segundos.
         if (duracao < 60) {
             System.out.println("Gerado em: " + duracao + " segundos.");
-        } else{
+        } else {
             //Passou de um minuto.
-            int minutos = (int) (duracao/60);
-            int segundos = (int) (duracao - minutos*60);
+            int minutos = (int) (duracao / 60);
+            int segundos = (int) (duracao - minutos * 60);
             System.out.println("Gerado em: " + minutos + " minutos e " + segundos + " segundos.");
         }
         if (geracao >= numMaxGeracoes) {
@@ -373,12 +387,13 @@ public class GerarHorarioTurma extends javax.swing.JInternalFrame {
         DataAccessObject.fecharConexao();
     }//GEN-LAST:event_jButtonConfirmarActionPerformed
 
-
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonConfirmar;
     private javax.swing.JButton jButtonGerar;
     private javax.swing.JComboBox<String> jComboBoxTurmas;
     private javax.swing.JLabel jLabelTurma;
+    private javax.swing.JProgressBar jProgressBarGerarHorarioTurma;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTableHorario;
     // End of variables declaration//GEN-END:variables

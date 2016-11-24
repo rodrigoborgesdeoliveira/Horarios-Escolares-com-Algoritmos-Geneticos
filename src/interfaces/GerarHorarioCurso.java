@@ -291,22 +291,47 @@ public class GerarHorarioCurso extends javax.swing.JInternalFrame {
                 DataAccessObject.abrirConexao();
                 ordenarTurmasSelecionadas(); //Organizar as turmas selecionadas
                 //pela quantidade de restrições, do maior para o menor.
-                
+
+                long inicio = System.nanoTime();
+
                 for (int i = 0; i < turmasSelecionadas.size(); i++) {
                     Turma turma = turmasSelecionadas.get(i); //Turma selecionada.
                     if (DataAccessObject.turmaTemHorario(turma.getID())) {
                         //Turma já possui horário cadastrado.
                         Object[] opcoes = {"Sim", "Não"};
-                        int opcao = JOptionPane.showOptionDialog(null, "Uma das turmas selecionadas já possui "
-                                + "um horário definido. \nPara que o horário seja gerado corretamente, "
-                                + "por favor, remova-o primeiro através da opção "
-                                + "'Remover horário' localizada no menu 'Gerenciar horários'."
-                                + "\nDeseja continuar mesmo assim?",
-                                "Horário da turma já cadastrado", JOptionPane.DEFAULT_OPTION,
-                                JOptionPane.WARNING_MESSAGE, null, opcoes, opcoes[0]);
-                        if (opcao != 0) {
-                            //Se não pressionar a opção sim.
-                            return; //Interromper execução da geração de horários.
+                        if (turma.getNivelEnsino().equals("Superior")) {
+                            // Nível superior.
+
+                            int opcao = JOptionPane.showOptionDialog(null, "A turma (Curso: "
+                                    + turma.getCurso() + " | Nível de ensino: "
+                                    + turma.getNivelEnsino() + " | Turma: " + turma.getNome()
+                                    + " | Semestre: " + turma.getAno() + " | Turno: " + turma.getTurno() + ") já possui "
+                                    + "um horário definido. \nPara que o horário seja gerado corretamente, "
+                                    + "por favor, remova-o primeiro através da opção "
+                                    + "'Remover horário' localizada no menu 'Gerenciar horários'."
+                                    + "\nDeseja continuar mesmo assim?",
+                                    "Horário da turma já cadastrado", JOptionPane.DEFAULT_OPTION,
+                                    JOptionPane.WARNING_MESSAGE, null, opcoes, opcoes[0]);
+                            if (opcao != 0) {
+                                //Se não pressionar a opção sim.
+                                return; //Interromper execução da geração de horários.
+                            }
+                        } else {
+                            // Nível fundamental ou médio.
+
+                            int opcao = JOptionPane.showOptionDialog(null, "A turma (Nível de ensino: "
+                                    + turma.getNivelEnsino() + " | Turma: " + turma.getNome()
+                                    + " | Série: " + turma.getAno() + " | Turno: " + turma.getTurno() + ") já possui "
+                                    + "um horário definido. \nPara que o horário seja gerado corretamente, "
+                                    + "por favor, remova-o primeiro através da opção "
+                                    + "'Remover horário' localizada no menu 'Gerenciar horários'."
+                                    + "\nDeseja continuar mesmo assim?",
+                                    "Horário da turma já cadastrado", JOptionPane.DEFAULT_OPTION,
+                                    JOptionPane.WARNING_MESSAGE, null, opcoes, opcoes[0]);
+                            if (opcao != 0) {
+                                //Se não pressionar a opção sim.
+                                return; //Interromper execução da geração de horários.
+                            }
                         }
                     }
 
@@ -440,6 +465,16 @@ public class GerarHorarioCurso extends javax.swing.JInternalFrame {
                                 + "'\nArmazenado a solução mais adequada.");
                     }
                 }
+                long fim = System.nanoTime();
+                long duracao = (fim - inicio) / 1000000000; //Duraçao em segundos.
+                if (duracao < 60) {
+                    System.out.println("Gerado em: " + duracao + " segundos.");
+                } else {
+                    //Passou de um minuto.
+                    int minutos = (int) (duracao / 60);
+                    int segundos = (int) (duracao - minutos * 60);
+                    System.out.println("Gerado em: " + minutos + " minutos e " + segundos + " segundos.");
+                }
 
                 JOptionPane.showMessageDialog(null, "Horários gerados e armazenados "
                         + "com sucesso!");
@@ -452,8 +487,8 @@ public class GerarHorarioCurso extends javax.swing.JInternalFrame {
             DataAccessObject.abrirConexao();
             turmasSelecionadas = DataAccessObject.getTurmasByNivelEnsino(nivelSelecionado);
             ordenarTurmasSelecionadas(); //Organizar as turmas selecionadas
-                //pela quantidade de restrições, do maior para o menor.
-                
+            //pela quantidade de restrições, do maior para o menor.
+
             for (int i = 0; i < turmasSelecionadas.size(); i++) {
                 Turma turma = turmasSelecionadas.get(i); //Turma selecionada.
                 if (DataAccessObject.turmaTemHorario(turma.getID())) {
@@ -605,7 +640,7 @@ public class GerarHorarioCurso extends javax.swing.JInternalFrame {
 
             JOptionPane.showMessageDialog(null, "Horários gerados e armazenados "
                     + "com sucesso!");
-            
+
             //Limpar campos.
             jComboBoxCurso.removeAllItems();
             jComboBoxTurmas.removeAllItems();
@@ -614,51 +649,51 @@ public class GerarHorarioCurso extends javax.swing.JInternalFrame {
             DataAccessObject.fecharConexao();
         }
     }//GEN-LAST:event_jButtonGerarActionPerformed
-    
+
     //Organiza as turmas selecionadas pela quantidade de restrições, do maior 
     //para o menor.
-    private void ordenarTurmasSelecionadas(){
+    private void ordenarTurmasSelecionadas() {
         int qtdRestricoesTurmaAnterior = 0, qtdRestricoesTurmaAtual = 0;
         boolean trocou;
         do {
             trocou = false;
             for (int i = 1; i < turmasSelecionadas.size(); i++) {
                 //Contagem de restrições da turma anterior.
-                if(!turmasSelecionadas.get(i-1).getJanelamentoDisciplinas()){
+                if (!turmasSelecionadas.get(i - 1).getJanelamentoDisciplinas()) {
                     //Possui restrição de janelamento de disciplinas.
                     qtdRestricoesTurmaAnterior++;
                 }
-                char[] diasSemana = turmasSelecionadas.get(i-1).getDiasSemana();
+                char[] diasSemana = turmasSelecionadas.get(i - 1).getDiasSemana();
                 for (int j = 0; j < diasSemana.length; j++) {
-                    if(diasSemana[j] == '0'){
+                    if (diasSemana[j] == '0') {
                         //Possui restrição nesse dia.
                         qtdRestricoesTurmaAnterior++;
-                    }                    
+                    }
                 }
-                if(turmasSelecionadas.get(i-1).getAulasGeminadas() || 
-                        turmasSelecionadas.get(i-1).getSemAulasGeminadas()){
+                if (turmasSelecionadas.get(i - 1).getAulasGeminadas()
+                        || turmasSelecionadas.get(i - 1).getSemAulasGeminadas()) {
                     //Possui restrição de aulas geminadas.
                     qtdRestricoesTurmaAnterior++;
                 }
-                
+
                 //Contagem de restrições da turma atual.
-                if(!turmasSelecionadas.get(i).getJanelamentoDisciplinas()){
+                if (!turmasSelecionadas.get(i).getJanelamentoDisciplinas()) {
                     //Possui restrição de janelamento de disciplinas.
                     qtdRestricoesTurmaAtual++;
                 }
                 diasSemana = turmasSelecionadas.get(i).getDiasSemana();
                 for (int j = 0; j < diasSemana.length; j++) {
-                    if(diasSemana[j] == '0'){
+                    if (diasSemana[j] == '0') {
                         //Possui restrição nesse dia.
                         qtdRestricoesTurmaAtual++;
-                    }                    
+                    }
                 }
-                if(turmasSelecionadas.get(i).getAulasGeminadas() || 
-                        turmasSelecionadas.get(i).getSemAulasGeminadas()){
+                if (turmasSelecionadas.get(i).getAulasGeminadas()
+                        || turmasSelecionadas.get(i).getSemAulasGeminadas()) {
                     //Possui restrição de aulas geminadas.
                     qtdRestricoesTurmaAtual++;
                 }
-                
+
                 if (qtdRestricoesTurmaAnterior < qtdRestricoesTurmaAtual) {
                     Turma temp = turmasSelecionadas.get(i);
                     turmasSelecionadas.set(i, turmasSelecionadas.get(i - 1));
