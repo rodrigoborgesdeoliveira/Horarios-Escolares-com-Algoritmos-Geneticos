@@ -316,7 +316,8 @@ public class DefinirIndisponibilidadesProfessor extends javax.swing.JInternalFra
         
         professor.setRestricoes(restricoes); //Define as novas restrições do professor.
         DataAccessObject.update(professor); //Atualiza o professor no banco de dados.
-
+        
+        professor = null;
         JOptionPane.showMessageDialog(null, "Restrições atualizadas com sucesso!");
         DataAccessObject.fecharConexao();
     }//GEN-LAST:event_jButtonConfirmarActionPerformed
@@ -374,8 +375,6 @@ public class DefinirIndisponibilidadesProfessor extends javax.swing.JInternalFra
                 posRestricao++;
             }
         }
-        
-        professor = null;
     }//GEN-LAST:event_jButtonSelecionarActionPerformed
 
 
