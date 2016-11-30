@@ -19,6 +19,8 @@ import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.event.InternalFrameAdapter;
+import javax.swing.event.InternalFrameEvent;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -35,13 +37,22 @@ public class GerarHorarioCurso extends javax.swing.JInternalFrame {
     String nivelSelecionado; //Nível de ensino selecionado.
     DefaultListModel listModel = new DefaultListModel(); //Modelo para o JList.
 
+    Thread T1;
+
     /**
      * Creates new form GerarHorarioCurso
      */
     public GerarHorarioCurso() {
         initComponents();
+        jProgressBarGeracaoCurso.setVisible(false);
 
         jListTurmas.setModel(listModel);
+
+        addInternalFrameListener(new InternalFrameAdapter() {
+            public void internalFrameClosing(InternalFrameEvent e) {
+                T1.stop();
+            }
+        });
     }
 
     /**
@@ -67,6 +78,7 @@ public class GerarHorarioCurso extends javax.swing.JInternalFrame {
         jLabelNivelEnsino = new javax.swing.JLabel();
         jComboBoxNivelEnsino = new javax.swing.JComboBox<>();
         jButtonSelecionarNivelEnsino = new javax.swing.JButton();
+        jProgressBarGeracaoCurso = new javax.swing.JProgressBar();
 
         setClosable(true);
         setIconifiable(true);
@@ -119,21 +131,24 @@ public class GerarHorarioCurso extends javax.swing.JInternalFrame {
             }
         });
 
+        jProgressBarGeracaoCurso.setIndeterminate(true);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButtonGerar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jSeparator1))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(19, 19, 19)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jProgressBarGeracaoCurso, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButtonGerar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabelNivelEnsino)
@@ -146,7 +161,9 @@ public class GerarHorarioCurso extends javax.swing.JInternalFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(jButtonSelecionarNivelEnsino, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(jButtonSelecionarCurso, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                            .addComponent(jLabelTurmasCurso)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabelTurmasCurso)
+                                .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 690, Short.MAX_VALUE)
@@ -184,7 +201,9 @@ public class GerarHorarioCurso extends javax.swing.JInternalFrame {
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jButtonRemover))
                 .addGap(30, 30, 30)
-                .addComponent(jButtonGerar)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButtonGerar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jProgressBarGeracaoCurso, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -282,46 +301,225 @@ public class GerarHorarioCurso extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButtonRemoverActionPerformed
 
     private void jButtonGerarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGerarActionPerformed
-        if (nivelSelecionado.equals("Superior")) {
-            if (listModel.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Selecione pelo menos uma turma "
-                        + "para gerar o horário.", "Nenhuma turma selecionada", JOptionPane.ERROR_MESSAGE);
-            } else {
-                //Gerar o horário das turmas.
-                DataAccessObject.abrirConexao();
-                ordenarTurmasSelecionadas(); //Organizar as turmas selecionadas
-                //pela quantidade de restrições, do maior para o menor.
+        jProgressBarGeracaoCurso.setVisible(true);
+        jButtonGerar.setEnabled(false);
+        //Executor executor = java.util.concurrent.Executors.newSingleThreadExecutor();
+        T1 = new Thread(new Runnable() {
+            public void run() {
 
-                long inicio = System.nanoTime();
+                if (nivelSelecionado.equals("Superior")) {
+                    if (listModel.isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "Selecione pelo menos uma turma "
+                                + "para gerar o horário.", "Nenhuma turma selecionada", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        //Gerar o horário das turmas.
+                        DataAccessObject.abrirConexao();
+                        ordenarTurmasSelecionadas(); //Organizar as turmas selecionadas
+                        //pela quantidade de restrições, do maior para o menor.
 
-                for (int i = 0; i < turmasSelecionadas.size(); i++) {
-                    Turma turma = turmasSelecionadas.get(i); //Turma selecionada.
-                    if (DataAccessObject.turmaTemHorario(turma.getID())) {
-                        //Turma já possui horário cadastrado.
-                        Object[] opcoes = {"Sim", "Não"};
-                        if (turma.getNivelEnsino().equals("Superior")) {
-                            // Nível superior.
+                        long inicio = System.nanoTime();
 
-                            int opcao = JOptionPane.showOptionDialog(null, "A turma (Curso: "
-                                    + turma.getCurso() + " | Nível de ensino: "
-                                    + turma.getNivelEnsino() + " | Turma: " + turma.getNome()
-                                    + " | Semestre: " + turma.getAno() + " | Turno: " + turma.getTurno() + ") já possui "
-                                    + "um horário definido. \nPara que o horário seja gerado corretamente, "
-                                    + "por favor, remova-o primeiro através da opção "
-                                    + "'Remover horário' localizada no menu 'Gerenciar horários'."
-                                    + "\nDeseja continuar mesmo assim?",
-                                    "Horário da turma já cadastrado", JOptionPane.DEFAULT_OPTION,
-                                    JOptionPane.WARNING_MESSAGE, null, opcoes, opcoes[0]);
-                            if (opcao != 0) {
-                                //Se não pressionar a opção sim.
-                                return; //Interromper execução da geração de horários.
+                        for (int i = 0; i < turmasSelecionadas.size(); i++) {
+                            Turma turma = turmasSelecionadas.get(i); //Turma selecionada.
+                            if (DataAccessObject.turmaTemHorario(turma.getID())) {
+                                //Turma já possui horário cadastrado.
+                                Object[] opcoes = {"Sim", "Não"};
+                                if (turma.getNivelEnsino().equals("Superior")) {
+                                    // Nível superior.
+
+                                    int opcao = JOptionPane.showOptionDialog(null, "A turma (Curso: "
+                                            + turma.getCurso() + " | Nível de ensino: "
+                                            + turma.getNivelEnsino() + " | Turma: " + turma.getNome()
+                                            + " | Semestre: " + turma.getAno() + " | Turno: " + turma.getTurno() + ") já possui "
+                                            + "um horário definido. \nPara que o horário seja gerado corretamente, "
+                                            + "por favor, remova-o primeiro através da opção "
+                                            + "'Remover horário' localizada no menu 'Gerenciar horários'."
+                                            + "\nDeseja continuar mesmo assim?",
+                                            "Horário da turma já cadastrado", JOptionPane.DEFAULT_OPTION,
+                                            JOptionPane.WARNING_MESSAGE, null, opcoes, opcoes[0]);
+                                    if (opcao != 0) {
+                                        //Se não pressionar a opção sim.
+                                        return; //Interromper execução da geração de horários.
+                                    }
+                                } else {
+                                    // Nível fundamental ou médio.
+
+                                    int opcao = JOptionPane.showOptionDialog(null, "A turma (Nível de ensino: "
+                                            + turma.getNivelEnsino() + " | Turma: " + turma.getNome()
+                                            + " | Série: " + turma.getAno() + " | Turno: " + turma.getTurno() + ") já possui "
+                                            + "um horário definido. \nPara que o horário seja gerado corretamente, "
+                                            + "por favor, remova-o primeiro através da opção "
+                                            + "'Remover horário' localizada no menu 'Gerenciar horários'."
+                                            + "\nDeseja continuar mesmo assim?",
+                                            "Horário da turma já cadastrado", JOptionPane.DEFAULT_OPTION,
+                                            JOptionPane.WARNING_MESSAGE, null, opcoes, opcoes[0]);
+                                    if (opcao != 0) {
+                                        //Se não pressionar a opção sim.
+                                        return; //Interromper execução da geração de horários.
+                                    }
+                                }
                             }
+
+                            ArrayList<Aula> aulas = DataAccessObject.getAulasByIDTurma(turma.getID()); //Aulas que contém essa turma.
+                            ArrayList<Disciplina> disciplinas = new ArrayList<>(); //Disciplinas da turma.
+
+                            //Adicionar as disciplinas das aulas ao array list.
+                            for (int j = 0; j < aulas.size(); j++) {
+                                disciplinas.add(DataAccessObject.getDisciplinaByID(aulas.get(j).getIDDisciplina()));
+                            }
+                            //Geração dos horários utilizando o algoritmo genético.
+                            Algoritmo.setTaxaCrossover(0.5); //50% de chance de realizar o cruzamento.
+                            Algoritmo.setTaxaMutacao(0.35); //35% de chance de mutar.
+
+                            boolean elitismo = true; //Realizar elitismo (preservar melhor elitismo).
+
+                            int tamanhoPopulacao = 5; //Quantidade de indivíduos por população.
+                            int numMaxGeracoes = 30000; //Número máximo de gerações.
+
+                            //População inicial aleatória.
+                            Populacao populacao = new Populacao(tamanhoPopulacao, disciplinas, turma.getID());
+
+                            boolean temSolucao = false; //Variável para verificar se há solução.
+                            int geracao = 1; //Contagem de gerações.
+
+                            int reiniciaBanco = 1; //Variável para reiniciar a conexão com o banco a cada 100 gerações.
+
+                            //Enquanto não encontrar uma solução ou não atingir o máximo de gerações.
+                            while (!(temSolucao || geracao > numMaxGeracoes)) {
+                                //Criar nova população para substituir a população inicial aleatória.
+                                populacao = new Populacao(Algoritmo.gerarNovaGeracao(populacao, elitismo));
+                                //Analisar se a nova população possui um indivíduo que é a solução (aptidão = 0).
+                                //populacao.getMelhorIndividuo().geraAptidao();
+
+                                System.out.println("Genes: ");
+                                for (int j = 0; j < populacao.getMelhorIndividuo().getGenes().length; j++) {
+                                    System.out.print(populacao.getMelhorIndividuo().getGenes()[j]);
+                                }
+
+                                System.out.println(" | Geração = " + geracao + "| Aptidão = " + populacao.getMelhorIndividuo().getAptidao());
+                                if (populacao.getMelhorIndividuo().getAptidao() == 0) {
+                                    //Indivíduo é a solução.
+                                    //Armazenar os genes do indivíduo (solução) no horário da turma.
+                                    turma.setHorarioTurma(populacao.getMelhorIndividuo().getGenes());
+                                    temSolucao = true;
+                                }
+
+                                geracao++;
+                                if (geracao == reiniciaBanco * 100) {
+                                    reiniciaBanco++;
+
+                                    //Fecha e abre a conexão novamente.
+                                    DataAccessObject.fecharConexao();
+                                    DataAccessObject.abrirConexao();
+                                }
+                            }
+
+                            //Se já tiver cadastrado um horário da turma antes, remover para que
+                            //seja inserido um novo horário.
+                            if (DataAccessObject.turmaTemHorario(turma.getID())) {
+                                //Antes de remover, dizer que os professores possuem disponibilidade
+                                //nesses horários. 
+                                int turmaAcrescimo; //Acréscimo para definir as restrições de acordo com o turno.
+                                switch (turma.getTurno()) {
+                                    case "Matutino":
+                                        turmaAcrescimo = 0;
+                                        break;
+                                    case "Vespertino":
+                                        turmaAcrescimo = 36;
+                                        break;
+                                    default:
+                                        //Noturno.
+                                        turmaAcrescimo = 72;
+                                        break;
+                                }
+
+                                int[] horario = DataAccessObject.getHorarioTurma(turma.getID()).getHorarioTurma();
+                                for (int j = 0; j < horario.length; j++) {
+                                    if (horario[j] != 0) {
+                                        //Se não for uma aula vazia, editar restrição do professor.
+                                        Disciplina disciplina = DataAccessObject.getDisciplinaByID(horario[j]);
+                                        Professor professor = DataAccessObject.getProfessorByID(disciplina.getIdProfessor());
+
+                                        char[] restricoes = professor.getRestricoes();
+                                        restricoes[j + turmaAcrescimo] = '0'; //Disponibilidade de horário.
+                                        professor.setRestricoes(restricoes);
+
+                                        DataAccessObject.update(professor);
+                                    }
+                                }
+
+                                DataAccessObject.removeHorarioByIDTurma(turma.getID());
+                            }
+                            DataAccessObject.insertHorario(turma); //Inserir horário no banco.
+
+                            int turmaAcrescimo; //Acréscimo para definir as restrições de acordo com o turno.
+                            switch (turma.getTurno()) {
+                                case "Matutino":
+                                    turmaAcrescimo = 0;
+                                    break;
+                                case "Vespertino":
+                                    turmaAcrescimo = 36;
+                                    break;
+                                default:
+                                    //Noturno.
+                                    turmaAcrescimo = 72;
+                                    break;
+                            }
+
+                            //Inserir as novas restrições dos professores, de acordo com o novo horário gerado.
+                            for (int j = 0; j < turma.getHorarioTurma().length; j++) {
+                                if (turma.getHorarioTurma()[j] != 0) {
+                                    //Se não for uma aula vazia, adicionar restrição ao professor.
+                                    Disciplina disciplina = DataAccessObject.getDisciplinaByID(turma.getHorarioTurma()[j]);
+                                    Professor professor = DataAccessObject.getProfessorByID(disciplina.getIdProfessor());
+
+                                    char[] restricoes = professor.getRestricoes();
+                                    restricoes[j + turmaAcrescimo] = '1';
+                                    professor.setRestricoes(restricoes);
+
+                                    DataAccessObject.update(professor);
+                                }
+                            }
+
+                            if (geracao >= numMaxGeracoes) {
+                                turma.setHorarioTurma(populacao.getMelhorIndividuo().getGenes());
+                                JOptionPane.showMessageDialog(null, "Nenhuma solução encontrada para"
+                                        + " a turma '" + "Curso: " + turma.getCurso() + " | Nível de ensino: "
+                                        + turma.getNivelEnsino() + " | Turma: " + turma.getNome()
+                                        + " | Série/Semestre: " + turma.getAno() + " | Turno: " + turma.getTurno()
+                                        + "'\nArmazenado a solução mais adequada.");
+                            }
+                        }
+                        long fim = System.nanoTime();
+                        long duracao = (fim - inicio) / 1000000000; //Duraçao em segundos.
+                        if (duracao < 60) {
+                            System.out.println("Gerado em: " + duracao + " segundos.");
                         } else {
-                            // Nível fundamental ou médio.
+                            //Passou de um minuto.
+                            int minutos = (int) (duracao / 60);
+                            int segundos = (int) (duracao - minutos * 60);
+                            System.out.println("Gerado em: " + minutos + " minutos e " + segundos + " segundos.");
+                        }
 
-                            int opcao = JOptionPane.showOptionDialog(null, "A turma (Nível de ensino: "
-                                    + turma.getNivelEnsino() + " | Turma: " + turma.getNome()
-                                    + " | Série: " + turma.getAno() + " | Turno: " + turma.getTurno() + ") já possui "
+                        JOptionPane.showMessageDialog(null, "Horários gerados e armazenados "
+                                + "com sucesso!");
+
+                        DataAccessObject.fecharConexao();
+                    }
+                } else {
+                    //Nível fundamental ou médio.
+                    //Gerar o horário das turmas.
+                    DataAccessObject.abrirConexao();
+                    turmasSelecionadas = DataAccessObject.getTurmasByNivelEnsino(nivelSelecionado);
+                    ordenarTurmasSelecionadas(); //Organizar as turmas selecionadas
+                    //pela quantidade de restrições, do maior para o menor.
+
+                    for (int i = 0; i < turmasSelecionadas.size(); i++) {
+                        Turma turma = turmasSelecionadas.get(i); //Turma selecionada.
+                        if (DataAccessObject.turmaTemHorario(turma.getID())) {
+                            //Turma já possui horário cadastrado.
+                            Object[] opcoes = {"Sim", "Não"};
+                            int opcao = JOptionPane.showOptionDialog(null, "Uma das turmas selecionadas já possui "
                                     + "um horário definido. \nPara que o horário seja gerado corretamente, "
                                     + "por favor, remova-o primeiro através da opção "
                                     + "'Remover horário' localizada no menu 'Gerenciar horários'."
@@ -333,67 +531,99 @@ public class GerarHorarioCurso extends javax.swing.JInternalFrame {
                                 return; //Interromper execução da geração de horários.
                             }
                         }
-                    }
 
-                    ArrayList<Aula> aulas = DataAccessObject.getAulasByIDTurma(turma.getID()); //Aulas que contém essa turma.
-                    ArrayList<Disciplina> disciplinas = new ArrayList<>(); //Disciplinas da turma.
+                        ArrayList<Aula> aulas = DataAccessObject.getAulasByIDTurma(turma.getID()); //Aulas que contém essa turma.
+                        ArrayList<Disciplina> disciplinas = new ArrayList<>(); //Disciplinas da turma.
 
-                    //Adicionar as disciplinas das aulas ao array list.
-                    for (int j = 0; j < aulas.size(); j++) {
-                        disciplinas.add(DataAccessObject.getDisciplinaByID(aulas.get(j).getIDDisciplina()));
-                    }
-                    //Geração dos horários utilizando o algoritmo genético.
-                    Algoritmo.setTaxaCrossover(0.5); //50% de chance de realizar o cruzamento.
-                    Algoritmo.setTaxaMutacao(0.35); //35% de chance de mutar.
+                        //Adicionar as disciplinas das aulas ao array list.
+                        for (int j = 0; j < aulas.size(); j++) {
+                            disciplinas.add(DataAccessObject.getDisciplinaByID(aulas.get(j).getIDDisciplina()));
+                        }
+                        //Geração dos horários utilizando o algoritmo genético.
+                        Algoritmo.setTaxaCrossover(0.5); //50% de chance de realizar o cruzamento.
+                        Algoritmo.setTaxaMutacao(0.35); //35% de chance de mutar.
 
-                    boolean elitismo = true; //Realizar elitismo (preservar melhor elitismo).
+                        boolean elitismo = true; //Realizar elitismo (preservar melhor elitismo).
 
-                    int tamanhoPopulacao = 5; //Quantidade de indivíduos por população.
-                    int numMaxGeracoes = 30000; //Número máximo de gerações.
+                        int tamanhoPopulacao = 5; //Quantidade de indivíduos por população.
+                        int numMaxGeracoes = 30000; //Número máximo de gerações.
 
-                    //População inicial aleatória.
-                    Populacao populacao = new Populacao(tamanhoPopulacao, disciplinas, turma.getID());
+                        //População inicial aleatória.
+                        Populacao populacao = new Populacao(tamanhoPopulacao, disciplinas, turma.getID());
 
-                    boolean temSolucao = false; //Variável para verificar se há solução.
-                    int geracao = 1; //Contagem de gerações.
+                        boolean temSolucao = false; //Variável para verificar se há solução.
+                        int geracao = 1; //Contagem de gerações.
 
-                    int reiniciaBanco = 1; //Variável para reiniciar a conexão com o banco a cada 100 gerações.
+                        int reiniciaBanco = 1; //Variável para reiniciar a conexão com o banco a cada 100 gerações.
 
-                    //Enquanto não encontrar uma solução ou não atingir o máximo de gerações.
-                    while (!(temSolucao || geracao > numMaxGeracoes)) {
-                        //Criar nova população para substituir a população inicial aleatória.
-                        populacao = new Populacao(Algoritmo.gerarNovaGeracao(populacao, elitismo));
-                        //Analisar se a nova população possui um indivíduo que é a solução (aptidão = 0).
-                        //populacao.getMelhorIndividuo().geraAptidao();
+                        //Enquanto não encontrar uma solução ou não atingir o máximo de gerações.
+                        while (!(temSolucao || geracao > numMaxGeracoes)) {
+                            //Criar nova população para substituir a população inicial aleatória.
+                            populacao = new Populacao(Algoritmo.gerarNovaGeracao(populacao, elitismo));
+                            //Analisar se a nova população possui um indivíduo que é a solução (aptidão = 0).
+                            //populacao.getMelhorIndividuo().geraAptidao();
 
-                        System.out.println("Genes: ");
-                        for (int j = 0; j < populacao.getMelhorIndividuo().getGenes().length; j++) {
-                            System.out.print(populacao.getMelhorIndividuo().getGenes()[j]);
+                            System.out.println("Genes: ");
+                            for (int j = 0; j < populacao.getMelhorIndividuo().getGenes().length; j++) {
+                                System.out.print(populacao.getMelhorIndividuo().getGenes()[j]);
+                            }
+
+                            System.out.println(" | Geração = " + geracao + "| Aptidão = " + populacao.getMelhorIndividuo().getAptidao());
+                            if (populacao.getMelhorIndividuo().getAptidao() == 0) {
+                                //Indivíduo é a solução.
+                                //Armazenar os genes do indivíduo (solução) no horário da turma.
+                                turma.setHorarioTurma(populacao.getMelhorIndividuo().getGenes());
+                                temSolucao = true;
+                            }
+
+                            geracao++;
+                            if (geracao == reiniciaBanco * 100) {
+                                reiniciaBanco++;
+
+                                //Fecha e abre a conexão novamente.
+                                DataAccessObject.fecharConexao();
+                                DataAccessObject.abrirConexao();
+                            }
                         }
 
-                        System.out.println(" | Geração = " + geracao + "| Aptidão = " + populacao.getMelhorIndividuo().getAptidao());
-                        if (populacao.getMelhorIndividuo().getAptidao() == 0) {
-                            //Indivíduo é a solução.
-                            //Armazenar os genes do indivíduo (solução) no horário da turma.
-                            turma.setHorarioTurma(populacao.getMelhorIndividuo().getGenes());
-                            temSolucao = true;
+                        //Se já tiver cadastrado um horário da turma antes, remover para que
+                        //seja inserido um novo horário.
+                        if (DataAccessObject.turmaTemHorario(turma.getID())) {
+                            //Antes de remover, dizer que os professores possuem disponibilidade
+                            //nesses horários. 
+                            int turmaAcrescimo; //Acréscimo para definir as restrições de acordo com o turno.
+                            switch (turma.getTurno()) {
+                                case "Matutino":
+                                    turmaAcrescimo = 0;
+                                    break;
+                                case "Vespertino":
+                                    turmaAcrescimo = 36;
+                                    break;
+                                default:
+                                    //Noturno.
+                                    turmaAcrescimo = 72;
+                                    break;
+                            }
+
+                            int[] horario = DataAccessObject.getHorarioTurma(turma.getID()).getHorarioTurma();
+                            for (int j = 0; j < horario.length; j++) {
+                                if (horario[j] != 0) {
+                                    //Se não for uma aula vazia, editar restrição do professor.
+                                    Disciplina disciplina = DataAccessObject.getDisciplinaByID(horario[j]);
+                                    Professor professor = DataAccessObject.getProfessorByID(disciplina.getIdProfessor());
+
+                                    char[] restricoes = professor.getRestricoes();
+                                    restricoes[j + turmaAcrescimo] = '0'; //Disponibilidade de horário.
+                                    professor.setRestricoes(restricoes);
+
+                                    DataAccessObject.update(professor);
+                                }
+                            }
+
+                            DataAccessObject.removeHorarioByIDTurma(turma.getID());
                         }
+                        DataAccessObject.insertHorario(turma); //Inserir horário no banco.
 
-                        geracao++;
-                        if (geracao == reiniciaBanco * 100) {
-                            reiniciaBanco++;
-
-                            //Fecha e abre a conexão novamente.
-                            DataAccessObject.fecharConexao();
-                            DataAccessObject.abrirConexao();
-                        }
-                    }
-
-                    //Se já tiver cadastrado um horário da turma antes, remover para que
-                    //seja inserido um novo horário.
-                    if (DataAccessObject.turmaTemHorario(turma.getID())) {
-                        //Antes de remover, dizer que os professores possuem disponibilidade
-                        //nesses horários. 
                         int turmaAcrescimo; //Acréscimo para definir as restrições de acordo com o turno.
                         switch (turma.getTurno()) {
                             case "Matutino":
@@ -408,246 +638,47 @@ public class GerarHorarioCurso extends javax.swing.JInternalFrame {
                                 break;
                         }
 
-                        int[] horario = DataAccessObject.getHorarioTurma(turma.getID()).getHorarioTurma();
-                        for (int j = 0; j < horario.length; j++) {
-                            if (horario[j] != 0) {
-                                //Se não for uma aula vazia, editar restrição do professor.
-                                Disciplina disciplina = DataAccessObject.getDisciplinaByID(horario[j]);
+                        //Inserir as novas restrições dos professores, de acordo com o novo horário gerado.
+                        for (int j = 0; j < turma.getHorarioTurma().length; j++) {
+                            if (turma.getHorarioTurma()[j] != 0) {
+                                //Se não for uma aula vazia, adicionar restrição ao professor.
+                                Disciplina disciplina = DataAccessObject.getDisciplinaByID(turma.getHorarioTurma()[j]);
                                 Professor professor = DataAccessObject.getProfessorByID(disciplina.getIdProfessor());
 
                                 char[] restricoes = professor.getRestricoes();
-                                restricoes[j + turmaAcrescimo] = '0'; //Disponibilidade de horário.
+                                restricoes[j + turmaAcrescimo] = '1';
                                 professor.setRestricoes(restricoes);
 
                                 DataAccessObject.update(professor);
                             }
                         }
 
-                        DataAccessObject.removeHorarioByIDTurma(turma.getID());
-                    }
-                    DataAccessObject.insertHorario(turma); //Inserir horário no banco.
-
-                    int turmaAcrescimo; //Acréscimo para definir as restrições de acordo com o turno.
-                    switch (turma.getTurno()) {
-                        case "Matutino":
-                            turmaAcrescimo = 0;
-                            break;
-                        case "Vespertino":
-                            turmaAcrescimo = 36;
-                            break;
-                        default:
-                            //Noturno.
-                            turmaAcrescimo = 72;
-                            break;
-                    }
-
-                    //Inserir as novas restrições dos professores, de acordo com o novo horário gerado.
-                    for (int j = 0; j < turma.getHorarioTurma().length; j++) {
-                        if (turma.getHorarioTurma()[j] != 0) {
-                            //Se não for uma aula vazia, adicionar restrição ao professor.
-                            Disciplina disciplina = DataAccessObject.getDisciplinaByID(turma.getHorarioTurma()[j]);
-                            Professor professor = DataAccessObject.getProfessorByID(disciplina.getIdProfessor());
-
-                            char[] restricoes = professor.getRestricoes();
-                            restricoes[j + turmaAcrescimo] = '1';
-                            professor.setRestricoes(restricoes);
-
-                            DataAccessObject.update(professor);
+                        if (geracao >= numMaxGeracoes) {
+                            turma.setHorarioTurma(populacao.getMelhorIndividuo().getGenes());
+                            JOptionPane.showMessageDialog(null, "Nenhuma solução encontrada para"
+                                    + " a turma '" + "Curso: " + turma.getCurso() + " | Nível de ensino: "
+                                    + turma.getNivelEnsino() + " | Turma: " + turma.getNome()
+                                    + " | Série/Semestre: " + turma.getAno() + " | Turno: " + turma.getTurno()
+                                    + "'\nArmazenado a solução mais adequada.");
                         }
                     }
 
-                    if (geracao >= numMaxGeracoes) {
-                        turma.setHorarioTurma(populacao.getMelhorIndividuo().getGenes());
-                        JOptionPane.showMessageDialog(null, "Nenhuma solução encontrada para"
-                                + " a turma '" + "Curso: " + turma.getCurso() + " | Nível de ensino: "
-                                + turma.getNivelEnsino() + " | Turma: " + turma.getNome()
-                                + " | Série/Semestre: " + turma.getAno() + " | Turno: " + turma.getTurno()
-                                + "'\nArmazenado a solução mais adequada.");
-                    }
-                }
-                long fim = System.nanoTime();
-                long duracao = (fim - inicio) / 1000000000; //Duraçao em segundos.
-                if (duracao < 60) {
-                    System.out.println("Gerado em: " + duracao + " segundos.");
-                } else {
-                    //Passou de um minuto.
-                    int minutos = (int) (duracao / 60);
-                    int segundos = (int) (duracao - minutos * 60);
-                    System.out.println("Gerado em: " + minutos + " minutos e " + segundos + " segundos.");
-                }
+                    JOptionPane.showMessageDialog(null, "Horários gerados e armazenados "
+                            + "com sucesso!");
 
-                JOptionPane.showMessageDialog(null, "Horários gerados e armazenados "
-                        + "com sucesso!");
+                    //Limpar campos.
+                    jComboBoxCurso.removeAllItems();
+                    jComboBoxTurmas.removeAllItems();
+                    listModel.clear();
 
-                DataAccessObject.fecharConexao();
+                    DataAccessObject.fecharConexao();
+                }
+                jProgressBarGeracaoCurso.setVisible(false);
+                jButtonGerar.setEnabled(true);
             }
-        } else {
-            //Nível fundamental ou médio.
-            //Gerar o horário das turmas.
-            DataAccessObject.abrirConexao();
-            turmasSelecionadas = DataAccessObject.getTurmasByNivelEnsino(nivelSelecionado);
-            ordenarTurmasSelecionadas(); //Organizar as turmas selecionadas
-            //pela quantidade de restrições, do maior para o menor.
+        });
 
-            for (int i = 0; i < turmasSelecionadas.size(); i++) {
-                Turma turma = turmasSelecionadas.get(i); //Turma selecionada.
-                if (DataAccessObject.turmaTemHorario(turma.getID())) {
-                    //Turma já possui horário cadastrado.
-                    Object[] opcoes = {"Sim", "Não"};
-                    int opcao = JOptionPane.showOptionDialog(null, "Uma das turmas selecionadas já possui "
-                            + "um horário definido. \nPara que o horário seja gerado corretamente, "
-                            + "por favor, remova-o primeiro através da opção "
-                            + "'Remover horário' localizada no menu 'Gerenciar horários'."
-                            + "\nDeseja continuar mesmo assim?",
-                            "Horário da turma já cadastrado", JOptionPane.DEFAULT_OPTION,
-                            JOptionPane.WARNING_MESSAGE, null, opcoes, opcoes[0]);
-                    if (opcao != 0) {
-                        //Se não pressionar a opção sim.
-                        return; //Interromper execução da geração de horários.
-                    }
-                }
-
-                ArrayList<Aula> aulas = DataAccessObject.getAulasByIDTurma(turma.getID()); //Aulas que contém essa turma.
-                ArrayList<Disciplina> disciplinas = new ArrayList<>(); //Disciplinas da turma.
-
-                //Adicionar as disciplinas das aulas ao array list.
-                for (int j = 0; j < aulas.size(); j++) {
-                    disciplinas.add(DataAccessObject.getDisciplinaByID(aulas.get(j).getIDDisciplina()));
-                }
-                //Geração dos horários utilizando o algoritmo genético.
-                Algoritmo.setTaxaCrossover(0.5); //50% de chance de realizar o cruzamento.
-                Algoritmo.setTaxaMutacao(0.35); //35% de chance de mutar.
-
-                boolean elitismo = true; //Realizar elitismo (preservar melhor elitismo).
-
-                int tamanhoPopulacao = 5; //Quantidade de indivíduos por população.
-                int numMaxGeracoes = 30000; //Número máximo de gerações.
-
-                //População inicial aleatória.
-                Populacao populacao = new Populacao(tamanhoPopulacao, disciplinas, turma.getID());
-
-                boolean temSolucao = false; //Variável para verificar se há solução.
-                int geracao = 1; //Contagem de gerações.
-
-                int reiniciaBanco = 1; //Variável para reiniciar a conexão com o banco a cada 100 gerações.
-
-                //Enquanto não encontrar uma solução ou não atingir o máximo de gerações.
-                while (!(temSolucao || geracao > numMaxGeracoes)) {
-                    //Criar nova população para substituir a população inicial aleatória.
-                    populacao = new Populacao(Algoritmo.gerarNovaGeracao(populacao, elitismo));
-                    //Analisar se a nova população possui um indivíduo que é a solução (aptidão = 0).
-                    //populacao.getMelhorIndividuo().geraAptidao();
-
-                    System.out.println("Genes: ");
-                    for (int j = 0; j < populacao.getMelhorIndividuo().getGenes().length; j++) {
-                        System.out.print(populacao.getMelhorIndividuo().getGenes()[j]);
-                    }
-
-                    System.out.println(" | Geração = " + geracao + "| Aptidão = " + populacao.getMelhorIndividuo().getAptidao());
-                    if (populacao.getMelhorIndividuo().getAptidao() == 0) {
-                        //Indivíduo é a solução.
-                        //Armazenar os genes do indivíduo (solução) no horário da turma.
-                        turma.setHorarioTurma(populacao.getMelhorIndividuo().getGenes());
-                        temSolucao = true;
-                    }
-
-                    geracao++;
-                    if (geracao == reiniciaBanco * 100) {
-                        reiniciaBanco++;
-
-                        //Fecha e abre a conexão novamente.
-                        DataAccessObject.fecharConexao();
-                        DataAccessObject.abrirConexao();
-                    }
-                }
-
-                //Se já tiver cadastrado um horário da turma antes, remover para que
-                //seja inserido um novo horário.
-                if (DataAccessObject.turmaTemHorario(turma.getID())) {
-                    //Antes de remover, dizer que os professores possuem disponibilidade
-                    //nesses horários. 
-                    int turmaAcrescimo; //Acréscimo para definir as restrições de acordo com o turno.
-                    switch (turma.getTurno()) {
-                        case "Matutino":
-                            turmaAcrescimo = 0;
-                            break;
-                        case "Vespertino":
-                            turmaAcrescimo = 36;
-                            break;
-                        default:
-                            //Noturno.
-                            turmaAcrescimo = 72;
-                            break;
-                    }
-
-                    int[] horario = DataAccessObject.getHorarioTurma(turma.getID()).getHorarioTurma();
-                    for (int j = 0; j < horario.length; j++) {
-                        if (horario[j] != 0) {
-                            //Se não for uma aula vazia, editar restrição do professor.
-                            Disciplina disciplina = DataAccessObject.getDisciplinaByID(horario[j]);
-                            Professor professor = DataAccessObject.getProfessorByID(disciplina.getIdProfessor());
-
-                            char[] restricoes = professor.getRestricoes();
-                            restricoes[j + turmaAcrescimo] = '0'; //Disponibilidade de horário.
-                            professor.setRestricoes(restricoes);
-
-                            DataAccessObject.update(professor);
-                        }
-                    }
-
-                    DataAccessObject.removeHorarioByIDTurma(turma.getID());
-                }
-                DataAccessObject.insertHorario(turma); //Inserir horário no banco.
-
-                int turmaAcrescimo; //Acréscimo para definir as restrições de acordo com o turno.
-                switch (turma.getTurno()) {
-                    case "Matutino":
-                        turmaAcrescimo = 0;
-                        break;
-                    case "Vespertino":
-                        turmaAcrescimo = 36;
-                        break;
-                    default:
-                        //Noturno.
-                        turmaAcrescimo = 72;
-                        break;
-                }
-
-                //Inserir as novas restrições dos professores, de acordo com o novo horário gerado.
-                for (int j = 0; j < turma.getHorarioTurma().length; j++) {
-                    if (turma.getHorarioTurma()[j] != 0) {
-                        //Se não for uma aula vazia, adicionar restrição ao professor.
-                        Disciplina disciplina = DataAccessObject.getDisciplinaByID(turma.getHorarioTurma()[j]);
-                        Professor professor = DataAccessObject.getProfessorByID(disciplina.getIdProfessor());
-
-                        char[] restricoes = professor.getRestricoes();
-                        restricoes[j + turmaAcrescimo] = '1';
-                        professor.setRestricoes(restricoes);
-
-                        DataAccessObject.update(professor);
-                    }
-                }
-
-                if (geracao >= numMaxGeracoes) {
-                    turma.setHorarioTurma(populacao.getMelhorIndividuo().getGenes());
-                    JOptionPane.showMessageDialog(null, "Nenhuma solução encontrada para"
-                            + " a turma '" + "Curso: " + turma.getCurso() + " | Nível de ensino: "
-                            + turma.getNivelEnsino() + " | Turma: " + turma.getNome()
-                            + " | Série/Semestre: " + turma.getAno() + " | Turno: " + turma.getTurno()
-                            + "'\nArmazenado a solução mais adequada.");
-                }
-            }
-
-            JOptionPane.showMessageDialog(null, "Horários gerados e armazenados "
-                    + "com sucesso!");
-
-            //Limpar campos.
-            jComboBoxCurso.removeAllItems();
-            jComboBoxTurmas.removeAllItems();
-            listModel.clear();
-
-            DataAccessObject.fecharConexao();
-        }
+        T1.start();
     }//GEN-LAST:event_jButtonGerarActionPerformed
 
     //Organiza as turmas selecionadas pela quantidade de restrições, do maior 
@@ -717,6 +748,7 @@ public class GerarHorarioCurso extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabelNivelEnsino;
     private javax.swing.JLabel jLabelTurmasCurso;
     private javax.swing.JList<String> jListTurmas;
+    private javax.swing.JProgressBar jProgressBarGeracaoCurso;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
     // End of variables declaration//GEN-END:variables
