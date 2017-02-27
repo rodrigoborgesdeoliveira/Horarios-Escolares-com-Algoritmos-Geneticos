@@ -56,7 +56,7 @@ public class EditarProfessor extends javax.swing.JInternalFrame {
         setIconifiable(true);
         setMaximizable(true);
         setResizable(true);
-        setTitle("EditarProfessor");
+        setTitle("Editar Professor");
 
         jLabelProfessor.setText("Professor");
 
@@ -97,7 +97,7 @@ public class EditarProfessor extends javax.swing.JInternalFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabelProfessor)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBoxProfessores, 0, 420, Short.MAX_VALUE)
+                        .addComponent(jComboBoxProfessores, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonSelecionar))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -137,6 +137,12 @@ public class EditarProfessor extends javax.swing.JInternalFrame {
 
     private void jTextFieldNomeProfessorKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldNomeProfessorKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            if (professor == null) {
+                JOptionPane.showMessageDialog(null, "Por favor, selecione um professor primeiro.",
+                        "Nenhum professor selecionado", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
             String nomeProfessor = jTextFieldNomeProfessor.getText();
 
             nomeProfessor = nomeProfessor.trim().replaceAll("\\s+", " "); //Remover espaços em branco
@@ -170,10 +176,18 @@ public class EditarProfessor extends javax.swing.JInternalFrame {
             }
 
             jTextFieldNomeProfessor.requestFocus();
+            
+            professor = null;
         }
     }//GEN-LAST:event_jTextFieldNomeProfessorKeyPressed
 
     private void jButtonConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConfirmarActionPerformed
+        if (professor == null) {
+            JOptionPane.showMessageDialog(null, "Por favor, selecione um professor primeiro.",
+                    "Nenhum professor selecionado", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
         String nomeProfessor = jTextFieldNomeProfessor.getText();
 
         nomeProfessor = nomeProfessor.trim().replaceAll("\\s+", " "); //Remover espaços em branco
@@ -207,6 +221,8 @@ public class EditarProfessor extends javax.swing.JInternalFrame {
         }
 
         jTextFieldNomeProfessor.requestFocus();
+        
+        professor = null;
     }//GEN-LAST:event_jButtonConfirmarActionPerformed
 
     private void jButtonSelecionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSelecionarActionPerformed

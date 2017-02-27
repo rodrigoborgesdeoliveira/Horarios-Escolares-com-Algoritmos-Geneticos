@@ -13,11 +13,15 @@ import gerenciarhorarios.Populacao;
 import gerenciarhorarios.Professor;
 import gerenciarhorarios.Turma;
 import java.util.ArrayList;
+import java.util.concurrent.Executor;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.event.InternalFrameAdapter;
+import javax.swing.event.InternalFrameEvent;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.html.parser.DTDConstants;
@@ -30,12 +34,15 @@ public class GerarHorarioTurma extends javax.swing.JInternalFrame {
 
     ArrayList<Turma> turmas = new ArrayList<>();
     Turma turma = null;
+    
+    Thread T1;
 
     /**
      * Creates new form GerarHorario
      */
     public GerarHorarioTurma() {
         initComponents();
+        jProgressBarGeracao.setVisible(false);
 
         turmas = DataAccessObject.getTurmas();
 
@@ -51,6 +58,12 @@ public class GerarHorarioTurma extends javax.swing.JInternalFrame {
                         + " | Série: " + turmas.get(i).getAno() + " | Turno: " + turmas.get(i).getTurno());
             }
         }
+        
+        addInternalFrameListener(new InternalFrameAdapter(){
+            public void internalFrameClosing(InternalFrameEvent e) {
+                T1.stop();
+            }
+        });
     }
 
     /**
@@ -68,6 +81,7 @@ public class GerarHorarioTurma extends javax.swing.JInternalFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         jTableHorario = new javax.swing.JTable();
         jButtonConfirmar = new javax.swing.JButton();
+        jProgressBarGeracao = new javax.swing.JProgressBar();
 
         setClosable(true);
         setIconifiable(true);
@@ -121,6 +135,8 @@ public class GerarHorarioTurma extends javax.swing.JInternalFrame {
             }
         });
 
+        jProgressBarGeracao.setIndeterminate(true);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -135,7 +151,9 @@ public class GerarHorarioTurma extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonGerar, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap()
+                        .addComponent(jProgressBarGeracao, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButtonConfirmar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
@@ -156,138 +174,153 @@ public class GerarHorarioTurma extends javax.swing.JInternalFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(15, 15, 15)
-                .addComponent(jButtonConfirmar)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButtonConfirmar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jProgressBarGeracao, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonGerarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonGerarActionPerformed
-        DataAccessObject.abrirConexao();
+        jProgressBarGeracao.setVisible(true);
+        jButtonGerar.setEnabled(false);
+        //Executor executor = java.util.concurrent.Executors.newSingleThreadExecutor();
+        T1 = new Thread(new Runnable() {
+            public void run() {
 
-        turma = turmas.get(jComboBoxTurmas.getSelectedIndex()); //Turma selecionada.
-        if (DataAccessObject.turmaTemHorario(turma.getID())) {
-            //Turma já possui horário cadastrado.
-            Object[] opcoes = {"Sim", "Não"};
-            int opcao = JOptionPane.showOptionDialog(null, "A turma selecionada já possui "
-                    + "um horário definido. \nPara que o horário seja gerado corretamente, "
-                    + "por favor, remova-o primeiro através da opção "
-                    + "'Remover horário' localizada no menu 'Gerenciar horários'."
-                    + "\nDeseja continuar mesmo assim?",
-                    "Horário da turma já cadastrado", JOptionPane.DEFAULT_OPTION,
-                    JOptionPane.WARNING_MESSAGE, null, opcoes, opcoes[0]);
-            if (opcao != 0) {
-                //Se não pressionar a opção sim.
-                return; //Interromper execução da geração de horários.
-            }
-        }
-
-        //Limpar o conteúdo da tabela.
-        DefaultTableModel modelo = (DefaultTableModel) jTableHorario.getModel();
-        for (int i = 0; i < 6; i++) { //Colunas da tabela.
-            for (int j = 0; j < 6; j++) { //Linhas da tabela.
-                modelo.setValueAt("", j, i);
-            }
-        }
-
-        ArrayList<Aula> aulas = DataAccessObject.getAulasByIDTurma(turma.getID()); //Aulas que contém essa turma.
-        ArrayList<Disciplina> disciplinas = new ArrayList<>(); //Disciplinas da turma.
-
-        //Adicionar as disciplinas das aulas ao array list.
-        for (int i = 0; i < aulas.size(); i++) {
-            disciplinas.add(DataAccessObject.getDisciplinaByID(aulas.get(i).getIDDisciplina()));
-        }
-        long inicio = System.nanoTime();
-        //Geração dos horários utilizando o algoritmo genético.
-        Algoritmo.setTaxaCrossover(0.5); //50% de chance de realizar o cruzamento.
-        Algoritmo.setTaxaMutacao(0.35); //35% de chance de mutar.
-
-        boolean elitismo = true; //Realizar elitismo (preservar melhor elitismo).
-
-        int tamanhoPopulacao = 5; //Quantidade de indivíduos por população.
-        int numMaxGeracoes = 30000; //Número máximo de gerações.
-
-        //População inicial aleatória.
-        Populacao populacao = new Populacao(tamanhoPopulacao, disciplinas, turma.getID());
-
-        boolean temSolucao = false; //Variável para verificar se há solução.
-        int geracao = 1; //Contagem de gerações.
-
-        int reiniciaBanco = 1; //Variável para reiniciar a conexão com o banco a cada 100 gerações.
-
-        //Enquanto não encontrar uma solução ou não atingir o máximo de gerações.
-        while (!(temSolucao || geracao > numMaxGeracoes)) {
-            //Criar nova população para substituir a população inicial aleatória.
-            populacao = new Populacao(Algoritmo.gerarNovaGeracao(populacao, elitismo));
-
-            System.out.println("Genes: ");
-            for (int i = 0; i < populacao.getMelhorIndividuo().getGenes().length; i++) {
-                System.out.print(populacao.getMelhorIndividuo().getGenes()[i] + " ");
-            }
-
-            System.out.println("| Geração = " + geracao + "| Aptidão = " + populacao.getMelhorIndividuo().getAptidao());
-            //Analisar se a nova população possui um indivíduo que é a solução (aptidão = 0).
-            if (populacao.getMelhorIndividuo().getAptidao() == 0) {
-                //Indivíduo é a solução.
-                //Armazenar os genes do indivíduo (solução) no horário da turma.
-                turma.setHorarioTurma(populacao.getMelhorIndividuo().getGenes());
-                temSolucao = true;
-            }
-
-            geracao++;
-            if (geracao == reiniciaBanco * 100) {
-                reiniciaBanco++;
-
-                //Fecha e abre a conexão novamente.
-                DataAccessObject.fecharConexao();
                 DataAccessObject.abrirConexao();
-            }
-        }
-        long fim = System.nanoTime();
-        long duracao = (fim - inicio) / 1000000000; //Duraçao em segundos.
-        if (duracao < 60) {
-            System.out.println("Gerado em: " + duracao + " segundos.");
-        } else{
-            //Passou de um minuto.
-            int minutos = (int) (duracao/60);
-            int segundos = (int) (duracao - minutos*60);
-            System.out.println("Gerado em: " + minutos + " minutos e " + segundos + " segundos.");
-        }
-        if (geracao >= numMaxGeracoes) {
-            turma.setHorarioTurma(populacao.getMelhorIndividuo().getGenes());
-            JOptionPane.showMessageDialog(null, "Nenhuma solução encontrada."
-                    + "\nExibindo solução mais adequada.");
-        }
 
-        //Modelo para manipular tabela.
-        modelo = (DefaultTableModel) jTableHorario.getModel();
-
-        //Adicionar disciplinas à tabela.
-        int posicaoHorario = 0; //Contador da posição no horário.
-        if (turma.getHorarioTurma().length == 36) { //Matutino ou vespertino.
-            for (int i = 0; i < 6; i++) { //Colunas da tabela.
-                for (int j = 0; j < 6; j++) { //Linhas da tabela.
-                    if (turma.getHorarioTurma()[posicaoHorario] != 0) {
-                        modelo.setValueAt(DataAccessObject.getDisciplinaByID(
-                                turma.getHorarioTurma()[posicaoHorario]).getNome(), j, i);
+                turma = turmas.get(jComboBoxTurmas.getSelectedIndex()); //Turma selecionada.
+                if (DataAccessObject.turmaTemHorario(turma.getID())) {
+                    //Turma já possui horário cadastrado.
+                    Object[] opcoes = {"Sim", "Não"};
+                    int opcao = JOptionPane.showOptionDialog(null, "A turma selecionada já possui "
+                            + "um horário definido. \nPara que o horário seja gerado corretamente, "
+                            + "por favor, remova-o primeiro através da opção "
+                            + "'Remover horário' localizada no menu 'Gerenciar horários'."
+                            + "\nDeseja continuar mesmo assim?",
+                            "Horário da turma já cadastrado", JOptionPane.DEFAULT_OPTION,
+                            JOptionPane.WARNING_MESSAGE, null, opcoes, opcoes[0]);
+                    if (opcao != 0) {
+                        //Se não pressionar a opção sim.
+                        return; //Interromper execução da geração de horários.
                     }
-                    posicaoHorario++;
                 }
-            }
-        } else { //Noturno
-            for (int i = 0; i < 6; i++) { //Colunas da tabela.
-                for (int j = 0; j < 4; j++) { //Linhas da tabela.
-                    if (turma.getHorarioTurma()[posicaoHorario] != 0) {
-                        modelo.setValueAt(DataAccessObject.getDisciplinaByID(
-                                turma.getHorarioTurma()[posicaoHorario]).getNome(), j, i);
-                    }
-                    posicaoHorario++;
-                }
-            }
-        }
 
-        DataAccessObject.fecharConexao();
+                //Limpar o conteúdo da tabela.
+                DefaultTableModel modelo = (DefaultTableModel) jTableHorario.getModel();
+                for (int i = 0; i < 6; i++) { //Colunas da tabela.
+                    for (int j = 0; j < 6; j++) { //Linhas da tabela.
+                        modelo.setValueAt("", j, i);
+                    }
+                }
+
+                ArrayList<Aula> aulas = DataAccessObject.getAulasByIDTurma(turma.getID()); //Aulas que contém essa turma.
+                ArrayList<Disciplina> disciplinas = new ArrayList<>(); //Disciplinas da turma.
+
+                //Adicionar as disciplinas das aulas ao array list.
+                for (int i = 0; i < aulas.size(); i++) {
+                    disciplinas.add(DataAccessObject.getDisciplinaByID(aulas.get(i).getIDDisciplina()));
+                }
+
+                long inicio = System.nanoTime();
+                //Geração dos horários utilizando o algoritmo genético.
+                Algoritmo.setTaxaCrossover(0.5); //50% de chance de realizar o cruzamento.
+                Algoritmo.setTaxaMutacao(0.35); //35% de chance de mutar.
+
+                boolean elitismo = true; //Realizar elitismo (preservar melhor elitismo).
+
+                int tamanhoPopulacao = 5; //Quantidade de indivíduos por população.
+                int numMaxGeracoes = 30000; //Número máximo de gerações.
+
+                //População inicial aleatória.
+                Populacao populacao = new Populacao(tamanhoPopulacao, disciplinas, turma.getID());
+
+                boolean temSolucao = false; //Variável para verificar se há solução.
+                int geracao = 1; //Contagem de gerações.
+
+                int reiniciaBanco = 1; //Variável para reiniciar a conexão com o banco a cada 100 gerações.
+
+                //Enquanto não encontrar uma solução ou não atingir o máximo de gerações.
+                while (!(temSolucao || geracao > numMaxGeracoes)) {
+                    //Criar nova população para substituir a população inicial aleatória.
+                    populacao = new Populacao(Algoritmo.gerarNovaGeracao(populacao, elitismo));
+
+                    System.out.println("Genes: ");
+                    for (int i = 0; i < populacao.getMelhorIndividuo().getGenes().length; i++) {
+                        System.out.print(populacao.getMelhorIndividuo().getGenes()[i] + " ");
+                    }
+
+                    System.out.println("| Geração = " + geracao + "| Aptidão = " + populacao.getMelhorIndividuo().getAptidao());
+                    //Analisar se a nova população possui um indivíduo que é a solução (aptidão = 0).
+                    if (populacao.getMelhorIndividuo().getAptidao() == 0) {
+                        //Indivíduo é a solução.
+                        //Armazenar os genes do indivíduo (solução) no horário da turma.
+                        turma.setHorarioTurma(populacao.getMelhorIndividuo().getGenes());
+                        temSolucao = true;
+                    }
+
+                    geracao++;
+                    if (geracao == reiniciaBanco * 100) {
+                        reiniciaBanco++;
+
+                        //Fecha e abre a conexão novamente.
+                        DataAccessObject.fecharConexao();
+                        DataAccessObject.abrirConexao();
+                    }
+                }
+                long fim = System.nanoTime();
+                jProgressBarGeracao.setVisible(false);
+                jButtonGerar.setEnabled(true);
+                long duracao = (fim - inicio) / 1000000000; //Duraçao em segundos.
+                if (duracao < 60) {
+                    System.out.println("Gerado em: " + duracao + " segundos.");
+                } else {
+                    //Passou de um minuto.
+                    int minutos = (int) (duracao / 60);
+                    int segundos = (int) (duracao - minutos * 60);
+                    System.out.println("Gerado em: " + minutos + " minutos e " + segundos + " segundos.");
+                }
+                if (geracao >= numMaxGeracoes) {
+                    turma.setHorarioTurma(populacao.getMelhorIndividuo().getGenes());
+                    JOptionPane.showMessageDialog(null, "Nenhuma solução encontrada."
+                            + "\nExibindo solução mais adequada.");
+                }
+
+                //Modelo para manipular tabela.
+                modelo = (DefaultTableModel) jTableHorario.getModel();
+
+                //Adicionar disciplinas à tabela.
+                int posicaoHorario = 0; //Contador da posição no horário.
+                if (turma.getHorarioTurma().length == 36) { //Matutino ou vespertino.
+                    for (int i = 0; i < 6; i++) { //Colunas da tabela.
+                        for (int j = 0; j < 6; j++) { //Linhas da tabela.
+                            if (turma.getHorarioTurma()[posicaoHorario] != 0) {
+                                modelo.setValueAt(DataAccessObject.getDisciplinaByID(
+                                        turma.getHorarioTurma()[posicaoHorario]).getNome(), j, i);
+                            }
+                            posicaoHorario++;
+                        }
+                    }
+                } else { //Noturno
+                    for (int i = 0; i < 6; i++) { //Colunas da tabela.
+                        for (int j = 0; j < 4; j++) { //Linhas da tabela.
+                            if (turma.getHorarioTurma()[posicaoHorario] != 0) {
+                                modelo.setValueAt(DataAccessObject.getDisciplinaByID(
+                                        turma.getHorarioTurma()[posicaoHorario]).getNome(), j, i);
+                            }
+                            posicaoHorario++;
+                        }
+                    }
+                }
+
+                DataAccessObject.fecharConexao();
+            }
+        });
+        
+        T1.start();
     }//GEN-LAST:event_jButtonGerarActionPerformed
 
     private void jButtonConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConfirmarActionPerformed
@@ -379,6 +412,7 @@ public class GerarHorarioTurma extends javax.swing.JInternalFrame {
     private javax.swing.JButton jButtonGerar;
     private javax.swing.JComboBox<String> jComboBoxTurmas;
     private javax.swing.JLabel jLabelTurma;
+    private javax.swing.JProgressBar jProgressBarGeracao;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTableHorario;
     // End of variables declaration//GEN-END:variables

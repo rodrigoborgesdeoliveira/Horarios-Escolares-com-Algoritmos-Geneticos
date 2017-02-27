@@ -537,7 +537,7 @@ public class Individuo {
                             for (int k = j + 2; k < ((i * 6) + 6); k++) {
                                 //Busca do dia por uma aula não vaga após a aula vaga.
                                 if (genes[k] != 0) {
-                                    aptidao += 1;
+                                    aptidao += (k-j);
                                     break;
                                 }
                             }
@@ -557,7 +557,7 @@ public class Individuo {
                             for (int k = j + 2; k < ((i * 4) + 4); k++) {
                                 //Busca do dia por uma aula não vaga após a aula vaga.
                                 if (genes[k] != 0) {
-                                    aptidao += 1;
+                                    aptidao += (k-j);
                                     break;
                                 }
                             }

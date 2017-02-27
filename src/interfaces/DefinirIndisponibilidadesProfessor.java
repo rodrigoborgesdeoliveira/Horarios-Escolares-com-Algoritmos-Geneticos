@@ -179,21 +179,22 @@ public class DefinirIndisponibilidadesProfessor extends javax.swing.JInternalFra
                             .addComponent(jLabel5)
                             .addComponent(jLabel4)
                             .addComponent(jLabel3))
-                        .addGap(0, 228, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jComboBoxProfessor, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonSelecionar, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
-                                .addComponent(jButtonConfirmar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jLabel1)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jComboBoxProfessor, javax.swing.GroupLayout.PREFERRED_SIZE, 594, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jButtonSelecionar))
+                                    .addComponent(jButtonConfirmar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGap(16, 16, 16))))
         );
         layout.setVerticalGroup(
@@ -217,7 +218,7 @@ public class DefinirIndisponibilidadesProfessor extends javax.swing.JInternalFra
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButtonConfirmar)
                 .addContainerGap())
@@ -227,6 +228,12 @@ public class DefinirIndisponibilidadesProfessor extends javax.swing.JInternalFra
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButtonConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConfirmarActionPerformed
+        if(professor == null){
+            JOptionPane.showMessageDialog(null, "Por favor, selecione um professor primeiro.",
+                    "Nenhum professor selecionado", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
         DataAccessObject.abrirConexao();
 
         char[] restricoes = professor.getRestricoes(); //Restrições atuais do professor.
@@ -309,7 +316,8 @@ public class DefinirIndisponibilidadesProfessor extends javax.swing.JInternalFra
         
         professor.setRestricoes(restricoes); //Define as novas restrições do professor.
         DataAccessObject.update(professor); //Atualiza o professor no banco de dados.
-
+        
+        professor = null;
         JOptionPane.showMessageDialog(null, "Restrições atualizadas com sucesso!");
         DataAccessObject.fecharConexao();
     }//GEN-LAST:event_jButtonConfirmarActionPerformed

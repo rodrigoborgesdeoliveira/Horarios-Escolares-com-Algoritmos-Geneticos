@@ -29,7 +29,7 @@ public class EditarAulaConjunta extends javax.swing.JInternalFrame {
 
     //Variáveis para controle de disciplina.
     ArrayList<Disciplina> disciplinas = new ArrayList<>();
-    Disciplina disciplinaSelecionada;
+    Disciplina disciplinaSelecionada = null;
 
     /**
      * Creates new form EditarAulaConjunta
@@ -244,6 +244,16 @@ public class EditarAulaConjunta extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButtonSelecionarDisciplinaConjuntaActionPerformed
 
     private void jButtonConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConfirmarActionPerformed
+        if(turma == null){
+            JOptionPane.showMessageDialog(null, "Por favor, selecione uma turma primeiro.",
+                    "Nenhuma turma selecionada", JOptionPane.WARNING_MESSAGE);
+            return;
+        } else if(disciplinaSelecionada == null){
+            JOptionPane.showMessageDialog(null, "Por favor, selecione uma disciplina conjunta primeiro.",
+                    "Nenhuma disciplina conjunta selecionada", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
         DataAccessObject.abrirConexao();
 
         Aula aula = new Aula();
@@ -261,6 +271,9 @@ public class EditarAulaConjunta extends javax.swing.JInternalFrame {
         turmasConjuntas.clear();
 
         DataAccessObject.fecharConexao();
+        
+        turma = null;
+        disciplinaSelecionada = null;
     }//GEN-LAST:event_jButtonConfirmarActionPerformed
 
 

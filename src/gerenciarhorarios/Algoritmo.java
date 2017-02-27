@@ -42,7 +42,7 @@ public class Algoritmo {
         if (elitismo) {
             novaPopulacao.setIndividuo(populacao.getMelhorIndividuo());
         }
-        
+
         //Inserir novos indivíduos na nova população, até atingir o tamanho máximo.
         while (novaPopulacao.getNumIndividuos() < novaPopulacao.getTamPopulacao()) {
             //Seleciona o pais por seleção torneio.
@@ -54,7 +54,7 @@ public class Algoritmo {
             //Faz ou não o cruzamento (crossover) segundo a taxa de crossover.
             //Se não fizer o crossover, os pais serão parte da nova geração.
             if (r.nextDouble() <= taxaCrossover) {
-                filhos = retornaIndividuos(crossover(pais[1], pais[0], novaPopulacao));
+                filhos = retornaIndividuos(crossover(pais[0], pais[1], novaPopulacao));
             } else {
                 filhos[0] = new Individuo(pais[0].getGenes(), idTurma, pais[0].getQtdAlelosVazios(), novaPopulacao);
                 filhos[1] = new Individuo(pais[1].getGenes(), idTurma, pais[1].getQtdAlelosVazios(), novaPopulacao);
@@ -62,11 +62,11 @@ public class Algoritmo {
 
             //Adiciona os filhos na nova geração.
             novaPopulacao.setIndividuo(filhos[0]);
-            novaPopulacao.setIndividuo(filhos[1]);            
+            novaPopulacao.setIndividuo(filhos[1]);
         }
-        
+
         novaPopulacao.ordenarPopulacao();
-        
+
         return novaPopulacao;
     }
 
@@ -84,9 +84,13 @@ public class Algoritmo {
         int[] genesPai2 = individuo2.getGenes();
 
         //Possuirão os mesmos genes que o pai entre 0 e o pontoCorte1, e entre pontoCorte2 e o final.
-        int[] genesFilho1 = genesPai1;
-        int[] genesFilho2 = genesPai2;
-        
+        int[] genesFilho1 = new int[genesPai1.length];
+        int[] genesFilho2 = new int[genesPai2.length];
+        for (int i = 0; i < genesPai1.length; i++) {
+            genesFilho1[i] = genesPai1[i];
+            genesFilho2[i] = genesPai2[i];
+        }
+
         //Distribui os genes dos pais.
         for (int i = pontoCorte1; i < pontoCorte2; i++) {
             genesFilho1[i] = genesPai2[i];

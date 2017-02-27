@@ -43,6 +43,7 @@ public class Principal extends javax.swing.JFrame {
         jMenu4 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
         jPopupMenu1 = new javax.swing.JPopupMenu();
+        jPopupMenu2 = new javax.swing.JPopupMenu();
         jDesktopPanePrincipal = new javax.swing.JDesktopPane();
         jMenuBarPrincipal = new javax.swing.JMenuBar();
         jMenuGerenciarProfessores = new javax.swing.JMenu();
@@ -77,6 +78,8 @@ public class Principal extends javax.swing.JFrame {
         jMenuItemGerarHorarioTurma = new javax.swing.JMenuItem();
         jMenuItemExibirHorario = new javax.swing.JMenuItem();
         jMenuItemRemoverHorário = new javax.swing.JMenuItem();
+        jMenuSobre = new javax.swing.JMenu();
+        jMenuItemSobre = new javax.swing.JMenuItem();
 
         jMenu3.setText("File");
         jMenuBar2.add(jMenu3);
@@ -325,6 +328,18 @@ public class Principal extends javax.swing.JFrame {
         jMenuGerenciarHorarios.add(jMenuItemRemoverHorário);
 
         jMenuBarPrincipal.add(jMenuGerenciarHorarios);
+
+        jMenuSobre.setText("Sobre");
+
+        jMenuItemSobre.setText("Sobre o software");
+        jMenuItemSobre.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemSobreActionPerformed(evt);
+            }
+        });
+        jMenuSobre.add(jMenuItemSobre);
+
+        jMenuBarPrincipal.add(jMenuSobre);
 
         setJMenuBar(jMenuBarPrincipal);
 
@@ -648,6 +663,12 @@ public class Principal extends javax.swing.JFrame {
         DataAccessObject.fecharConexao();
     }//GEN-LAST:event_jMenuItemRemoverProfessorActionPerformed
 
+    private void jMenuItemSobreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemSobreActionPerformed
+        SobreSoftware sobre = new SobreSoftware();
+        jDesktopPanePrincipal.add(sobre);
+        sobre.setVisible(true);
+    }//GEN-LAST:event_jMenuItemSobreActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -723,6 +744,9 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemRemoverHorário;
     private javax.swing.JMenuItem jMenuItemRemoverProfessor;
     private javax.swing.JMenuItem jMenuItemRemoverTurma;
+    private javax.swing.JMenuItem jMenuItemSobre;
+    private javax.swing.JMenu jMenuSobre;
     private javax.swing.JPopupMenu jPopupMenu1;
+    private javax.swing.JPopupMenu jPopupMenu2;
     // End of variables declaration//GEN-END:variables
 }
